@@ -48,3 +48,6 @@ android/app/src/staging/google-services.json
 ios/config/development/GoogleService-Info.plist
 ios/config/production/GoogleService-Info.plist
 ios/config/staging/GoogleService-Info.plist
+lib/firebase_options_dev.dart
+lib/firebase_options_prod.dart
+lib/firebase_options_stg.dart
