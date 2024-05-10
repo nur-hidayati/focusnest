@@ -364,7 +364,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_production.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -491,7 +491,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_staging.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -589,7 +589,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_development.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -684,7 +684,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_staging.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -776,7 +776,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_development.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -866,7 +866,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_staging.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -956,7 +956,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_development.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1105,7 +1105,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_production.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1129,7 +1129,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/lib/main_production.dart;
+				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
