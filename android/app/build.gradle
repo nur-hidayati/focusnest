@@ -58,6 +58,24 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    flavorDimensions "default"
+    productFlavors {
+        production {
+            dimension "default"
+            resValue "string", "app_name", "FocusNest"
+            applicationIdSuffix ""
+        }
+        staging {
+            dimension "default"
+            resValue "string", "app_name", "FocusNest STG"
+            applicationIdSuffix ".stg"
+        }
+        development {
+            dimension "default"
+            resValue "string", "app_name", "FocusNest DEV"
+            applicationIdSuffix ".dev"
+        }
+    }
 }
 
 flutter {
