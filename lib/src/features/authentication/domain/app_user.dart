@@ -5,8 +5,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'app_user.freezed.dart';
 part 'app_user.g.dart';
 
-typedef UserID = String;
-
 @freezed
 class AppUser with _$AppUser {
   factory AppUser({
