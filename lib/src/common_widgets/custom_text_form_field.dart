@@ -9,7 +9,7 @@ class CustomTextFormField extends StatelessWidget {
     this.maxLength,
     this.keyboardType,
     this.hintText,
-    this.textCapitalization = TextCapitalization.sentences,
+    this.textCapitalization = TextCapitalization.none,
     this.label,
     this.inputFormatters,
     this.errorText,
