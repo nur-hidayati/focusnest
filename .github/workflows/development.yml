@@ -58,7 +58,7 @@ jobs:
         run: flutter test
 
       - name: Build Debug APK
-        run: flutter build apk --debug
+        run: flutter build apk --debug --target=lib/main_development.dart
 
       - name: Build Debug iOS App
-        run: flutter build ios --debug --no-codesign
+        run: flutter build ios --debug --no-codesign --target=lib/main_development.dart
