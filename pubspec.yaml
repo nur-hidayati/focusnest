@@ -48,6 +48,10 @@ dependencies:
 
   logger: ^2.2.0
 
+  # testing
+  mockito: ^5.4.4
+  mocktail: ^1.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
