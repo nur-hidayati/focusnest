@@ -52,7 +52,7 @@ jobs:
           echo "${{ secrets.DEV_GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > ./ios/Runner/GoogleService-Info.plist
 
       - name: Generate Firebase Options
-        run: dart tool/generate_firebase_options.dart
+        run: dart tool/generate_firebase_options_dev.dart
 
       - name: Run tests
         run: flutter test
