@@ -1,0 +1,18 @@
+name: Restrict Merges to Staging
+
+on:
+  pull_request:
+    branches:
+      - staging
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check if source branch is development
+        run: |
+          if [[ "${{ github.head_ref }}" != "development" ]]; then
+            echo "Error: Only the 'development' branch can be merged into staging."
+            exit 1
+          fi

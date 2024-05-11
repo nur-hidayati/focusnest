@@ -1,0 +1,18 @@
+name: Restrict Merges to Development
+
+on:
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check if source branch is dev/
+        run: |
+          if [[ ! "${{ github.head_ref }}" =~ ^dev/ ]]; then
+            echo "Error: Only branches prefixed with 'dev/' can be merged into development."
+            exit 1
+          fi
