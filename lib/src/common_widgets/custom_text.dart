@@ -27,28 +27,24 @@ class CustomText extends StatelessWidget {
     TextStyle style;
     switch (textType) {
       case TextType.titleLarge:
-        style = Theme.of(context).textTheme.displayLarge?.copyWith(
-                fontSize: 24.0, fontWeight: FontWeight.bold, color: color) ??
-            TextStyle(
-                fontSize: 24.0, fontWeight: FontWeight.bold, color: color);
+        style = Theme.of(context).textTheme.displayLarge!.copyWith(
+            fontSize: 24.0, fontWeight: FontWeight.bold, color: color);
         break;
       case TextType.title:
-        style = Theme.of(context).textTheme.displayMedium?.copyWith(
-                fontSize: 18.0, fontWeight: FontWeight.bold, color: color) ??
-            TextStyle(
-                fontSize: 18.0, fontWeight: FontWeight.bold, color: color);
+        style = Theme.of(context).textTheme.displayMedium!.copyWith(
+            fontSize: 18.0, fontWeight: FontWeight.bold, color: color);
         break;
       case TextType.subtitle:
         style = Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontSize: 16.0, color: color) ??
-            TextStyle(fontSize: 16.0, color: color);
+            .textTheme
+            .titleMedium!
+            .copyWith(fontSize: 16.0, color: Colors.grey.shade700);
         break;
       default:
-        style = Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: color, fontSize: fontSize, fontWeight: fontWeight) ??
-            TextStyle(color: color, fontSize: fontSize, fontWeight: fontWeight);
+        style = Theme.of(context)
+            .textTheme
+            .bodyLarge!
+            .copyWith(color: color, fontSize: fontSize, fontWeight: fontWeight);
     }
 
     return Text(
