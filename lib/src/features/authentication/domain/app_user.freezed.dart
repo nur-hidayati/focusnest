@@ -22,6 +22,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) {
 mixin _$AppUser {
   String get id => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  @TimestampConverter()
   DateTime get createdDate => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +35,8 @@ abstract class $AppUserCopyWith<$Res> {
   factory $AppUserCopyWith(AppUser value, $Res Function(AppUser) then) =
       _$AppUserCopyWithImpl<$Res, AppUser>;
   @useResult
-  $Res call({String id, String email, DateTime createdDate});
+  $Res call(
+      {String id, String email, @TimestampConverter() DateTime createdDate});
 }
 
 /// @nodoc
@@ -78,7 +80,8 @@ abstract class _$$AppUserImplCopyWith<$Res> implements $AppUserCopyWith<$Res> {
       __$$AppUserImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String email, DateTime createdDate});
+  $Res call(
+      {String id, String email, @TimestampConverter() DateTime createdDate});
 }
 
 /// @nodoc
@@ -117,7 +120,9 @@ class __$$AppUserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AppUserImpl implements _AppUser {
   _$AppUserImpl(
-      {required this.id, required this.email, required this.createdDate});
+      {required this.id,
+      required this.email,
+      @TimestampConverter() required this.createdDate});
 
   factory _$AppUserImpl.fromJson(Map<String, dynamic> json) =>
       _$$AppUserImplFromJson(json);
@@ -127,6 +132,7 @@ class _$AppUserImpl implements _AppUser {
   @override
   final String email;
   @override
+  @TimestampConverter()
   final DateTime createdDate;
 
   @override
@@ -165,9 +171,10 @@ class _$AppUserImpl implements _AppUser {
 
 abstract class _AppUser implements AppUser {
   factory _AppUser(
-      {required final String id,
-      required final String email,
-      required final DateTime createdDate}) = _$AppUserImpl;
+          {required final String id,
+          required final String email,
+          @TimestampConverter() required final DateTime createdDate}) =
+      _$AppUserImpl;
 
   factory _AppUser.fromJson(Map<String, dynamic> json) = _$AppUserImpl.fromJson;
 
@@ -176,6 +183,7 @@ abstract class _AppUser implements AppUser {
   @override
   String get email;
   @override
+  @TimestampConverter()
   DateTime get createdDate;
   @override
   @JsonKey(ignore: true)

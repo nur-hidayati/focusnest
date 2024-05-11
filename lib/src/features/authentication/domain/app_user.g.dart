@@ -10,12 +10,13 @@ _$AppUserImpl _$$AppUserImplFromJson(Map<String, dynamic> json) =>
     _$AppUserImpl(
       id: json['id'] as String,
       email: json['email'] as String,
-      createdDate: DateTime.parse(json['createdDate'] as String),
+      createdDate:
+          const TimestampConverter().fromJson(json['createdDate'] as Timestamp),
     );
 
 Map<String, dynamic> _$$AppUserImplToJson(_$AppUserImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'email': instance.email,
-      'createdDate': instance.createdDate.toIso8601String(),
+      'createdDate': const TimestampConverter().toJson(instance.createdDate),
     };
