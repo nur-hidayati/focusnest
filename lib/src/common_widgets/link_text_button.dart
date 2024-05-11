@@ -17,7 +17,7 @@ class LinkTextButton extends StatelessWidget {
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        // tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         textStyle: const TextStyle(
           fontWeight: FontWeight.bold,
         ),

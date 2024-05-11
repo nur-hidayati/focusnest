@@ -184,7 +184,6 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
           title: _formType.bottomText,
           textType: TextType.subtitle,
         ),
-        Spacers.mediumVertical,
         LinkTextButton(
           title: _formType.bottomTextLink,
           onPressed: _updateFormType,
