@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/activity_calendar_screen.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/activity_timer_screen.dart';
+import 'package:focusnest/src/features/activity_timer/presentation/timer_start_screen.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_screen.dart';
@@ -86,12 +87,21 @@ GoRouter goRouter(GoRouterRef ref) {
             navigatorKey: _activityTimerNavigatorKey,
             routes: [
               GoRoute(
-                path: activityTimerPath,
-                name: RoutesName.activityTimer,
-                pageBuilder: (context, state) => const NoTransitionPage(
-                  child: ActivityTimerScreen(),
-                ),
-              ),
+                  path: activityTimerPath,
+                  name: RoutesName.activityTimer,
+                  pageBuilder: (context, state) => const NoTransitionPage(
+                        child: ActivityTimerScreen(),
+                      ),
+                  routes: [
+                    GoRoute(
+                      path: 'timer-start',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      name: RoutesName.timerStart,
+                      pageBuilder: (context, state) => const NoTransitionPage(
+                        child: TimerStartScreen(),
+                      ),
+                    ),
+                  ]),
             ],
           ),
           StatefulShellBranch(

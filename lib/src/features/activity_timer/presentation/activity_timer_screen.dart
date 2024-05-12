@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
+import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:go_router/go_router.dart';
 
 class ActivityTimerScreen extends StatelessWidget {
   const ActivityTimerScreen({super.key});
@@ -17,7 +19,7 @@ class ActivityTimerScreen extends StatelessWidget {
             child: Column(
               children: [
                 Spacers.largeVertical,
-                _timerSection(),
+                _timerSection(context),
                 Spacers.largeVertical,
                 _recentsSection(),
               ],
@@ -28,7 +30,7 @@ class ActivityTimerScreen extends StatelessWidget {
     );
   }
 
-  Widget _timerSection() {
+  Widget _timerSection(BuildContext context) {
     return Column(
       children: [
         const Row(
@@ -56,7 +58,9 @@ class ActivityTimerScreen extends StatelessWidget {
         Spacers.smallVertical,
         CustomButton(
           title: 'Start Focus',
-          onPressed: () {},
+          onPressed: () => context.pushNamed(
+            RoutesName.timerStart,
+          ),
         ),
       ],
     );

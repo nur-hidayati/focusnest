@@ -9,6 +9,7 @@ class CustomText extends StatelessWidget {
   final double fontSize;
   final Color color;
   final FontWeight fontWeight;
+  final double? letterSpacing;
 
   const CustomText({
     required this.title,
@@ -19,6 +20,7 @@ class CustomText extends StatelessWidget {
     this.fontSize = 16.0,
     this.color = Colors.black,
     this.fontWeight = FontWeight.normal,
+    this.letterSpacing,
     super.key,
   });
 
@@ -45,10 +47,12 @@ class CustomText extends StatelessWidget {
             .copyWith(color: Colors.grey.shade700);
         break;
       default:
-        style = Theme.of(context)
-            .textTheme
-            .bodyLarge!
-            .copyWith(color: color, fontSize: fontSize, fontWeight: fontWeight);
+        style = Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: color,
+              fontSize: fontSize,
+              fontWeight: fontWeight,
+              letterSpacing: letterSpacing,
+            );
     }
 
     return Text(
