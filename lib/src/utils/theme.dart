@@ -16,6 +16,13 @@ ThemeData appTheme() {
       secondary: AppColor.secondaryColor,
       brightness: Brightness.light,
     ),
+    dividerTheme: const DividerThemeData(
+      color: AppColor.lightGrey,
+      thickness: 0.5,
+    ),
+    iconTheme: const IconThemeData(
+      color: AppColor.greyColor,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColor.inputColor,
