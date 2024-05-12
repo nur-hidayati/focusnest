@@ -79,6 +79,21 @@ android {
     }
 }
 
+task switchGoogleServicesFile(type: Copy) {
+    def flavor = gradle.startParameter.taskNames.find {
+        it.contains("Prod")
+    } ? "prod" : gradle.startParameter.taskNames.find {
+        it.contains("Stg")
+    } ? "stg" : "dev"
+
+    from "src/$flavor/google-services.json"
+    into "app"
+    rename {
+        "google-services.json"
+    }
+}
+preBuild.dependsOn(switchGoogleServicesFile)
+
 flutter {
     source '../..'
 }

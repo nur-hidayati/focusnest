@@ -170,6 +170,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
           Spacers.largeVertical,
           CustomButton(
             title: _formType.title,
+            isFullWidth: true,
             onPressed: isLoading ? null : () => _submitAuth(),
           ),
         ],

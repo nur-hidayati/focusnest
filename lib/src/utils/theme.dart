@@ -9,12 +9,18 @@ ThemeData appTheme() {
       systemOverlayStyle: SystemUiOverlayStyle.dark,
       backgroundColor: Colors.transparent,
     ),
-    canvasColor: Colors.white,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColor.primaryColor,
       primary: AppColor.primaryColor,
       secondary: AppColor.secondaryColor,
       brightness: Brightness.light,
+    ),
+    dividerTheme: const DividerThemeData(
+      color: AppColor.lightGrey,
+      thickness: 0.5,
+    ),
+    iconTheme: const IconThemeData(
+      color: AppColor.greyColor,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
