@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
-import 'package:focusnest/src/features/authentication/presentation/auth_screen.dart';
+import 'package:focusnest/src/constants/strings.dart';
+import 'package:focusnest/src/routing/app_router.dart';
 import 'package:focusnest/src/utils/theme.dart';
 
-class App extends StatelessWidget {
+class App extends ConsumerWidget {
   final String flavor;
 
   const App({
@@ -13,21 +13,18 @@ class App extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ProviderScope(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusManager.instance.primaryFocus?.unfocus();
-        },
-        child: MaterialApp(
-          title: 'FocusNest',
-          debugShowCheckedModeBanner: false,
-          home: const AuthScreen(
-            formType: AuthFormType.register,
-          ),
-          theme: appTheme(),
-        ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goRouter = ref.watch(goRouterProvider);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: MaterialApp.router(
+        routerConfig: goRouter,
+        theme: appTheme(),
+        title: Strings.appName,
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
