@@ -9,7 +9,6 @@ ThemeData appTheme() {
       systemOverlayStyle: SystemUiOverlayStyle.dark,
       backgroundColor: Colors.transparent,
     ),
-    canvasColor: Colors.white,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColor.primaryColor,
       primary: AppColor.primaryColor,
