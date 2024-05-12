@@ -9,9 +9,11 @@ jobs:
   build-and-test:
     runs-on: macos-latest
     steps:
+      # Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Setup Java Environment
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
@@ -19,12 +21,14 @@ jobs:
           java-version: "12"
           cache: "gradle"
 
+      # Setup Flutter Environment
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.19.6"
           cache: true
 
+      # Cache Flutter Dependencies
       - name: Cache Flutter dependencies
         uses: actions/cache@v2
         with:
@@ -34,9 +38,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-
 
+      # Fetch Flutter Dependencies
       - name: Get dependencies
         run: flutter pub get
 
+      # Setup Environment Variables from GitHub Secrets
       - name: Set Environment Variables
         run: |
           echo "FIREBASE_API_KEY=${{ secrets.DEV_ANDROID_API_KEY }}" >> $GITHUB_ENV
@@ -47,22 +53,28 @@ jobs:
           echo "FIREBASE_AUTH_DOMAIN=${{ secrets.DEV_WEB_AUTH_DOMAIN }}" >> $GITHUB_ENV
           echo "IOS_BUNDLE_ID=${{ secrets.DEV_IOS_BUNDLE_ID }}" >> $GITHUB_ENV
 
+      # Decode GoogleService-Info.plist for iOS
       - name: Decode GoogleService-Info.plist
         run: |
           echo "${{ secrets.DEV_GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > ./ios/Runner/GoogleService-Info.plist
 
+      # Decode google-services.json for Android
       - name: Decode google-services.json
         run: |
-          echo "${{ secrets.DEV_GOOGLE_SERVICES_JSON }}" | base64 --decode > ./android/app/google-services.json
+          echo "${{ secrets.DEV_GOOGLE_SERVICES_JSON }}" | base64 --decode > ./projects/focusnest/android/app/src/development/google-services.json
 
+      # Generate Firebase Options based on Environment
       - name: Generate Firebase Options
         run: dart tool/generate_firebase_options_dev.dart
 
+      # Run Flutter Tests
       - name: Run tests
         run: flutter test
 
+      # Build Debug APK for Android
       - name: Build Debug APK
         run: flutter build apk --debug --target=lib/main_development.dart
 
+      # Build Debug iOS App
       - name: Build Debug iOS App
         run: flutter build ios --debug --no-codesign --target=lib/main_development.dart
