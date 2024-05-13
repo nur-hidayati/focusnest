@@ -97,9 +97,19 @@ GoRouter goRouter(GoRouterRef ref) {
                     path: 'timer-start',
                     parentNavigatorKey: _rootNavigatorKey,
                     name: RoutesName.timerStart,
-                    pageBuilder: (context, state) => const NoTransitionPage(
-                      child: TimerStartScreen(),
-                    ),
+                    pageBuilder: (context, state) {
+                      final durationInSeconds = int.tryParse(
+                              state.uri.queryParameters['duration'] ?? '0') ??
+                          0;
+                      final duration = Duration(seconds: durationInSeconds);
+                      final label = state.uri.queryParameters['label']!;
+                      return NoTransitionPage(
+                        child: TimerStartScreen(
+                          duration: duration,
+                          label: label,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
