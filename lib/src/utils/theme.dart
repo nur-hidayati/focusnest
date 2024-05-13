@@ -22,6 +22,7 @@ ThemeData appTheme() {
     iconTheme: const IconThemeData(
       color: AppColor.greyColor,
     ),
+    bottomSheetTheme: const BottomSheetThemeData(backgroundColor: Colors.white),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColor.inputColor,
