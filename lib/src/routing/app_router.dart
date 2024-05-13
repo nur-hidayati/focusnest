@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/activity_calendar_screen.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/activity_timer_screen.dart';
+import 'package:focusnest/src/features/activity_timer/presentation/timer_done_screen.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/timer_start_screen.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
@@ -95,8 +96,8 @@ GoRouter goRouter(GoRouterRef ref) {
                 routes: [
                   GoRoute(
                     path: 'timer-start',
-                    parentNavigatorKey: _rootNavigatorKey,
                     name: RoutesName.timerStart,
+                    parentNavigatorKey: _rootNavigatorKey,
                     pageBuilder: (context, state) {
                       final durationInSeconds = int.tryParse(
                               state.uri.queryParameters['duration'] ?? '0') ??
@@ -110,6 +111,25 @@ GoRouter goRouter(GoRouterRef ref) {
                         ),
                       );
                     },
+                    routes: [
+                      GoRoute(
+                        path: 'timer-done',
+                        name: RoutesName.timerDone,
+                        parentNavigatorKey: _rootNavigatorKey,
+                        pageBuilder: (context, state) {
+                          final durationInSeconds = int.tryParse(
+                                  state.uri.queryParameters['duration'] ??
+                                      '0') ??
+                              0;
+                          final duration = Duration(seconds: durationInSeconds);
+                          return NoTransitionPage(
+                            child: TimerDoneScreen(
+                              duration: duration,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
