@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
-import 'package:focusnest/src/constants/routes_name.dart';
+import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/spacers.dart';
-import 'package:go_router/go_router.dart';
+import 'package:focusnest/src/features/activity_timer/presentation/timer_section.dart';
 
-class ActivityTimerScreen extends StatelessWidget {
+class ActivityTimerScreen extends StatefulWidget {
   const ActivityTimerScreen({super.key});
 
+  @override
+  State<ActivityTimerScreen> createState() => _ActivityTimerScreenState();
+}
+
+class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          padding: AppPadding.noBottomPadding,
           child: SingleChildScrollView(
             child: Column(
               children: [
                 Spacers.largeVertical,
-                _timerSection(context),
+                const TimerSection(),
                 Spacers.largeVertical,
                 _recentsSection(),
               ],
@@ -27,42 +31,6 @@ class ActivityTimerScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _timerSection(BuildContext context) {
-    return Column(
-      children: [
-        const Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: CustomText(
-                title: 'Study',
-                textType: TextType.titleLarge,
-                color: AppColor.primaryColor,
-              ),
-            ),
-            Spacers.extraSmallHorizontal,
-            Icon(Icons.navigate_next)
-          ],
-        ),
-        Spacers.smallVertical,
-        const CustomText(
-          title: '15 : 00',
-          fontSize: 60,
-          fontWeight: FontWeight.bold,
-          color: AppColor.greyColor,
-        ),
-        Spacers.smallVertical,
-        CustomButton(
-          title: 'Start Focus',
-          onPressed: () => context.pushNamed(
-            RoutesName.timerStart,
-          ),
-        ),
-      ],
     );
   }
 
@@ -84,23 +52,24 @@ class ActivityTimerScreen extends StatelessWidget {
           separatorBuilder: (context, index) => const Divider(),
           itemCount: 10,
           itemBuilder: (context, index) => ListTile(
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-              title: const CustomText(
-                title: '1:00:00',
-                textType: TextType.title,
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            title: const CustomText(
+              title: '1:00:00',
+              textType: TextType.title,
+            ),
+            subtitle: const CustomText(
+              title: 'Working on a work',
+            ),
+            trailing: IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.play_circle_outline,
+                size: 40,
+                color: AppColor.primaryColor,
               ),
-              subtitle: const CustomText(
-                title: 'Working on a work',
-              ),
-              trailing: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.play_circle_outline,
-                  size: 40,
-                  color: AppColor.primaryColor,
-                ),
-              )),
+            ),
+          ),
         ),
       ],
     );

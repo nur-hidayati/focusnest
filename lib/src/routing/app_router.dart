@@ -46,7 +46,7 @@ GoRouter goRouter(GoRouterRef ref) {
       final path = state.uri.path;
       if (isLoggedIn) {
         if (path.startsWith(authPath)) {
-          return activityTimerPath;
+          return activityCalendarPath;
         }
       } else {
         if (path.startsWith(activityTimerPath) ||
@@ -87,21 +87,22 @@ GoRouter goRouter(GoRouterRef ref) {
             navigatorKey: _activityTimerNavigatorKey,
             routes: [
               GoRoute(
-                  path: activityTimerPath,
-                  name: RoutesName.activityTimer,
-                  pageBuilder: (context, state) => const NoTransitionPage(
-                        child: ActivityTimerScreen(),
-                      ),
-                  routes: [
-                    GoRoute(
-                      path: 'timer-start',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      name: RoutesName.timerStart,
-                      pageBuilder: (context, state) => const NoTransitionPage(
-                        child: TimerStartScreen(),
-                      ),
+                path: activityTimerPath,
+                name: RoutesName.activityTimer,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: ActivityTimerScreen(),
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'timer-start',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    name: RoutesName.timerStart,
+                    pageBuilder: (context, state) => const NoTransitionPage(
+                      child: TimerStartScreen(),
                     ),
-                  ]),
+                  ),
+                ],
+              ),
             ],
           ),
           StatefulShellBranch(

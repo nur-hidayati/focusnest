@@ -66,3 +66,17 @@ Future<void> showNotImplementedAlertDialog({required BuildContext context}) =>
       context: context,
       title: 'Not implemented',
     );
+
+Future<void> showOKAlert({
+  required BuildContext context,
+  required String title,
+  required String content,
+}) {
+  return showAlertDialog(
+    context: context,
+    title: title,
+    content: content,
+    isCancelAction: false,
+    defaultActionText: 'OK',
+  );
+}

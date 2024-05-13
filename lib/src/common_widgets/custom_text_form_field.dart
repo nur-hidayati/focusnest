@@ -79,6 +79,7 @@ class CustomTextFormField extends StatelessWidget {
               counterText: '',
               errorText: errorText,
             ),
+            maxLength: maxLength,
             keyboardType: keyboardType,
             inputFormatters: inputFormatters,
             onChanged: onChanged,
