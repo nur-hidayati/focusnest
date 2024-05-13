@@ -56,6 +56,12 @@ dependencies:
   # routing
   go_router: ^14.1.0
 
+  # drift
+  drift: ^2.18.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.0.0
+  path: ^1.9.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -65,6 +71,7 @@ dev_dependencies:
   freezed: ^2.5.2
   json_serializable: ^6.8.0
   riverpod_generator: ^2.4.0
+  drift_dev: ^2.18.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
