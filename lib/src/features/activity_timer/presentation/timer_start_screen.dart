@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
+import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
@@ -53,6 +54,12 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
         });
       } else {
         _timer?.cancel();
+        context.pushNamed(
+          RoutesName.timerDone,
+          queryParameters: {
+            'duration': widget.duration.inSeconds.toString(),
+          },
+        );
       }
     });
   }
@@ -78,7 +85,15 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
     );
 
     if (confirmAddActivity == true) {
-      // Add to database
+      // TODO: Remove this later
+      if (mounted) {
+        context.pushNamed(
+          RoutesName.timerDone,
+          queryParameters: {
+            'duration': widget.duration.inSeconds.toString(),
+          },
+        );
+      }
     } else {
       if (mounted) context.pop();
     }
@@ -101,7 +116,7 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
               ),
               Spacers.extraLargeVertical,
               CustomText(
-                title: formatDuration(_remainingDuration),
+                title: formatDurationToHms(_remainingDuration),
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2.0,

@@ -155,7 +155,7 @@ class _TimerSectionState extends State<TimerSection> {
         GestureDetector(
           onTap: () => _showDurationPicker(context),
           child: CustomText(
-            title: formatDuration(_duration),
+            title: formatDurationToHms(_duration),
             fontSize: 60,
             fontWeight: FontWeight.bold,
             color: AppColor.greyColor,
