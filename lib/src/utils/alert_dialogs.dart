@@ -11,9 +11,10 @@ Future<bool?> showAlertDialog({
   required String title,
   String? content,
   String defaultActionText = 'Yes',
+  bool isNoAsCancel = false,
   bool isCancelAction = true,
 }) async {
-  String cancelActionText = 'Cancel';
+  String cancelActionText = !isNoAsCancel ? 'Cancel' : 'No';
   return showDialog(
     context: context,
     barrierDismissible: isCancelAction,
