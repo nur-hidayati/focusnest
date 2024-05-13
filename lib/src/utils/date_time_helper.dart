@@ -1,4 +1,4 @@
-String formatDuration(Duration duration) {
+String formatDurationToHms(Duration duration) {
   String twoDigits(int n) => n.toString().padLeft(2, '0');
   String hours = twoDigits(duration.inHours);
   String minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -9,4 +9,21 @@ String formatDuration(Duration duration) {
   } else {
     return '$minutes:$seconds';
   }
+}
+
+String formatSecondsToReadable(Duration duration) {
+  String formattedTime = "";
+
+  if (duration.inHours > 0) {
+    formattedTime +=
+        '${duration.inHours} ${duration.inHours == 1 ? 'hour' : 'hours'}';
+  }
+  int remainingMinutes = duration.inMinutes.remainder(60);
+  if (remainingMinutes > 0) {
+    if (formattedTime.isNotEmpty) formattedTime += ' ';
+    formattedTime +=
+        '$remainingMinutes ${remainingMinutes == 1 ? 'minute' : 'minutes'}';
+  }
+
+  return formattedTime;
 }
