@@ -6,4 +6,5 @@ class RoutesName {
   // Timer
   static const String activityTimer = 'activityTimer';
   static const String timerStart = 'timerStart';
+  static const String timerDone = 'timerDone';
 }
