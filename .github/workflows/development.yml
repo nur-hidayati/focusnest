@@ -56,12 +56,12 @@ jobs:
       # Decode GoogleService-Info.plist for iOS
       - name: Decode GoogleService-Info.plist
         run: |
-          echo "${{ secrets.DEV_GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > ./ios/Runner/GoogleService-Info.plist
+          echo "${{ secrets.DEV_GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > ./ios/config/development/GoogleService-Info.plist
 
       # Decode google-services.json for Android
       - name: Decode google-services.json
         run: |
-          echo "${{ secrets.DEV_GOOGLE_SERVICES_JSON }}" | base64 --decode > ./projects/focusnest/android/app/src/development/google-services.json
+          echo "${{ secrets.DEV_GOOGLE_SERVICES_JSON }}" | base64 --decode >  ./android/app/src/development/google-services.json
 
       # Generate Firebase Options based on Environment
       - name: Generate Firebase Options

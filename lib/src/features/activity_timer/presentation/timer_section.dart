@@ -166,6 +166,10 @@ class _TimerSectionState extends State<TimerSection> {
           title: 'Start Focus',
           onPressed: () => context.pushNamed(
             RoutesName.timerStart,
+            queryParameters: {
+              'duration': _duration.inSeconds.toString(),
+              'label': _activityLabel,
+            },
           ),
         ),
       ],

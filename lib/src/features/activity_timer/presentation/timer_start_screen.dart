@@ -1,12 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/utils/alert_dialogs.dart';
+import 'package:focusnest/src/utils/date_time_helper.dart';
+import 'package:go_router/go_router.dart';
 
 class TimerStartScreen extends StatefulWidget {
-  const TimerStartScreen({super.key});
+  final Duration duration;
+  final String label;
+
+  const TimerStartScreen({
+    required this.duration,
+    required this.label,
+    super.key,
+  });
 
   @override
   State<TimerStartScreen> createState() => _TimerStartScreenState();
@@ -14,17 +26,62 @@ class TimerStartScreen extends StatefulWidget {
 
 class _TimerStartScreenState extends State<TimerStartScreen> {
   bool isPaused = false;
+  Timer? _timer;
+  late Duration _remainingDuration;
 
   @override
   void initState() {
     super.initState();
+    _remainingDuration = widget.duration;
+    _startTimer();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
+  }
+
+  void _startTimer() {
+    if (_timer != null) return;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingDuration.inSeconds > 0) {
+        setState(() {
+          _remainingDuration = _remainingDuration - const Duration(seconds: 1);
+        });
+      } else {
+        _timer?.cancel();
+      }
+    });
+  }
+
+  void _pauseTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  void _resumeTimer() {
+    if (_timer == null) {
+      _startTimer();
+    }
+  }
+
+  void _stopTimer() async {
+    bool? confirmAddActivity = await showAlertDialog(
+      context: context,
+      title: 'Activity Incomplete',
+      content:
+          'Would you like to add this incomplete activity to your calendar?',
+      isNoAsCancel: true,
+    );
+
+    if (confirmAddActivity == true) {
+      // Add to database
+    } else {
+      if (mounted) context.pop();
+    }
   }
 
   @override
@@ -38,13 +95,13 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
           padding: EdgeInsets.fromLTRB(20, topPadding, 20, 0),
           child: Column(
             children: [
-              const CustomText(
-                title: 'Study',
+              CustomText(
+                title: widget.label,
                 textType: TextType.titleLarge,
               ),
               Spacers.extraLargeVertical,
-              const CustomText(
-                title: '15:00:00',
+              CustomText(
+                title: formatDuration(_remainingDuration),
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2.0,
@@ -68,6 +125,7 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
               onPressed: () {
                 setState(() {
                   isPaused = true;
+                  _pauseTimer();
                 });
               },
             ),
@@ -81,7 +139,10 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
                   child: CustomButton(
                     title: 'Resume',
                     onPressed: () {
-                      setState(() => isPaused = false);
+                      setState(() {
+                        isPaused = false;
+                        _resumeTimer();
+                      });
                     },
                   ),
                 ),
@@ -89,7 +150,7 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
                 Expanded(
                   child: CustomButton(
                     title: 'Stop',
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: _stopTimer,
                   ),
                 ),
               ],
