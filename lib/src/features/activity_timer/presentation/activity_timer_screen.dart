@@ -71,7 +71,32 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
       useRootNavigator: true,
       isDismissible: false,
       builder: (BuildContext context) {
-        return _updateLabelBottomSheet();
+        return SingleChildScrollView(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BottomSheetHeader(
+                title: 'Activity Label',
+                onDone: () {},
+                onCancel: () => Navigator.of(context).pop(),
+              ),
+              Padding(
+                padding: AppPadding.screenPadding,
+                child: Column(
+                  children: [
+                    CustomTextFormField(
+                      controller: _activityLabelController,
+                      hintText: 'Activity Label',
+                    ),
+                  ],
+                ),
+              ),
+              Spacers.extraLargeVertical
+            ],
+          ),
+        );
       },
     );
   }
@@ -177,35 +202,6 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _updateLabelBottomSheet() {
-    return SingleChildScrollView(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomSheetHeader(
-            title: 'Activity Label',
-            onDone: () {},
-            onCancel: () => Navigator.of(context).pop(),
-          ),
-          Padding(
-            padding: AppPadding.screenPadding,
-            child: Column(
-              children: [
-                CustomTextFormField(
-                  controller: _activityLabelController,
-                  hintText: 'Activity Label',
-                ),
-              ],
-            ),
-          ),
-          Spacers.extraLargeVertical
-        ],
-      ),
     );
   }
 }
