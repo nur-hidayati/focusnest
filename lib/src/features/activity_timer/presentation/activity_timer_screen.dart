@@ -69,9 +69,10 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
+      isDismissible: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
+            builder: (BuildContext context, StateSetter setStateModal) {
           return SingleChildScrollView(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -82,13 +83,17 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                   title: 'Activity Label',
                   onDone: _activityLabelController.text.isNotEmpty
                       ? () {
-                          setState(() {
+                          setStateModal(() {
                             _activityLabel = _activityLabelController.text;
                             context.pop();
                           });
+                          setState(() {});
                         }
                       : null, // Disable the done button if the label is empty
-                  onCancel: () => Navigator.of(context).pop(),
+                  onCancel: () {
+                    _activityLabelController.clear();
+                    context.pop();
+                  },
                 ),
                 Padding(
                   padding: AppPadding.screenPadding,
