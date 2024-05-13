@@ -5,11 +5,11 @@ import 'package:focusnest/src/common_widgets/link_text_button.dart';
 class BottomSheetHeader extends StatelessWidget {
   final String title;
   final VoidCallback onCancel;
-  final VoidCallback onDone;
+  final VoidCallback? onDone;
 
   const BottomSheetHeader({
     required this.title,
-    required this.onDone,
+    this.onDone,
     required this.onCancel,
     super.key,
   });

@@ -22,6 +22,7 @@ class ActivityTimerScreen extends StatefulWidget {
 class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
   Duration _duration = const Duration(minutes: 15);
   Duration? _tempDuration;
+  String _activityLabel = 'Study';
   final TextEditingController _activityLabelController =
       TextEditingController();
 
@@ -53,7 +54,6 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
-      isDismissible: false,
       builder: (BuildContext builder) {
         return DurationPicker(
           duration: _duration,
@@ -69,34 +69,47 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
-      isDismissible: false,
       builder: (BuildContext context) {
-        return SingleChildScrollView(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BottomSheetHeader(
-                title: 'Activity Label',
-                onDone: () {},
-                onCancel: () => Navigator.of(context).pop(),
-              ),
-              Padding(
-                padding: AppPadding.screenPadding,
-                child: Column(
-                  children: [
-                    CustomTextFormField(
-                      controller: _activityLabelController,
-                      hintText: 'Activity Label',
-                    ),
-                  ],
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return SingleChildScrollView(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BottomSheetHeader(
+                  title: 'Activity Label',
+                  onDone: _activityLabelController.text.isNotEmpty
+                      ? () {
+                          setState(() {
+                            _activityLabel = _activityLabelController.text;
+                            context.pop();
+                          });
+                        }
+                      : null, // Disable the done button if the label is empty
+                  onCancel: () => Navigator.of(context).pop(),
                 ),
-              ),
-              Spacers.extraLargeVertical
-            ],
-          ),
-        );
+                Padding(
+                  padding: AppPadding.screenPadding,
+                  child: Column(
+                    children: [
+                      CustomTextFormField(
+                        controller: _activityLabelController,
+                        hintText: 'Activity Label',
+                        onChanged: (value) {
+                          // Trigger the UI update for the Done button
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Spacers.extraLargeVertical
+              ],
+            ),
+          );
+        });
       },
     );
   }
@@ -132,8 +145,8 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
             Flexible(
               child: GestureDetector(
                 onTap: () => _showUpdateLabel(context),
-                child: const CustomText(
-                  title: 'Study',
+                child: CustomText(
+                  title: _activityLabel,
                   textType: TextType.titleLarge,
                   color: AppColor.primaryColor,
                 ),
