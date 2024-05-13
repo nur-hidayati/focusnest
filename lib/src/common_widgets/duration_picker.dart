@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:focusnest/src/common_widgets/custom_text.dart';
-import 'package:focusnest/src/common_widgets/link_text_button.dart';
+import 'package:focusnest/src/common_widgets/bottom_sheet_header.dart';
 
 class DurationPicker extends StatelessWidget {
   final Duration duration;
@@ -23,25 +22,10 @@ class DurationPicker extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  LinkTextButton(
-                    title: 'Cancel',
-                    onPressed: onCancel,
-                  ),
-                  const CustomText(
-                    title: 'Select Duration',
-                    fontWeight: FontWeight.bold,
-                  ),
-                  LinkTextButton(
-                    title: 'Done',
-                    onPressed: onDone,
-                  ),
-                ],
-              ),
+            BottomSheetHeader(
+              title: 'Select Duration',
+              onDone: onDone,
+              onCancel: onCancel,
             ),
             Expanded(
               child: CupertinoTimerPicker(
