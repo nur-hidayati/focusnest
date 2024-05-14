@@ -41,10 +41,10 @@ class ActivityCalendarScreen extends StatelessWidget {
               final activity = activities[index];
               return ListTile(
                 title: Text(activity.activityLabel),
-                subtitle:
-                    Text('Duration: ${activity.durationInSeconds} seconds\n'
-                        'Start: ${activity.startDateTime}\n'
-                        'End: ${activity.endDateTime}'),
+                subtitle: Text(
+                    'Duration: ${activity.actualDurationInSeconds} seconds\n'
+                    'Start: ${activity.startDateTime}\n'
+                    'End: ${activity.endDateTime}'),
               );
             },
           );

@@ -18,7 +18,8 @@ final _uuid = Uuid();
 class ActivityTimers extends Table {
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
   TextColumn get activityLabel => text()();
-  IntColumn get durationInSeconds => integer()();
+  IntColumn get actualDurationInSeconds => integer()();
+  IntColumn get targetedDurationInSeconds => integer()();
   DateTimeColumn get startDateTime => dateTime()();
   DateTimeColumn get endDateTime => dateTime()();
   DateTimeColumn get createdDate => dateTime()();
