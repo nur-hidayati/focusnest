@@ -102,14 +102,16 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
 
   Future<void> _addActivityToDatabase() async {
     final endDateTime = DateTime.now();
+    final targetedDurationInSeconds = widget.duration.inSeconds;
     final durationInSeconds =
-        widget.duration.inSeconds - _remainingDuration.inSeconds;
+        targetedDurationInSeconds - _remainingDuration.inSeconds;
     final dao = ActivityTimerDatabase().activityTimersDao;
 
     final newActivity = ActivityTimersCompanion(
       id: drift.Value(_uuid.v4()),
       activityLabel: drift.Value(widget.label),
-      durationInSeconds: drift.Value(durationInSeconds),
+      actualDurationInSeconds: drift.Value(durationInSeconds),
+      targetedDurationInSeconds: drift.Value(targetedDurationInSeconds),
       startDateTime: drift.Value(_startDateTime),
       endDateTime: drift.Value(endDateTime),
       createdDate: drift.Value(DateTime.now()),
