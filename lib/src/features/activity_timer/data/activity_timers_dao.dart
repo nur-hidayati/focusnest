@@ -21,6 +21,16 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
         .watchSingleOrNull();
   }
 
+  Stream<List<ActivityTimer>> watchLast10ActivityTimers() {
+    return (select(activityTimers)
+          ..orderBy([
+            (t) =>
+                OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc)
+          ])
+          ..limit(10))
+        .watch();
+  }
+
   // Insert a new activity timer
   Future<int> insertActivityTimer(ActivityTimersCompanion entry) {
     return into(activityTimers).insert(entry);
