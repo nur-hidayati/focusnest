@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
@@ -7,9 +8,11 @@ import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 class TimerStartScreen extends StatefulWidget {
   final Duration duration;
@@ -29,11 +32,15 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
   bool isPaused = false;
   Timer? _timer;
   late Duration _remainingDuration;
+  late DateTime _startDateTime;
+  // ignore: prefer_const_constructors
+  final _uuid = Uuid();
 
   @override
   void initState() {
     super.initState();
     _remainingDuration = widget.duration;
+    _startDateTime = DateTime.now();
     _startTimer();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
@@ -54,12 +61,15 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
         });
       } else {
         _timer?.cancel();
-        context.pushNamed(
-          RoutesName.timerDone,
-          queryParameters: {
-            'duration': widget.duration.inSeconds.toString(),
-          },
-        );
+        _addActivityToDatabase();
+        if (mounted) {
+          context.pushNamed(
+            RoutesName.timerDone,
+            queryParameters: {
+              'duration': widget.duration.inSeconds.toString(),
+            },
+          );
+        }
       }
     });
   }
@@ -85,18 +95,27 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
     );
 
     if (confirmAddActivity == true) {
-      // TODO: Remove this later
-      if (mounted) {
-        context.pushNamed(
-          RoutesName.timerDone,
-          queryParameters: {
-            'duration': widget.duration.inSeconds.toString(),
-          },
-        );
-      }
-    } else {
-      if (mounted) context.pop();
+      _addActivityToDatabase();
     }
+    if (mounted) context.pop();
+  }
+
+  Future<void> _addActivityToDatabase() async {
+    final endDateTime = DateTime.now();
+    final durationInSeconds =
+        widget.duration.inSeconds - _remainingDuration.inSeconds;
+    final dao = ActivityTimerDatabase().activityTimersDao;
+
+    final newActivity = ActivityTimersCompanion(
+      id: drift.Value(_uuid.v4()),
+      activityLabel: drift.Value(widget.label),
+      durationInSeconds: drift.Value(durationInSeconds),
+      startDateTime: drift.Value(_startDateTime),
+      endDateTime: drift.Value(endDateTime),
+      createdDate: drift.Value(DateTime.now()),
+    );
+
+    await dao.insertActivityTimer(newActivity);
   }
 
   @override
