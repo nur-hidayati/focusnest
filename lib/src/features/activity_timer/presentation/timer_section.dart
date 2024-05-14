@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/bottom_sheet_header.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
@@ -8,24 +9,24 @@ import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/features/activity_timer/application/timer_service.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:go_router/go_router.dart';
 
-class TimerSection extends StatefulWidget {
+class TimerSection extends ConsumerStatefulWidget {
   const TimerSection({
     super.key,
   });
 
   @override
-  State<TimerSection> createState() => _TimerSectionState();
+  ConsumerState<TimerSection> createState() => _TimerSectionState();
 }
 
-class _TimerSectionState extends State<TimerSection> {
+class _TimerSectionState extends ConsumerState<TimerSection> {
   final _activityLabelController = TextEditingController();
   Duration _duration = const Duration(minutes: 15);
   Duration? _tempDuration;
-  String _activityLabel = 'Study';
 
   @override
   void dispose() {
@@ -64,6 +65,9 @@ class _TimerSectionState extends State<TimerSection> {
         setState(() {
           _duration = _tempDuration!;
           _tempDuration = null;
+          ref
+              .read(timerDurationProvider.notifier)
+              .updateTimerDuration(formatDurationToHms(_duration));
           context.pop();
         });
       }
@@ -91,7 +95,9 @@ class _TimerSectionState extends State<TimerSection> {
                   onDone: () {
                     if (_activityLabelController.text.isNotEmpty) {
                       setStateModal(() {
-                        _activityLabel = _activityLabelController.text;
+                        ref
+                            .read(activityLabelProvider.notifier)
+                            .updateActivityLabel(_activityLabelController.text);
                         context.pop();
                       });
                       setState(() {});
@@ -131,6 +137,9 @@ class _TimerSectionState extends State<TimerSection> {
 
   @override
   Widget build(BuildContext context) {
+    final activityLabel = ref.watch(activityLabelProvider);
+    final timerDuration = ref.watch(timerDurationProvider);
+
     return Column(
       children: [
         Row(
@@ -141,7 +150,7 @@ class _TimerSectionState extends State<TimerSection> {
               child: GestureDetector(
                 onTap: () => _showUpdateLabel(context),
                 child: CustomText(
-                  title: _activityLabel,
+                  title: activityLabel,
                   textType: TextType.titleLarge,
                   color: AppColor.primaryColor,
                 ),
@@ -155,7 +164,7 @@ class _TimerSectionState extends State<TimerSection> {
         GestureDetector(
           onTap: () => _showDurationPicker(context),
           child: CustomText(
-            title: formatDurationToHms(_duration),
+            title: timerDuration,
             fontSize: 60,
             fontWeight: FontWeight.bold,
             color: AppColor.greyColor,
@@ -168,7 +177,7 @@ class _TimerSectionState extends State<TimerSection> {
             RoutesName.timerStart,
             queryParameters: {
               'duration': _duration.inSeconds.toString(),
-              'label': _activityLabel,
+              'label': activityLabel,
             },
           ),
         ),
