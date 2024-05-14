@@ -16,7 +16,7 @@ ThemeData appTheme() {
       brightness: Brightness.light,
     ),
     dividerTheme: const DividerThemeData(
-      color: AppColor.lightGrey,
+      color: AppColor.lightGreyColor,
       thickness: 0.5,
     ),
     iconTheme: const IconThemeData(
