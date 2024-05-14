@@ -3,9 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Define keys for SharedPreferences
 const String activityLabelKey = 'activityLabel';
-const String timerDurationKey = 'timerDuration';
+const String timerDurationKey = 'timerDurationInSeconds';
 const String initialActivityLabelValue = 'Work';
-const String initialTimerDurationValue = '15:00';
+const Duration initialTimerDurationValue = Duration(minutes: 15);
 
 // Providers for activity label and timer duration
 final activityLabelProvider =
@@ -14,9 +14,11 @@ final activityLabelProvider =
 });
 
 final timerDurationProvider =
-    StateNotifierProvider<TimerDurationNotifier, String>((ref) {
+    StateNotifierProvider<TimerDurationNotifier, Duration>((ref) {
   return TimerDurationNotifier();
 });
+
+final tempDurationProvider = StateProvider<Duration?>((ref) => null);
 
 // StateNotifier for activity label
 class ActivityLabelNotifier extends StateNotifier<String> {
@@ -37,19 +39,24 @@ class ActivityLabelNotifier extends StateNotifier<String> {
 }
 
 // StateNotifier for timer duration
-class TimerDurationNotifier extends StateNotifier<String> {
+class TimerDurationNotifier extends StateNotifier<Duration> {
   TimerDurationNotifier() : super(initialTimerDurationValue) {
     _loadTimerDuration();
   }
 
   void _loadTimerDuration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    state = prefs.getString(timerDurationKey) ?? initialTimerDurationValue;
+    final durationInSeconds = prefs.getInt(timerDurationKey);
+    if (durationInSeconds != null) {
+      state = Duration(seconds: durationInSeconds);
+    } else {
+      state = initialTimerDurationValue;
+    }
   }
 
-  void updateTimerDuration(String newDuration) async {
+  void updateTimerDuration(Duration newDuration) async {
     state = newDuration;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(timerDurationKey, newDuration);
+    await prefs.setInt(timerDurationKey, newDuration.inSeconds);
   }
 }
