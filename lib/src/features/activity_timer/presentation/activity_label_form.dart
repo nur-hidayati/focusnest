@@ -5,6 +5,7 @@ import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
+import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,8 +25,16 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
   void initState() {
     super.initState();
 
-    activityLabelController =
-        TextEditingController(text: ref.read(activityLabelProvider));
+    final authRepository = ref.read(authRepositoryProvider);
+    final userId = authRepository.currentUser?.uid;
+
+    if (userId != null) {
+      activityLabelController = TextEditingController(
+        text: ref.read(activityLabelProvider(userId)),
+      );
+    } else {
+      activityLabelController = TextEditingController();
+    }
   }
 
   @override
@@ -36,10 +45,21 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
 
   void _handleOnDoneActivityLabelUpdate() {
     if (activityLabelController.text.isNotEmpty) {
-      ref
-          .read(activityLabelProvider.notifier)
-          .updateActivityLabel(activityLabelController.text);
-      context.pop();
+      final authRepository = ref.read(authRepositoryProvider);
+      final userId = authRepository.currentUser?.uid;
+
+      if (userId != null) {
+        ref
+            .read(activityLabelProvider(userId).notifier)
+            .updateActivityLabel(activityLabelController.text);
+        context.pop();
+      } else {
+        showOKAlert(
+          context: context,
+          title: 'Error',
+          content: 'User not logged in',
+        );
+      }
     } else {
       showOKAlert(
         context: context,
