@@ -4,9 +4,9 @@ import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_providers.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/custom_calendar.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
-import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -33,7 +33,7 @@ class _ActivityCalendarScreenState
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
     final userId = authRepository.currentUser?.uid;
-    final dao = ref.watch(activityTimersDaoProvider);
+    final dao = ref.watch(activityCalendarDaoProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +49,7 @@ class _ActivityCalendarScreenState
                 ),
                 Expanded(
                   child: StreamBuilder<List<ActivityTimer>>(
-                    stream: dao.watchAllActivityTimers(userId),
+                    stream: dao.watchActivitiesForDate(userId, _selectedDate),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
@@ -72,36 +72,35 @@ class _ActivityCalendarScreenState
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    dense: true,
-                                    title: CustomText(
-                                      title: formatSecondsToReadable(Duration(
-                                          seconds: activity
-                                              .actualDurationInSeconds)),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    subtitle: CustomText(
-                                      title: activity.activityLabel,
-                                    ),
-                                    trailing: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        CustomText(
-                                          title: formatTime(
-                                              activity.startDateTime),
-                                          fontSize: 14,
-                                          color: AppColor.greyColor,
-                                        ),
-                                        Spacers.extraSmallVertical,
-                                        CustomText(
-                                          title:
-                                              formatTime(activity.endDateTime),
-                                          fontSize: 14,
-                                          color: AppColor.greyColor,
-                                        ),
-                                      ],
-                                    )),
+                                  contentPadding: EdgeInsets.zero,
+                                  dense: true,
+                                  title: CustomText(
+                                    title: formatSecondsToReadable(Duration(
+                                        seconds:
+                                            activity.actualDurationInSeconds)),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  subtitle: CustomText(
+                                    title: activity.activityLabel,
+                                  ),
+                                  trailing: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CustomText(
+                                        title:
+                                            formatTime(activity.startDateTime),
+                                        fontSize: 14,
+                                        color: AppColor.greyColor,
+                                      ),
+                                      Spacers.extraSmallVertical,
+                                      CustomText(
+                                        title: formatTime(activity.endDateTime),
+                                        fontSize: 14,
+                                        color: AppColor.greyColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           );
