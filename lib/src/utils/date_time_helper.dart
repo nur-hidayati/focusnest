@@ -1,3 +1,11 @@
+DateTime addDays(DateTime dateTime, int days) {
+  return dateTime.add(Duration(days: days));
+}
+
+DateTime subtractDays(DateTime dateTime, int days) {
+  return dateTime.subtract(Duration(days: days));
+}
+
 String formatDurationToHms(Duration duration) {
   String twoDigits(int n) => n.toString().padLeft(2, '0');
   String hours = twoDigits(duration.inHours);
