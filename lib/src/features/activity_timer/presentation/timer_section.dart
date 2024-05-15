@@ -4,12 +4,13 @@ import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/duration_picker.dart';
 import 'package:focusnest/src/constants/app_color.dart';
-import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/activity_label_form.dart';
+import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
+import 'package:focusnest/src/utils/navigation_helper.dart';
 import 'package:go_router/go_router.dart';
 
 class TimerSection extends ConsumerWidget {
@@ -19,7 +20,8 @@ class TimerSection extends ConsumerWidget {
     ref.read(tempDurationProvider.notifier).state = picked;
   }
 
-  void _handleOnDoneDurationPicker(BuildContext context, WidgetRef ref) {
+  void _handleOnDoneDurationPicker(
+      BuildContext context, WidgetRef ref, String userId) {
     final pickedDuration = ref.read(tempDurationProvider);
     if (pickedDuration != null) {
       if (pickedDuration.inMinutes == 0) {
@@ -30,7 +32,7 @@ class TimerSection extends ConsumerWidget {
         );
       } else {
         ref
-            .read(timerDurationProvider.notifier)
+            .read(timerDurationProvider(userId).notifier)
             .updateTimerDuration(pickedDuration);
         context.pop();
       }
@@ -39,8 +41,8 @@ class TimerSection extends ConsumerWidget {
     }
   }
 
-  void _showDurationPicker(
-      BuildContext context, WidgetRef ref, Duration currentDuration) {
+  void _showDurationPicker(BuildContext context, WidgetRef ref,
+      Duration currentDuration, String userId) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -48,7 +50,7 @@ class TimerSection extends ConsumerWidget {
         return DurationPicker(
           duration: currentDuration,
           onCancel: () => context.pop(),
-          onDone: () => _handleOnDoneDurationPicker(context, ref),
+          onDone: () => _handleOnDoneDurationPicker(context, ref, userId),
           onTimerDurationChanged: (Duration picked) =>
               _handleOnTimerDurationChanged(ref, picked),
         );
@@ -58,8 +60,15 @@ class TimerSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activityLabel = ref.watch(activityLabelProvider);
-    final timerDuration = ref.watch(timerDurationProvider);
+    final authRepository = ref.watch(authRepositoryProvider);
+    final userId = authRepository.currentUser?.uid;
+
+    if (userId == null) {
+      return Container();
+    }
+
+    final activityLabel = ref.watch(activityLabelProvider(userId));
+    final timerDuration = ref.watch(timerDurationProvider(userId));
 
     return Column(
       children: [
@@ -90,7 +99,7 @@ class TimerSection extends ConsumerWidget {
         ),
         Spacers.smallVertical,
         GestureDetector(
-          onTap: () => _showDurationPicker(context, ref, timerDuration),
+          onTap: () => _showDurationPicker(context, ref, timerDuration, userId),
           child: CustomText(
             title: formatDurationToHms(timerDuration),
             fontSize: 60,
@@ -101,12 +110,11 @@ class TimerSection extends ConsumerWidget {
         Spacers.smallVertical,
         CustomButton(
           title: 'Start Focus',
-          onPressed: () => context.pushNamed(
-            RoutesName.timerStart,
-            queryParameters: {
-              'duration': timerDuration.inSeconds.toString(),
-              'label': activityLabel,
-            },
+          onPressed: () => navigateToTimerStart(
+            context: context,
+            userId: userId,
+            activityLabel: activityLabel,
+            timerDuration: timerDuration,
           ),
         ),
       ],
