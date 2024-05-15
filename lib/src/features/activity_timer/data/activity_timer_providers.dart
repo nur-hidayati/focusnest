@@ -14,19 +14,21 @@ final activityTimersDaoProvider = Provider<ActivityTimersDao>((ref) {
 });
 
 final activityLabelProvider =
-    StateNotifierProvider<ActivityLabelNotifier, String>((ref) {
-  return ActivityLabelNotifier();
+    StateNotifierProvider.family<ActivityLabelNotifier, String, String>(
+        (ref, userId) {
+  return ActivityLabelNotifier(userId);
 });
 
 final timerDurationProvider =
-    StateNotifierProvider<TimerDurationNotifier, Duration>((ref) {
-  return TimerDurationNotifier();
+    StateNotifierProvider.family<TimerDurationNotifier, Duration, String>(
+        (ref, userId) {
+  return TimerDurationNotifier(userId);
 });
 
-final recentActivitiesProvider =
-    StateNotifierProvider<RecentActivitiesNotifier, List<ActivityTimer>>((ref) {
+final recentActivitiesProvider = StateNotifierProvider.family<
+    RecentActivitiesNotifier, List<ActivityTimer>, String>((ref, userId) {
   final dao = ref.watch(activityTimersDaoProvider);
-  return RecentActivitiesNotifier(dao);
+  return RecentActivitiesNotifier(dao, userId);
 });
 
 final tempDurationProvider = StateProvider<Duration?>((ref) => null);
