@@ -10,15 +10,18 @@ import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
+import 'package:focusnest/src/utils/app_logger.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 class TimerStartScreen extends StatefulWidget {
+  final String userId;
   final Duration duration;
   final String label;
 
   const TimerStartScreen({
+    required this.userId,
     required this.duration,
     required this.label,
     super.key,
@@ -101,21 +104,35 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
   }
 
   Future<void> _addActivityToDatabase() async {
-    final endDateTime = DateTime.now();
-    final durationInSeconds =
-        widget.duration.inSeconds - _remainingDuration.inSeconds;
-    final dao = ActivityTimerDatabase().activityTimersDao;
+    try {
+      final endDateTime = DateTime.now();
+      final targetedDurationInSeconds = widget.duration.inSeconds;
+      final durationInSeconds =
+          targetedDurationInSeconds - _remainingDuration.inSeconds;
+      final dao = ActivityTimerDatabase().activityTimersDao;
 
-    final newActivity = ActivityTimersCompanion(
-      id: drift.Value(_uuid.v4()),
-      activityLabel: drift.Value(widget.label),
-      durationInSeconds: drift.Value(durationInSeconds),
-      startDateTime: drift.Value(_startDateTime),
-      endDateTime: drift.Value(endDateTime),
-      createdDate: drift.Value(DateTime.now()),
-    );
+      final newActivity = ActivityTimersCompanion(
+        id: drift.Value(_uuid.v4()),
+        userId: drift.Value(widget.userId),
+        activityLabel: drift.Value(widget.label),
+        actualDurationInSeconds: drift.Value(durationInSeconds),
+        targetedDurationInSeconds: drift.Value(targetedDurationInSeconds),
+        startDateTime: drift.Value(_startDateTime),
+        endDateTime: drift.Value(endDateTime),
+        createdDate: drift.Value(DateTime.now()),
+      );
 
-    await dao.insertActivityTimer(newActivity);
+      await dao.insertActivityTimer(newActivity);
+    } catch (error) {
+      AppLogger.logError(error.toString());
+      if (mounted) {
+        showOKAlert(
+          context: context,
+          title: 'Error!',
+          content: 'Unable to add activity!',
+        );
+      }
+    }
   }
 
   @override

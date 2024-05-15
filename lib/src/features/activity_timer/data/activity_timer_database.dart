@@ -17,14 +17,21 @@ final _uuid = Uuid();
 
 class ActivityTimers extends Table {
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
+  TextColumn get userId => text()();
   TextColumn get activityLabel => text()();
-  IntColumn get durationInSeconds => integer()();
+  IntColumn get actualDurationInSeconds => integer()();
+  IntColumn get targetedDurationInSeconds => integer()();
   DateTimeColumn get startDateTime => dateTime()();
   DateTimeColumn get endDateTime => dateTime()();
   DateTimeColumn get createdDate => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+        {userId, id}
+      ];
 }
 
 @DriftDatabase(tables: [ActivityTimers], daos: [ActivityTimersDao])

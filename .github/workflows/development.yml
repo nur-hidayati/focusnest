@@ -73,8 +73,8 @@ jobs:
 
       # Build Debug APK for Android
       - name: Build Debug APK
-        run: flutter build apk --debug --target=lib/main_development.dart
+        run: flutter build apk --debug --flavor development --target=lib/main_development.dart
 
       # Build Debug iOS App
       - name: Build Debug iOS App
-        run: flutter build ios --debug --no-codesign --target=lib/main_development.dart
+        run: flutter build ios --debug --no-codesign --flavor development --target=lib/main_development.dart

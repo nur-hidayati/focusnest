@@ -16,18 +16,29 @@ class $ActivityTimersTable extends ActivityTimers
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       clientDefault: () => _uuid.v4());
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+      'user_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _activityLabelMeta =
       const VerificationMeta('activityLabel');
   @override
   late final GeneratedColumn<String> activityLabel = GeneratedColumn<String>(
       'activity_label', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _durationInSecondsMeta =
-      const VerificationMeta('durationInSeconds');
+  static const VerificationMeta _actualDurationInSecondsMeta =
+      const VerificationMeta('actualDurationInSeconds');
   @override
-  late final GeneratedColumn<int> durationInSeconds = GeneratedColumn<int>(
-      'duration_in_seconds', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<int> actualDurationInSeconds =
+      GeneratedColumn<int>('actual_duration_in_seconds', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _targetedDurationInSecondsMeta =
+      const VerificationMeta('targetedDurationInSeconds');
+  @override
+  late final GeneratedColumn<int> targetedDurationInSeconds =
+      GeneratedColumn<int>('targeted_duration_in_seconds', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _startDateTimeMeta =
       const VerificationMeta('startDateTime');
   @override
@@ -49,8 +60,10 @@ class $ActivityTimersTable extends ActivityTimers
   @override
   List<GeneratedColumn> get $columns => [
         id,
+        userId,
         activityLabel,
-        durationInSeconds,
+        actualDurationInSeconds,
+        targetedDurationInSeconds,
         startDateTime,
         endDateTime,
         createdDate
@@ -68,6 +81,12 @@ class $ActivityTimersTable extends ActivityTimers
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
     if (data.containsKey('activity_label')) {
       context.handle(
           _activityLabelMeta,
@@ -76,13 +95,23 @@ class $ActivityTimersTable extends ActivityTimers
     } else if (isInserting) {
       context.missing(_activityLabelMeta);
     }
-    if (data.containsKey('duration_in_seconds')) {
+    if (data.containsKey('actual_duration_in_seconds')) {
       context.handle(
-          _durationInSecondsMeta,
-          durationInSeconds.isAcceptableOrUnknown(
-              data['duration_in_seconds']!, _durationInSecondsMeta));
+          _actualDurationInSecondsMeta,
+          actualDurationInSeconds.isAcceptableOrUnknown(
+              data['actual_duration_in_seconds']!,
+              _actualDurationInSecondsMeta));
     } else if (isInserting) {
-      context.missing(_durationInSecondsMeta);
+      context.missing(_actualDurationInSecondsMeta);
+    }
+    if (data.containsKey('targeted_duration_in_seconds')) {
+      context.handle(
+          _targetedDurationInSecondsMeta,
+          targetedDurationInSeconds.isAcceptableOrUnknown(
+              data['targeted_duration_in_seconds']!,
+              _targetedDurationInSecondsMeta));
+    } else if (isInserting) {
+      context.missing(_targetedDurationInSecondsMeta);
     }
     if (data.containsKey('start_date_time')) {
       context.handle(
@@ -114,15 +143,25 @@ class $ActivityTimersTable extends ActivityTimers
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+        {userId, id},
+      ];
+  @override
   ActivityTimer map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ActivityTimer(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
       activityLabel: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}activity_label'])!,
-      durationInSeconds: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}duration_in_seconds'])!,
+      actualDurationInSeconds: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}actual_duration_in_seconds'])!,
+      targetedDurationInSeconds: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}targeted_duration_in_seconds'])!,
       startDateTime: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}start_date_time'])!,
       endDateTime: attachedDatabase.typeMapping.read(
@@ -140,15 +179,19 @@ class $ActivityTimersTable extends ActivityTimers
 
 class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
   final String id;
+  final String userId;
   final String activityLabel;
-  final int durationInSeconds;
+  final int actualDurationInSeconds;
+  final int targetedDurationInSeconds;
   final DateTime startDateTime;
   final DateTime endDateTime;
   final DateTime createdDate;
   const ActivityTimer(
       {required this.id,
+      required this.userId,
       required this.activityLabel,
-      required this.durationInSeconds,
+      required this.actualDurationInSeconds,
+      required this.targetedDurationInSeconds,
       required this.startDateTime,
       required this.endDateTime,
       required this.createdDate});
@@ -156,8 +199,11 @@ class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    map['user_id'] = Variable<String>(userId);
     map['activity_label'] = Variable<String>(activityLabel);
-    map['duration_in_seconds'] = Variable<int>(durationInSeconds);
+    map['actual_duration_in_seconds'] = Variable<int>(actualDurationInSeconds);
+    map['targeted_duration_in_seconds'] =
+        Variable<int>(targetedDurationInSeconds);
     map['start_date_time'] = Variable<DateTime>(startDateTime);
     map['end_date_time'] = Variable<DateTime>(endDateTime);
     map['created_date'] = Variable<DateTime>(createdDate);
@@ -167,8 +213,10 @@ class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
   ActivityTimersCompanion toCompanion(bool nullToAbsent) {
     return ActivityTimersCompanion(
       id: Value(id),
+      userId: Value(userId),
       activityLabel: Value(activityLabel),
-      durationInSeconds: Value(durationInSeconds),
+      actualDurationInSeconds: Value(actualDurationInSeconds),
+      targetedDurationInSeconds: Value(targetedDurationInSeconds),
       startDateTime: Value(startDateTime),
       endDateTime: Value(endDateTime),
       createdDate: Value(createdDate),
@@ -180,8 +228,12 @@ class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ActivityTimer(
       id: serializer.fromJson<String>(json['id']),
+      userId: serializer.fromJson<String>(json['userId']),
       activityLabel: serializer.fromJson<String>(json['activityLabel']),
-      durationInSeconds: serializer.fromJson<int>(json['durationInSeconds']),
+      actualDurationInSeconds:
+          serializer.fromJson<int>(json['actualDurationInSeconds']),
+      targetedDurationInSeconds:
+          serializer.fromJson<int>(json['targetedDurationInSeconds']),
       startDateTime: serializer.fromJson<DateTime>(json['startDateTime']),
       endDateTime: serializer.fromJson<DateTime>(json['endDateTime']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
@@ -192,8 +244,12 @@ class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'userId': serializer.toJson<String>(userId),
       'activityLabel': serializer.toJson<String>(activityLabel),
-      'durationInSeconds': serializer.toJson<int>(durationInSeconds),
+      'actualDurationInSeconds':
+          serializer.toJson<int>(actualDurationInSeconds),
+      'targetedDurationInSeconds':
+          serializer.toJson<int>(targetedDurationInSeconds),
       'startDateTime': serializer.toJson<DateTime>(startDateTime),
       'endDateTime': serializer.toJson<DateTime>(endDateTime),
       'createdDate': serializer.toJson<DateTime>(createdDate),
@@ -202,15 +258,21 @@ class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
 
   ActivityTimer copyWith(
           {String? id,
+          String? userId,
           String? activityLabel,
-          int? durationInSeconds,
+          int? actualDurationInSeconds,
+          int? targetedDurationInSeconds,
           DateTime? startDateTime,
           DateTime? endDateTime,
           DateTime? createdDate}) =>
       ActivityTimer(
         id: id ?? this.id,
+        userId: userId ?? this.userId,
         activityLabel: activityLabel ?? this.activityLabel,
-        durationInSeconds: durationInSeconds ?? this.durationInSeconds,
+        actualDurationInSeconds:
+            actualDurationInSeconds ?? this.actualDurationInSeconds,
+        targetedDurationInSeconds:
+            targetedDurationInSeconds ?? this.targetedDurationInSeconds,
         startDateTime: startDateTime ?? this.startDateTime,
         endDateTime: endDateTime ?? this.endDateTime,
         createdDate: createdDate ?? this.createdDate,
@@ -219,8 +281,10 @@ class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
   String toString() {
     return (StringBuffer('ActivityTimer(')
           ..write('id: $id, ')
+          ..write('userId: $userId, ')
           ..write('activityLabel: $activityLabel, ')
-          ..write('durationInSeconds: $durationInSeconds, ')
+          ..write('actualDurationInSeconds: $actualDurationInSeconds, ')
+          ..write('targetedDurationInSeconds: $targetedDurationInSeconds, ')
           ..write('startDateTime: $startDateTime, ')
           ..write('endDateTime: $endDateTime, ')
           ..write('createdDate: $createdDate')
@@ -229,15 +293,24 @@ class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
   }
 
   @override
-  int get hashCode => Object.hash(id, activityLabel, durationInSeconds,
-      startDateTime, endDateTime, createdDate);
+  int get hashCode => Object.hash(
+      id,
+      userId,
+      activityLabel,
+      actualDurationInSeconds,
+      targetedDurationInSeconds,
+      startDateTime,
+      endDateTime,
+      createdDate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ActivityTimer &&
           other.id == this.id &&
+          other.userId == this.userId &&
           other.activityLabel == this.activityLabel &&
-          other.durationInSeconds == this.durationInSeconds &&
+          other.actualDurationInSeconds == this.actualDurationInSeconds &&
+          other.targetedDurationInSeconds == this.targetedDurationInSeconds &&
           other.startDateTime == this.startDateTime &&
           other.endDateTime == this.endDateTime &&
           other.createdDate == this.createdDate);
@@ -245,16 +318,20 @@ class ActivityTimer extends DataClass implements Insertable<ActivityTimer> {
 
 class ActivityTimersCompanion extends UpdateCompanion<ActivityTimer> {
   final Value<String> id;
+  final Value<String> userId;
   final Value<String> activityLabel;
-  final Value<int> durationInSeconds;
+  final Value<int> actualDurationInSeconds;
+  final Value<int> targetedDurationInSeconds;
   final Value<DateTime> startDateTime;
   final Value<DateTime> endDateTime;
   final Value<DateTime> createdDate;
   final Value<int> rowid;
   const ActivityTimersCompanion({
     this.id = const Value.absent(),
+    this.userId = const Value.absent(),
     this.activityLabel = const Value.absent(),
-    this.durationInSeconds = const Value.absent(),
+    this.actualDurationInSeconds = const Value.absent(),
+    this.targetedDurationInSeconds = const Value.absent(),
     this.startDateTime = const Value.absent(),
     this.endDateTime = const Value.absent(),
     this.createdDate = const Value.absent(),
@@ -262,21 +339,27 @@ class ActivityTimersCompanion extends UpdateCompanion<ActivityTimer> {
   });
   ActivityTimersCompanion.insert({
     this.id = const Value.absent(),
+    required String userId,
     required String activityLabel,
-    required int durationInSeconds,
+    required int actualDurationInSeconds,
+    required int targetedDurationInSeconds,
     required DateTime startDateTime,
     required DateTime endDateTime,
     required DateTime createdDate,
     this.rowid = const Value.absent(),
-  })  : activityLabel = Value(activityLabel),
-        durationInSeconds = Value(durationInSeconds),
+  })  : userId = Value(userId),
+        activityLabel = Value(activityLabel),
+        actualDurationInSeconds = Value(actualDurationInSeconds),
+        targetedDurationInSeconds = Value(targetedDurationInSeconds),
         startDateTime = Value(startDateTime),
         endDateTime = Value(endDateTime),
         createdDate = Value(createdDate);
   static Insertable<ActivityTimer> custom({
     Expression<String>? id,
+    Expression<String>? userId,
     Expression<String>? activityLabel,
-    Expression<int>? durationInSeconds,
+    Expression<int>? actualDurationInSeconds,
+    Expression<int>? targetedDurationInSeconds,
     Expression<DateTime>? startDateTime,
     Expression<DateTime>? endDateTime,
     Expression<DateTime>? createdDate,
@@ -284,8 +367,12 @@ class ActivityTimersCompanion extends UpdateCompanion<ActivityTimer> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
       if (activityLabel != null) 'activity_label': activityLabel,
-      if (durationInSeconds != null) 'duration_in_seconds': durationInSeconds,
+      if (actualDurationInSeconds != null)
+        'actual_duration_in_seconds': actualDurationInSeconds,
+      if (targetedDurationInSeconds != null)
+        'targeted_duration_in_seconds': targetedDurationInSeconds,
       if (startDateTime != null) 'start_date_time': startDateTime,
       if (endDateTime != null) 'end_date_time': endDateTime,
       if (createdDate != null) 'created_date': createdDate,
@@ -295,16 +382,22 @@ class ActivityTimersCompanion extends UpdateCompanion<ActivityTimer> {
 
   ActivityTimersCompanion copyWith(
       {Value<String>? id,
+      Value<String>? userId,
       Value<String>? activityLabel,
-      Value<int>? durationInSeconds,
+      Value<int>? actualDurationInSeconds,
+      Value<int>? targetedDurationInSeconds,
       Value<DateTime>? startDateTime,
       Value<DateTime>? endDateTime,
       Value<DateTime>? createdDate,
       Value<int>? rowid}) {
     return ActivityTimersCompanion(
       id: id ?? this.id,
+      userId: userId ?? this.userId,
       activityLabel: activityLabel ?? this.activityLabel,
-      durationInSeconds: durationInSeconds ?? this.durationInSeconds,
+      actualDurationInSeconds:
+          actualDurationInSeconds ?? this.actualDurationInSeconds,
+      targetedDurationInSeconds:
+          targetedDurationInSeconds ?? this.targetedDurationInSeconds,
       startDateTime: startDateTime ?? this.startDateTime,
       endDateTime: endDateTime ?? this.endDateTime,
       createdDate: createdDate ?? this.createdDate,
@@ -318,11 +411,19 @@ class ActivityTimersCompanion extends UpdateCompanion<ActivityTimer> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
     if (activityLabel.present) {
       map['activity_label'] = Variable<String>(activityLabel.value);
     }
-    if (durationInSeconds.present) {
-      map['duration_in_seconds'] = Variable<int>(durationInSeconds.value);
+    if (actualDurationInSeconds.present) {
+      map['actual_duration_in_seconds'] =
+          Variable<int>(actualDurationInSeconds.value);
+    }
+    if (targetedDurationInSeconds.present) {
+      map['targeted_duration_in_seconds'] =
+          Variable<int>(targetedDurationInSeconds.value);
     }
     if (startDateTime.present) {
       map['start_date_time'] = Variable<DateTime>(startDateTime.value);
@@ -343,8 +444,10 @@ class ActivityTimersCompanion extends UpdateCompanion<ActivityTimer> {
   String toString() {
     return (StringBuffer('ActivityTimersCompanion(')
           ..write('id: $id, ')
+          ..write('userId: $userId, ')
           ..write('activityLabel: $activityLabel, ')
-          ..write('durationInSeconds: $durationInSeconds, ')
+          ..write('actualDurationInSeconds: $actualDurationInSeconds, ')
+          ..write('targetedDurationInSeconds: $targetedDurationInSeconds, ')
           ..write('startDateTime: $startDateTime, ')
           ..write('endDateTime: $endDateTime, ')
           ..write('createdDate: $createdDate, ')
@@ -371,8 +474,10 @@ abstract class _$ActivityTimerDatabase extends GeneratedDatabase {
 typedef $$ActivityTimersTableInsertCompanionBuilder = ActivityTimersCompanion
     Function({
   Value<String> id,
+  required String userId,
   required String activityLabel,
-  required int durationInSeconds,
+  required int actualDurationInSeconds,
+  required int targetedDurationInSeconds,
   required DateTime startDateTime,
   required DateTime endDateTime,
   required DateTime createdDate,
@@ -381,8 +486,10 @@ typedef $$ActivityTimersTableInsertCompanionBuilder = ActivityTimersCompanion
 typedef $$ActivityTimersTableUpdateCompanionBuilder = ActivityTimersCompanion
     Function({
   Value<String> id,
+  Value<String> userId,
   Value<String> activityLabel,
-  Value<int> durationInSeconds,
+  Value<int> actualDurationInSeconds,
+  Value<int> targetedDurationInSeconds,
   Value<DateTime> startDateTime,
   Value<DateTime> endDateTime,
   Value<DateTime> createdDate,
@@ -411,8 +518,10 @@ class $$ActivityTimersTableTableManager extends RootTableManager<
               $$ActivityTimersTableProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<String> id = const Value.absent(),
+            Value<String> userId = const Value.absent(),
             Value<String> activityLabel = const Value.absent(),
-            Value<int> durationInSeconds = const Value.absent(),
+            Value<int> actualDurationInSeconds = const Value.absent(),
+            Value<int> targetedDurationInSeconds = const Value.absent(),
             Value<DateTime> startDateTime = const Value.absent(),
             Value<DateTime> endDateTime = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
@@ -420,8 +529,10 @@ class $$ActivityTimersTableTableManager extends RootTableManager<
           }) =>
               ActivityTimersCompanion(
             id: id,
+            userId: userId,
             activityLabel: activityLabel,
-            durationInSeconds: durationInSeconds,
+            actualDurationInSeconds: actualDurationInSeconds,
+            targetedDurationInSeconds: targetedDurationInSeconds,
             startDateTime: startDateTime,
             endDateTime: endDateTime,
             createdDate: createdDate,
@@ -429,8 +540,10 @@ class $$ActivityTimersTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<String> id = const Value.absent(),
+            required String userId,
             required String activityLabel,
-            required int durationInSeconds,
+            required int actualDurationInSeconds,
+            required int targetedDurationInSeconds,
             required DateTime startDateTime,
             required DateTime endDateTime,
             required DateTime createdDate,
@@ -438,8 +551,10 @@ class $$ActivityTimersTableTableManager extends RootTableManager<
           }) =>
               ActivityTimersCompanion.insert(
             id: id,
+            userId: userId,
             activityLabel: activityLabel,
-            durationInSeconds: durationInSeconds,
+            actualDurationInSeconds: actualDurationInSeconds,
+            targetedDurationInSeconds: targetedDurationInSeconds,
             startDateTime: startDateTime,
             endDateTime: endDateTime,
             createdDate: createdDate,
@@ -468,13 +583,23 @@ class $$ActivityTimersTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnFilters<String> get userId => $state.composableBuilder(
+      column: $state.table.userId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<String> get activityLabel => $state.composableBuilder(
       column: $state.table.activityLabel,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get durationInSeconds => $state.composableBuilder(
-      column: $state.table.durationInSeconds,
+  ColumnFilters<int> get actualDurationInSeconds => $state.composableBuilder(
+      column: $state.table.actualDurationInSeconds,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get targetedDurationInSeconds => $state.composableBuilder(
+      column: $state.table.targetedDurationInSeconds,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -502,15 +627,26 @@ class $$ActivityTimersTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  ColumnOrderings<String> get userId => $state.composableBuilder(
+      column: $state.table.userId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<String> get activityLabel => $state.composableBuilder(
       column: $state.table.activityLabel,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get durationInSeconds => $state.composableBuilder(
-      column: $state.table.durationInSeconds,
+  ColumnOrderings<int> get actualDurationInSeconds => $state.composableBuilder(
+      column: $state.table.actualDurationInSeconds,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get targetedDurationInSeconds =>
+      $state.composableBuilder(
+          column: $state.table.targetedDurationInSeconds,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
 
   ColumnOrderings<DateTime> get startDateTime => $state.composableBuilder(
       column: $state.table.startDateTime,

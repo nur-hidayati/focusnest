@@ -7,37 +7,58 @@ part 'activity_timers_dao.g.dart';
 @DriftAccessor(tables: [ActivityTimers])
 class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
     with _$ActivityTimersDaoMixin {
-  // ignore: use_super_parameters
-  ActivityTimersDao(ActivityTimerDatabase db) : super(db);
+  ActivityTimersDao(super.db);
 
-  // Stream to watch all activity timers
-  Stream<List<ActivityTimer>> watchAllActivityTimers() {
-    return select(activityTimers).watch();
+  Stream<List<ActivityTimer>> watchAllActivityTimers(String userId) {
+    return (select(activityTimers)..where((tbl) => tbl.userId.equals(userId)))
+        .watch();
   }
 
-  // Stream to watch a specific activity timer by ID
-  Stream<ActivityTimer?> watchActivityTimerById(String id) {
-    return (select(activityTimers)..where((t) => t.id.equals(id)))
+  Stream<ActivityTimer?> watchActivityTimerById(String id, String userId) {
+    return (select(activityTimers)
+          ..where((t) => t.id.equals(id) & t.userId.equals(userId)))
         .watchSingleOrNull();
   }
 
-  // Insert a new activity timer
+  Stream<List<ActivityTimer>> watchRecentActivities(String userId) {
+    return (select(activityTimers)
+          ..where((tbl) => tbl.userId.equals(userId))
+          ..orderBy([
+            (t) =>
+                OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc)
+          ])
+          ..limit(10))
+        .watch()
+        .map((timers) => filterDuplicates(timers));
+  }
+
   Future<int> insertActivityTimer(ActivityTimersCompanion entry) {
     return into(activityTimers).insert(entry);
   }
 
-  // Update an existing activity timer
   Future<bool> updateActivityTimer(ActivityTimersCompanion entry) {
     return update(activityTimers).replace(entry);
   }
 
-  // Delete an activity timer by ID
-  Future<int> deleteActivityTimerById(String id) {
-    return (delete(activityTimers)..where((t) => t.id.equals(id))).go();
+  Future<int> deleteActivityTimerById(String id, String userId) {
+    return (delete(activityTimers)
+          ..where((t) => t.id.equals(id) & t.userId.equals(userId)))
+        .go();
   }
 
-  // Fetch all activity timers
-  Future<List<ActivityTimer>> getAllActivityTimers() {
-    return select(activityTimers).get();
+  Future<List<ActivityTimer>> getAllActivityTimers(String userId) {
+    return (select(activityTimers)..where((tbl) => tbl.userId.equals(userId)))
+        .get();
+  }
+
+  List<ActivityTimer> filterDuplicates(List<ActivityTimer> timers) {
+    final uniqueTimers = <String, ActivityTimer>{};
+    for (var timer in timers) {
+      final key = '${timer.targetedDurationInSeconds}-${timer.activityLabel}';
+      if (!uniqueTimers.containsKey(key)) {
+        uniqueTimers[key] = timer;
+      }
+    }
+    return uniqueTimers.values.toList();
   }
 }
