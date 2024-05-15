@@ -47,7 +47,7 @@ GoRouter goRouter(GoRouterRef ref) {
       final path = state.uri.path;
       if (isLoggedIn) {
         if (path.startsWith(authPath)) {
-          return activityCalendarPath;
+          return activityTimerPath;
         }
       } else {
         if (path.startsWith(activityTimerPath) ||

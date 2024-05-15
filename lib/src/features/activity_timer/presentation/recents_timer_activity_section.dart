@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
@@ -22,7 +23,6 @@ class RecentsTimerActivitySection extends ConsumerWidget {
           ),
         ),
         Spacers.extraSmallVertical,
-        const Divider(),
         activityTimersAsyncValue.when(
           data: (activityTimers) {
             return ListView.separated(
@@ -32,25 +32,39 @@ class RecentsTimerActivitySection extends ConsumerWidget {
               itemCount: activityTimers.length,
               itemBuilder: (context, index) {
                 final activityTimer = activityTimers[index];
-                return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  title: CustomText(
-                    title: formatDurationToHms(Duration(
-                        seconds: activityTimer.targetedDurationInSeconds)),
-                    textType: TextType.title,
+                return Slidable(
+                  key: ValueKey(activityTimer.id),
+                  closeOnScroll: true,
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) {},
+                        icon: Icons.delete,
+                        backgroundColor: Colors.red,
+                      ),
+                    ],
                   ),
-                  subtitle: CustomText(
-                    title: activityTimer.activityLabel,
-                  ),
-                  trailing: IconButton(
-                    onPressed: () {
-                      // Handle button press
-                    },
-                    icon: const Icon(
-                      Icons.play_circle_outline,
-                      size: 40,
-                      color: AppColor.primaryColor,
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    title: CustomText(
+                      title: formatDurationToHms(Duration(
+                          seconds: activityTimer.targetedDurationInSeconds)),
+                      textType: TextType.title,
+                    ),
+                    subtitle: CustomText(
+                      title: activityTimer.activityLabel,
+                    ),
+                    trailing: IconButton(
+                      onPressed: () {
+                        // Handle button press
+                      },
+                      icon: const Icon(
+                        Icons.play_circle_outline,
+                        size: 40,
+                        color: AppColor.primaryColor,
+                      ),
                     ),
                   ),
                 );
