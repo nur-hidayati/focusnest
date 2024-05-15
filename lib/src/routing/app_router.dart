@@ -99,6 +99,7 @@ GoRouter goRouter(GoRouterRef ref) {
                     name: RoutesName.timerStart,
                     parentNavigatorKey: _rootNavigatorKey,
                     pageBuilder: (context, state) {
+                      final userId = state.uri.queryParameters['userId']!;
                       final durationInSeconds = int.tryParse(
                               state.uri.queryParameters['duration'] ?? '0') ??
                           0;
@@ -106,6 +107,7 @@ GoRouter goRouter(GoRouterRef ref) {
                       final label = state.uri.queryParameters['label']!;
                       return NoTransitionPage(
                         child: TimerStartScreen(
+                          userId: userId,
                           duration: duration,
                           label: label,
                         ),
