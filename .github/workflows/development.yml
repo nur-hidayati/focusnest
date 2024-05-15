@@ -71,10 +71,15 @@ jobs:
       - name: Run tests
         run: flutter test
 
+        # Verify and list files
+      - name: List files in lib directory
+        run: ls -l lib/
+
       # Build Debug APK for Android
       - name: Build Debug APK
         run: flutter build apk --debug --flavor development --target=lib/main_development.dart
 
       # Build Debug iOS App
       - name: Build Debug iOS App
-        run: flutter build ios --debug --no-codesign --flavor development --target=lib/main_development.dart
+        # run: flutter build ios --debug --no-codesign --flavor development --target=lib/main_development.dart
+        run: flutter build ios --debug --no-codesign
