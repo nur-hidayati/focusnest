@@ -15,7 +15,8 @@ class ActivityCalendarDao extends DatabaseAccessor<ActivityTimerDatabase>
     return (select(activityTimers)
           ..where((tbl) => tbl.userId.equals(userId))
           ..where(
-              (tbl) => tbl.startDateTime.isBetweenValues(startOfDay, endOfDay)))
+              (tbl) => tbl.startDateTime.isBetweenValues(startOfDay, endOfDay))
+          ..orderBy([(tbl) => OrderingTerm(expression: tbl.startDateTime)]))
         .watch();
   }
 
