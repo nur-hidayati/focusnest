@@ -5,15 +5,20 @@ import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
+import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
+import 'package:focusnest/src/utils/navigation_helper.dart';
 
 class RecentsTimerActivitySection extends ConsumerWidget {
   const RecentsTimerActivitySection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activityTimersAsyncValue = ref.watch(last10ActivityTimersProvider);
+    final recentActivities = ref.watch(recentActivitiesProvider);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Align(
           alignment: Alignment.centerLeft,
@@ -23,70 +28,75 @@ class RecentsTimerActivitySection extends ConsumerWidget {
           ),
         ),
         Spacers.extraSmallVertical,
-        activityTimersAsyncValue.when(
-          data: (activityTimers) {
+        if (recentActivities.isEmpty) ...[
+          const Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: CustomText(title: 'No recent timer.'),
+          )
+        ] else ...[
+          ...recentActivities.map((activityTimer) {
             return Column(
               children: [
                 const Divider(),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemCount: activityTimers.length,
-                  itemBuilder: (context, index) {
-                    final activityTimer = activityTimers[index];
-                    return Slidable(
-                      key: ValueKey(activityTimer.id),
-                      closeOnScroll: true,
-                      endActionPane: ActionPane(
-                        dismissible: DismissiblePane(onDismissed: () {
-                          print('Item is deleted');
-                        }),
-                        motion: const ScrollMotion(),
-                        children: [
-                          SlidableAction(
-                            onPressed: (context) {
-                              print('Item is deleted');
-                            },
-                            icon: Icons.delete,
-                            backgroundColor: Colors.red,
-                            label: 'Delete', // Added a label for clarity
-                          ),
-                        ],
+                Slidable(
+                  key: ValueKey(activityTimer.id),
+                  closeOnScroll: true,
+                  endActionPane: ActionPane(
+                    dismissible: DismissiblePane(onDismissed: () {
+                      ref
+                          .read(recentActivitiesProvider.notifier)
+                          .removeActivity(activityTimer);
+                    }),
+                    motion: const ScrollMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) {
+                          ref
+                              .read(recentActivitiesProvider.notifier)
+                              .removeActivity(activityTimer);
+                        },
+                        icon: Icons.delete,
+                        backgroundColor: Colors.red,
+                        label: 'Delete',
                       ),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        dense: true,
-                        title: CustomText(
-                          title: formatDurationToHms(Duration(
-                              seconds:
-                                  activityTimer.targetedDurationInSeconds)),
-                          textType: TextType.title,
-                        ),
-                        subtitle: CustomText(
-                          title: activityTimer.activityLabel,
-                        ),
-                        trailing: IconButton(
-                          onPressed: () {
-                            // Handle button press
-                          },
-                          icon: const Icon(
-                            Icons.play_circle_outline,
-                            size: 40,
-                            color: AppColor.primaryColor,
-                          ),
-                        ),
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    title: CustomText(
+                      title: formatDurationToHms(Duration(
+                          seconds: activityTimer.targetedDurationInSeconds)),
+                      textType: TextType.title,
+                    ),
+                    subtitle: CustomText(
+                      title: activityTimer.activityLabel,
+                    ),
+                    trailing: IconButton(
+                      onPressed: () {
+                        final authRepo = ref.read(authRepositoryProvider);
+                        final userId = authRepo.currentUser?.uid;
+                        navigateToTimerStart(
+                          context: context,
+                          userId: userId,
+                          timerDuration: Duration(
+                              seconds: activityTimer.targetedDurationInSeconds),
+                          activityLabel: activityTimer.activityLabel,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.play_circle_outline,
+                        size: 40,
+                        color: AppColor.primaryColor,
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
-                const Divider(),
               ],
             );
-          },
-          loading: () => const CircularProgressIndicator(),
-          error: (error, stackTrace) => Text('Error: $error'),
-        ),
+          }),
+          const Divider(),
+        ],
       ],
     );
   }
