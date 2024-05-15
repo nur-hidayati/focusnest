@@ -4,7 +4,7 @@ import 'package:focusnest/src/common_widgets/bottom_sheet_header.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/spacers.dart';
-import 'package:focusnest/src/features/activity_timer/application/timer_service.dart';
+import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 

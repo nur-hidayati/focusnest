@@ -6,7 +6,7 @@ import 'package:focusnest/src/common_widgets/duration_picker.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
-import 'package:focusnest/src/features/activity_timer/application/timer_service.dart';
+import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/activity_label_form.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
