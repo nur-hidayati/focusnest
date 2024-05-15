@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 DateTime addDays(DateTime dateTime, int days) {
   return dateTime.add(Duration(days: days));
 }
@@ -32,6 +34,9 @@ String formatSecondsToReadable(Duration duration) {
     formattedTime +=
         '$remainingMinutes ${remainingMinutes == 1 ? 'minute' : 'minutes'}';
   }
-
   return formattedTime;
+}
+
+String formatTime(DateTime dateTime) {
+  return DateFormat.jm().format(dateTime);
 }
