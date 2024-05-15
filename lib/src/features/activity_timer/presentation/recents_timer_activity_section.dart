@@ -36,12 +36,18 @@ class RecentsTimerActivitySection extends ConsumerWidget {
                   key: ValueKey(activityTimer.id),
                   closeOnScroll: true,
                   endActionPane: ActionPane(
+                    dismissible: DismissiblePane(onDismissed: () {
+                      print('Item is deleted');
+                    }),
                     motion: const ScrollMotion(),
                     children: [
                       SlidableAction(
-                        onPressed: (context) {},
+                        onPressed: (context) {
+                          print('Item is deleted');
+                        },
                         icon: Icons.delete,
                         backgroundColor: Colors.red,
+                        label: 'Delete', // Added a label for clarity
                       ),
                     ],
                   ),
