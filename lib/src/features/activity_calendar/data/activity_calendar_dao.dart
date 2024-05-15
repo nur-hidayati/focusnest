@@ -18,4 +18,14 @@ class ActivityCalendarDao extends DatabaseAccessor<ActivityTimerDatabase>
               (tbl) => tbl.startDateTime.isBetweenValues(startOfDay, endOfDay)))
         .watch();
   }
+
+  Future<bool> updateActivityTimer(ActivityTimersCompanion entry) {
+    return update(activityTimers).replace(entry);
+  }
+
+  Future<int> deleteActivityTimerById(String id, String userId) {
+    return (delete(activityTimers)
+          ..where((t) => t.id.equals(id) & t.userId.equals(userId)))
+        .go();
+  }
 }

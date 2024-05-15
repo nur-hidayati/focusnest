@@ -36,21 +36,6 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
     return into(activityTimers).insert(entry);
   }
 
-  Future<bool> updateActivityTimer(ActivityTimersCompanion entry) {
-    return update(activityTimers).replace(entry);
-  }
-
-  Future<int> deleteActivityTimerById(String id, String userId) {
-    return (delete(activityTimers)
-          ..where((t) => t.id.equals(id) & t.userId.equals(userId)))
-        .go();
-  }
-
-  Future<List<ActivityTimer>> getAllActivityTimers(String userId) {
-    return (select(activityTimers)..where((tbl) => tbl.userId.equals(userId)))
-        .get();
-  }
-
   List<ActivityTimer> filterDuplicates(List<ActivityTimer> timers) {
     final uniqueTimers = <String, ActivityTimer>{};
     for (var timer in timers) {
