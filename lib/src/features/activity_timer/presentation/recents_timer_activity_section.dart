@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
+import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
@@ -14,7 +15,14 @@ class RecentsTimerActivitySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recentActivities = ref.watch(recentActivitiesProvider);
+    final authRepository = ref.watch(authRepositoryProvider);
+    final userId = authRepository.currentUser?.uid;
+
+    if (userId == null) {
+      return const UserNotFound();
+    }
+
+    final recentActivities = ref.watch(recentActivitiesProvider(userId));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +52,7 @@ class RecentsTimerActivitySection extends ConsumerWidget {
                   endActionPane: ActionPane(
                     dismissible: DismissiblePane(onDismissed: () {
                       ref
-                          .read(recentActivitiesProvider.notifier)
+                          .read(recentActivitiesProvider(userId).notifier)
                           .removeActivity(activityTimer);
                     }),
                     motion: const ScrollMotion(),
@@ -52,7 +60,7 @@ class RecentsTimerActivitySection extends ConsumerWidget {
                       SlidableAction(
                         onPressed: (context) {
                           ref
-                              .read(recentActivitiesProvider.notifier)
+                              .read(recentActivitiesProvider(userId).notifier)
                               .removeActivity(activityTimer);
                         },
                         icon: Icons.delete,
