@@ -28,7 +28,10 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
                 OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc)
           ])
           ..limit(10))
-        .watch();
+        .watch()
+        .map((timers) {
+      return filterDuplicates(timers);
+    });
   }
 
   // Insert a new activity timer
@@ -49,5 +52,18 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
   // Fetch all activity timers
   Future<List<ActivityTimer>> getAllActivityTimers() {
     return select(activityTimers).get();
+  }
+
+  List<ActivityTimer> filterDuplicates(List<ActivityTimer> timers) {
+    final uniqueTimers = <String, ActivityTimer>{};
+    for (var timer in timers) {
+      final key = '${timer.targetedDurationInSeconds}-${timer.activityLabel}';
+      // final key = timer.activityLabel;
+
+      if (!uniqueTimers.containsKey(key)) {
+        uniqueTimers[key] = timer;
+      }
+    }
+    return uniqueTimers.values.toList();
   }
 }
