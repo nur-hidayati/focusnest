@@ -21,7 +21,7 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
         .watchSingleOrNull();
   }
 
-  Stream<List<ActivityTimer>> watchLast10ActivityTimers() {
+  Stream<List<ActivityTimer>> watchRecentActivities() {
     return (select(activityTimers)
           ..orderBy([
             (t) =>
@@ -29,9 +29,7 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
           ])
           ..limit(10))
         .watch()
-        .map((timers) {
-      return filterDuplicates(timers);
-    });
+        .map((timers) => filterDuplicates(timers));
   }
 
   // Insert a new activity timer
