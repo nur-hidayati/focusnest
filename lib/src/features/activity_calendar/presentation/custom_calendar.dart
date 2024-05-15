@@ -72,6 +72,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: CustomText(
+            color: AppColor.primaryColor,
             title: DateFormat('EEEE, d MMMM y').format(_selectedDate),
             fontWeight: FontWeight.bold,
           ),

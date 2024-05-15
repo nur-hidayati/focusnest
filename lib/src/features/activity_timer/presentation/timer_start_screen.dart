@@ -89,16 +89,19 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
   }
 
   void _stopTimer() async {
-    bool? confirmAddActivity = await showAlertDialog(
-      context: context,
-      title: 'Activity Incomplete',
-      content:
-          'Would you like to add this incomplete activity to your calendar?',
-      isNoAsCancel: true,
-    );
-
-    if (confirmAddActivity == true) {
-      _addActivityToDatabase();
+    final durationInSeconds =
+        widget.duration.inSeconds - _remainingDuration.inSeconds;
+    if (durationInSeconds >= 60) {
+      bool? confirmAddActivity = await showAlertDialog(
+        context: context,
+        title: 'Activity Incomplete',
+        content:
+            'Would you like to add this incomplete activity to your calendar?',
+        isNoAsCancel: true,
+      );
+      if (confirmAddActivity == true) {
+        _addActivityToDatabase();
+      }
     }
     if (mounted) context.pop();
   }
