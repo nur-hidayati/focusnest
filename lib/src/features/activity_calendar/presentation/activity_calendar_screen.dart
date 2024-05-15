@@ -22,6 +22,15 @@ class ActivityCalendarScreen extends ConsumerStatefulWidget {
 class _ActivityCalendarScreenState
     extends ConsumerState<ActivityCalendarScreen> {
   DateTime _selectedDate = DateTime.now();
+  CalendarFormat _calendarFormat = CalendarFormat.week;
+
+  void _toggleCalendarFormat() {
+    setState(() {
+      _calendarFormat = _calendarFormat == CalendarFormat.week
+          ? CalendarFormat.month
+          : CalendarFormat.week;
+    });
+  }
 
   void _handleOnDateSelectionChanged(DateTime newDate) {
     setState(() {
@@ -38,6 +47,16 @@ class _ActivityCalendarScreenState
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calendar'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _calendarFormat == CalendarFormat.month
+                  ? Icons.calendar_view_week
+                  : Icons.calendar_month,
+            ),
+            onPressed: _toggleCalendarFormat,
+          ),
+        ],
       ),
       body: userId != null
           ? Column(
@@ -45,7 +64,7 @@ class _ActivityCalendarScreenState
                 CustomCalendar(
                   selectedDate: _selectedDate,
                   onDateSelectedChanged: _handleOnDateSelectionChanged,
-                  calendarFormat: CalendarFormat.week,
+                  calendarFormat: _calendarFormat,
                 ),
                 Expanded(
                   child: StreamBuilder<List<ActivityTimer>>(
@@ -67,7 +86,7 @@ class _ActivityCalendarScreenState
                           final activity = activities[index];
                           return Column(
                             children: [
-                              const Divider(),
+                              const Divider(height: 1),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
