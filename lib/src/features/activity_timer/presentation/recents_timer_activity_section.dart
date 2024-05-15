@@ -25,56 +25,63 @@ class RecentsTimerActivitySection extends ConsumerWidget {
         Spacers.extraSmallVertical,
         activityTimersAsyncValue.when(
           data: (activityTimers) {
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: activityTimers.length,
-              itemBuilder: (context, index) {
-                final activityTimer = activityTimers[index];
-                return Slidable(
-                  key: ValueKey(activityTimer.id),
-                  closeOnScroll: true,
-                  endActionPane: ActionPane(
-                    dismissible: DismissiblePane(onDismissed: () {
-                      print('Item is deleted');
-                    }),
-                    motion: const ScrollMotion(),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
+            return Column(
+              children: [
+                const Divider(),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemCount: activityTimers.length,
+                  itemBuilder: (context, index) {
+                    final activityTimer = activityTimers[index];
+                    return Slidable(
+                      key: ValueKey(activityTimer.id),
+                      closeOnScroll: true,
+                      endActionPane: ActionPane(
+                        dismissible: DismissiblePane(onDismissed: () {
                           print('Item is deleted');
-                        },
-                        icon: Icons.delete,
-                        backgroundColor: Colors.red,
-                        label: 'Delete', // Added a label for clarity
+                        }),
+                        motion: const ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) {
+                              print('Item is deleted');
+                            },
+                            icon: Icons.delete,
+                            backgroundColor: Colors.red,
+                            label: 'Delete', // Added a label for clarity
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    title: CustomText(
-                      title: formatDurationToHms(Duration(
-                          seconds: activityTimer.targetedDurationInSeconds)),
-                      textType: TextType.title,
-                    ),
-                    subtitle: CustomText(
-                      title: activityTimer.activityLabel,
-                    ),
-                    trailing: IconButton(
-                      onPressed: () {
-                        // Handle button press
-                      },
-                      icon: const Icon(
-                        Icons.play_circle_outline,
-                        size: 40,
-                        color: AppColor.primaryColor,
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        title: CustomText(
+                          title: formatDurationToHms(Duration(
+                              seconds:
+                                  activityTimer.targetedDurationInSeconds)),
+                          textType: TextType.title,
+                        ),
+                        subtitle: CustomText(
+                          title: activityTimer.activityLabel,
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {
+                            // Handle button press
+                          },
+                          icon: const Icon(
+                            Icons.play_circle_outline,
+                            size: 40,
+                            color: AppColor.primaryColor,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+                const Divider(),
+              ],
             );
           },
           loading: () => const CircularProgressIndicator(),
