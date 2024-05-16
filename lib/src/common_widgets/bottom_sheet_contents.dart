@@ -22,21 +22,18 @@ class BottomSheetContents extends StatelessWidget {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SafeArea(
-        child: Padding(
-          padding: AppPadding.noTopPadding,
-          child: Column(
-            children: [
-              BottomSheetHeader(
-                title: headerTitle ?? '',
-                onDone: onDoneActivityLabelUpdate,
-                onCancel: () => context.pop(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: child,
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            BottomSheetHeader(
+              title: headerTitle ?? '',
+              onDone: onDoneActivityLabelUpdate,
+              onCancel: () => context.pop(),
+            ),
+            Padding(
+              padding: AppPadding.screenPadding,
+              child: child,
+            ),
+          ],
         ),
       ),
     );
