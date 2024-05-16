@@ -5,6 +5,7 @@ import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_
 import 'package:focusnest/src/features/activity_calendar/presentation/activity_timer_form.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/utils/activity_timer_form_mixin.dart';
+import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
 class AddActivityTimer extends ConsumerStatefulWidget {
@@ -32,20 +33,23 @@ class _UpdateActivityTimerState extends ConsumerState<AddActivityTimer>
   }
 
   Future<void> _addActivityTimer() async {
-    final dao = ref.read(activityCalendarDaoProvider);
+    if (activityLabelController.text.isNotEmpty) {
+      final dao = ref.read(activityCalendarDaoProvider);
+      final entry = ActivityTimersCompanion(
+        userId: drift.Value(widget.userId),
+        activityLabel: drift.Value(activityLabelController.text),
+        startDateTime: drift.Value(selectedStartDateTime),
+        endDateTime: drift.Value(endDateTime),
+        actualDurationInSeconds: drift.Value(totalDurationInSeconds),
+        targetedDurationInSeconds: drift.Value(totalDurationInSeconds),
+        createdDate: drift.Value(DateTime.now()),
+      );
 
-    final entry = ActivityTimersCompanion(
-      userId: drift.Value(widget.userId),
-      activityLabel: drift.Value(activityLabelController.text),
-      startDateTime: drift.Value(selectedStartDateTime),
-      endDateTime: drift.Value(endDateTime),
-      actualDurationInSeconds: drift.Value(totalDurationInSeconds),
-      targetedDurationInSeconds: drift.Value(totalDurationInSeconds),
-      createdDate: drift.Value(DateTime.now()),
-    );
-
-    await dao.insertActivityTimer(entry);
-    if (mounted) context.pop();
+      await dao.insertActivityTimer(entry);
+      if (mounted) context.pop();
+    } else {
+      showInvalidLabelAlert(context);
+    }
   }
 
   @override

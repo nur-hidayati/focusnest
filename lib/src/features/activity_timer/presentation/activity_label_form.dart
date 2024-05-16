@@ -59,11 +59,7 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
         );
       }
     } else {
-      showOKAlert(
-        context: context,
-        title: 'Invalid Activity Label',
-        content: 'Activity Label cannot be empty',
-      );
+      showInvalidLabelAlert(context);
     }
   }
 

@@ -91,3 +91,13 @@ Future<void> showInvalidDurationAlert(
     content: 'Duration cannot be zero',
   );
 }
+
+Future<void> showInvalidLabelAlert(
+  BuildContext ctx,
+) {
+  return showOKAlert(
+    context: ctx,
+    title: 'Invalid Activity Label',
+    content: 'Activity Label cannot be empty',
+  );
+}
