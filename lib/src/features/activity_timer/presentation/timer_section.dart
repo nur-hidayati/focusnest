@@ -25,11 +25,7 @@ class TimerSection extends ConsumerWidget {
     final pickedDuration = ref.read(tempDurationProvider);
     if (pickedDuration != null) {
       if (pickedDuration.inMinutes == 0) {
-        showOKAlert(
-          context: context,
-          title: 'Invalid Duration',
-          content: 'Duration cannot be zero',
-        );
+        showInvalidDurationAlert(context);
       } else {
         ref
             .read(timerDurationProvider(userId).notifier)

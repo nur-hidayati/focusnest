@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
 mixin ActivityTimerFormMixin<T extends StatefulWidget> on State<T> {
@@ -42,8 +43,8 @@ mixin ActivityTimerFormMixin<T extends StatefulWidget> on State<T> {
       setState(() {
         _selectedStartDateTime = _tempSelectedStartDateTime!;
       });
-      context.pop();
     }
+    context.pop();
   }
 
   void handleOnDurationChanged(Duration newDuration) {
@@ -52,10 +53,15 @@ mixin ActivityTimerFormMixin<T extends StatefulWidget> on State<T> {
 
   void handleOnDurationConfirmed() {
     if (_tempSelectedDuration != null) {
-      setState(() {
-        _selectedDuration = _tempSelectedDuration!;
-      });
-      context.pop();
+      if (_tempSelectedDuration!.inMinutes == 0) {
+        showInvalidDurationAlert(context);
+        return;
+      } else {
+        setState(() {
+          _selectedDuration = _tempSelectedDuration!;
+        });
+      }
     }
+    context.pop();
   }
 }

@@ -81,3 +81,13 @@ Future<void> showOKAlert({
     defaultActionText: 'OK',
   );
 }
+
+Future<void> showInvalidDurationAlert(
+  BuildContext ctx,
+) {
+  return showOKAlert(
+    context: ctx,
+    title: 'Invalid Duration',
+    content: 'Duration cannot be zero',
+  );
+}
