@@ -1,39 +1,42 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/bottom_sheet_contents.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
 import 'package:focusnest/src/common_widgets/selection_input_card.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_providers.dart';
+import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:go_router/go_router.dart';
 
-class UpdateActivityTimer extends StatefulWidget {
+class UpdateActivityTimer extends ConsumerStatefulWidget {
+  final String timerId;
   final String label;
   final DateTime startDateTime;
-  final DateTime endDateTime;
   final Duration duration;
 
   const UpdateActivityTimer({
+    required this.timerId,
     required this.label,
     required this.startDateTime,
-    required this.endDateTime,
     required this.duration,
     super.key,
   });
 
   @override
-  State<UpdateActivityTimer> createState() => _UpdateActivityTimerState();
+  ConsumerState<UpdateActivityTimer> createState() =>
+      _UpdateActivityTimerState();
 }
 
-class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
+class _UpdateActivityTimerState extends ConsumerState<UpdateActivityTimer> {
   late TextEditingController activityLabelController;
   DateTime _selectedStartDateTime = DateTime.now();
   DateTime? _tempSelectedStartDateTime;
-  DateTime _selectedEndDateTime = DateTime.now();
-  DateTime? _tempSelectedEndDateTime;
-  Duration _selectedDuration = Duration(seconds: 60);
+  Duration _selectedDuration = const Duration(seconds: 60);
   Duration? _tempSelectedDuration;
 
   @override
@@ -41,7 +44,6 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
     super.initState();
     activityLabelController = TextEditingController(text: widget.label);
     _selectedStartDateTime = widget.startDateTime;
-    _selectedEndDateTime = widget.endDateTime;
     _selectedDuration = widget.duration;
   }
 
@@ -53,19 +55,6 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
     if (_tempSelectedStartDateTime != null) {
       setState(() {
         _selectedStartDateTime = _tempSelectedStartDateTime!;
-      });
-      context.pop();
-    }
-  }
-
-  void _handleEndDateTimeOnChanged(DateTime newDate) {
-    _tempSelectedEndDateTime = newDate;
-  }
-
-  void _handleEndDateTimeOnConfirmed() {
-    if (_tempSelectedEndDateTime != null) {
-      setState(() {
-        _selectedEndDateTime = _tempSelectedEndDateTime!;
       });
       context.pop();
     }
@@ -84,11 +73,28 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
     }
   }
 
+  Future<void> _updateActivityTimer() async {
+    final totalDuration = _selectedDuration.inSeconds;
+
+    final dao = ref.read(activityCalendarDaoProvider);
+
+    final entry = ActivityTimersCompanion(
+      activityLabel: drift.Value(activityLabelController.text.trim()),
+      startDateTime: drift.Value(_selectedStartDateTime),
+      endDateTime: drift.Value(_selectedStartDateTime.add(_selectedDuration)),
+      actualDurationInSeconds: drift.Value(totalDuration),
+      targetedDurationInSeconds: drift.Value(totalDuration),
+    );
+
+    await dao.updateActivityTimer(widget.timerId, entry);
+    if (mounted) context.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomSheetContents(
       headerTitle: 'Edit Record',
-      onDoneActivityLabelUpdate: () {},
+      onDoneActivityLabelUpdate: _updateActivityTimer,
       child: Column(
         children: [
           CustomTextFormField(
@@ -109,23 +115,6 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
                 onCancel: () => context.pop(),
                 initialDateTime: _selectedStartDateTime,
                 onDone: _handleStartDateTimeOnConfirmed,
-              );
-            },
-          ),
-          Spacers.smallVertical,
-          SelectionInputCard(
-            label: 'End at',
-            value: formatDateTime(_selectedEndDateTime),
-            hintText: 'Please select',
-            onPressed: () {
-              datePickerModal(
-                context: context,
-                onDateTimeChanged: _handleEndDateTimeOnChanged,
-                mode: CupertinoDatePickerMode.dateAndTime,
-                dateSelectionMode: DateSelectionMode.past,
-                onCancel: () => context.pop(),
-                initialDateTime: _selectedEndDateTime,
-                onDone: _handleEndDateTimeOnConfirmed,
               );
             },
           ),

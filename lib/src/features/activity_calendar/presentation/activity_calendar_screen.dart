@@ -124,8 +124,8 @@ class _ActivityCalendarScreenState
                                       useRootNavigator: true,
                                       builder: (BuildContext context) {
                                         return UpdateActivityTimer(
+                                          timerId: activity.id,
                                           startDateTime: activity.startDateTime,
-                                          endDateTime: activity.endDateTime,
                                           label: activity.activityLabel,
                                           duration: Duration(
                                               seconds: activity
