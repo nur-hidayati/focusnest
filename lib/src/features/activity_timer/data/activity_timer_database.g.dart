@@ -464,6 +464,8 @@ abstract class _$ActivityTimerDatabase extends GeneratedDatabase {
   late final $ActivityTimersTable activityTimers = $ActivityTimersTable(this);
   late final ActivityTimersDao activityTimersDao =
       ActivityTimersDao(this as ActivityTimerDatabase);
+  late final ActivityCalendarDao activityCalendarDao =
+      ActivityCalendarDao(this as ActivityTimerDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

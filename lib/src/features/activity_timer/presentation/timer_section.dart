@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
-import 'package:focusnest/src/common_widgets/duration_picker.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
@@ -10,6 +9,7 @@ import 'package:focusnest/src/features/activity_timer/presentation/activity_labe
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
+import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,11 +25,7 @@ class TimerSection extends ConsumerWidget {
     final pickedDuration = ref.read(tempDurationProvider);
     if (pickedDuration != null) {
       if (pickedDuration.inMinutes == 0) {
-        showOKAlert(
-          context: context,
-          title: 'Invalid Duration',
-          content: 'Duration cannot be zero',
-        );
+        showInvalidDurationAlert(context);
       } else {
         ref
             .read(timerDurationProvider(userId).notifier)
@@ -39,23 +35,6 @@ class TimerSection extends ConsumerWidget {
     } else {
       context.pop();
     }
-  }
-
-  void _showDurationPicker(BuildContext context, WidgetRef ref,
-      Duration currentDuration, String userId) {
-    showModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      builder: (BuildContext builder) {
-        return DurationPicker(
-          duration: currentDuration,
-          onCancel: () => context.pop(),
-          onDone: () => _handleOnDoneDurationPicker(context, ref, userId),
-          onTimerDurationChanged: (Duration picked) =>
-              _handleOnTimerDurationChanged(ref, picked),
-        );
-      },
-    );
   }
 
   @override
@@ -81,7 +60,6 @@ class TimerSection extends ConsumerWidget {
                 onTap: () => showModalBottomSheet(
                   context: context,
                   useRootNavigator: true,
-                  isDismissible: false,
                   builder: (BuildContext context) {
                     return const ActivityLabelForm();
                   },
@@ -99,7 +77,14 @@ class TimerSection extends ConsumerWidget {
         ),
         Spacers.smallVertical,
         GestureDetector(
-          onTap: () => _showDurationPicker(context, ref, timerDuration, userId),
+          onTap: () => durationPickerModal(
+            context: context,
+            currentDuration: timerDuration,
+            onTimerDurationChanged: (Duration picked) =>
+                _handleOnTimerDurationChanged(ref, picked),
+            onCancel: () => context.pop(),
+            onDone: () => _handleOnDoneDurationPicker(context, ref, userId),
+          ),
           child: CustomText(
             title: formatDurationToHms(timerDuration),
             fontSize: 60,

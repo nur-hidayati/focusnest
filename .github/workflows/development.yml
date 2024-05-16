@@ -77,4 +77,5 @@ jobs:
 
       # Build Debug iOS App
       - name: Build Debug iOS App
-        run: flutter build ios --debug --no-codesign --flavor development --target=lib/main_development.dart
+        # run: flutter build ios --debug --no-codesign --flavor development --target=lib/main_development.dart
+        run: flutter build ios --debug --no-codesign

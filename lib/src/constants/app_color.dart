@@ -7,4 +7,5 @@ class AppColor {
   static const greyColor = Color(0xFF666666);
   static const lightGreyColor = Color.fromARGB(255, 190, 190, 190);
   static const greenColor = Color.fromARGB(255, 45, 173, 98);
+  static const warningColor = Colors.red;
 }

@@ -1,3 +1,13 @@
+import 'package:intl/intl.dart';
+
+DateTime addDays(DateTime dateTime, int days) {
+  return dateTime.add(Duration(days: days));
+}
+
+DateTime subtractDays(DateTime dateTime, int days) {
+  return dateTime.subtract(Duration(days: days));
+}
+
 String formatDurationToHms(Duration duration) {
   String twoDigits(int n) => n.toString().padLeft(2, '0');
   String hours = twoDigits(duration.inHours);
@@ -11,7 +21,7 @@ String formatDurationToHms(Duration duration) {
   }
 }
 
-String formatSecondsToReadable(Duration duration) {
+String formatDurationsToReadable(Duration duration) {
   String formattedTime = "";
 
   if (duration.inHours > 0) {
@@ -24,6 +34,13 @@ String formatSecondsToReadable(Duration duration) {
     formattedTime +=
         '$remainingMinutes ${remainingMinutes == 1 ? 'minute' : 'minutes'}';
   }
-
   return formattedTime;
+}
+
+String formatTime(DateTime dateTime) {
+  return DateFormat.jm().format(dateTime);
+}
+
+String formatDateTime(DateTime dateTime) {
+  return DateFormat('d MMM yyyy, h:mm a').format(dateTime);
 }

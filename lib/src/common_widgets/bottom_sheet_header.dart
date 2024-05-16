@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
+import 'package:focusnest/src/constants/app_padding.dart';
 
 class BottomSheetHeader extends StatelessWidget {
   final String title;
@@ -16,8 +17,8 @@ class BottomSheetHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+    return Container(
+      padding: AppPadding.horizontalPadding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

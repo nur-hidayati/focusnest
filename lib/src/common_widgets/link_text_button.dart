@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 class LinkTextButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final String title;
+  final bool shrinkWrapTapTargetSize;
+  final Color? color;
 
   const LinkTextButton({
     required this.title,
     this.onPressed,
+    this.shrinkWrapTapTargetSize = false,
+    this.color,
     super.key,
   });
 
@@ -17,14 +21,15 @@ class LinkTextButton extends StatelessWidget {
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
-        // tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        tapTargetSize:
+            !shrinkWrapTapTargetSize ? null : MaterialTapTargetSize.shrinkWrap,
         textStyle: const TextStyle(
           fontWeight: FontWeight.bold,
         ),
       ),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 16.0),
+        style: TextStyle(fontSize: 16.0, color: color),
       ),
     );
   }

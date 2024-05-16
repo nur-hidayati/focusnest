@@ -23,6 +23,8 @@ class RecentsTimerActivitySection extends ConsumerWidget {
     }
 
     final recentActivities = ref.watch(recentActivitiesProvider(userId));
+    final recentActivitiesNotifier =
+        ref.read(recentActivitiesProvider(userId).notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,16 +53,13 @@ class RecentsTimerActivitySection extends ConsumerWidget {
                   closeOnScroll: true,
                   endActionPane: ActionPane(
                     dismissible: DismissiblePane(onDismissed: () {
-                      ref
-                          .read(recentActivitiesProvider(userId).notifier)
-                          .removeActivity(activityTimer);
+                      recentActivitiesNotifier.removeActivity(activityTimer);
                     }),
                     motion: const ScrollMotion(),
                     children: [
                       SlidableAction(
                         onPressed: (context) {
-                          ref
-                              .read(recentActivitiesProvider(userId).notifier)
+                          recentActivitiesNotifier
                               .removeActivity(activityTimer);
                         },
                         icon: Icons.delete,

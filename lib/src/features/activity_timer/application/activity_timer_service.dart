@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timers_dao.dart';
@@ -61,33 +63,50 @@ class TimerDurationNotifier extends StateNotifier<Duration> {
 }
 
 class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
-  final ActivityTimersDao _dao;
-  final String userId;
-  List<String> _deletedItemIds = [];
+  final ActivityTimersDao dao;
+  final String _userId;
 
-  RecentActivitiesNotifier(this._dao, this.userId) : super([]) {
+  RecentActivitiesNotifier(this.dao, this._userId) : super([]) {
     _loadRecentActivities();
   }
 
   Future<void> _loadRecentActivities() async {
     final prefs = await SharedPreferences.getInstance();
-    String key = getDeletedItemIdsKey(userId);
-    _deletedItemIds = prefs.getStringList(key) ?? [];
+    final recentActivitiesJson =
+        prefs.getStringList('recentActivities_$_userId') ?? [];
 
-    _dao.watchRecentActivities(userId).listen((recentActivities) {
-      final filteredActivities = recentActivities
-          .where((activity) => !_deletedItemIds.contains(activity.id))
+    if (recentActivitiesJson.isNotEmpty) {
+      final recentActivities = recentActivitiesJson
+          .map((json) => ActivityTimer.fromJson(jsonDecode(json)))
           .toList();
-      state = List.from(filteredActivities);
-    });
+      state = recentActivities;
+    } else {
+      state = [];
+    }
   }
 
-  Future<void> removeActivity(ActivityTimer activity) async {
-    _deletedItemIds.add(activity.id);
-    final prefs = await SharedPreferences.getInstance();
-    String key = getDeletedItemIdsKey(userId);
-    await prefs.setStringList(key, _deletedItemIds);
+  void addActivity(ActivityTimer activity) {
+    final exists = state.any((existingActivity) =>
+        existingActivity.activityLabel == activity.activityLabel &&
+        existingActivity.targetedDurationInSeconds ==
+            activity.targetedDurationInSeconds);
 
-    state = List.from(state..remove(activity));
+    if (!exists) {
+      state = [activity, ...state];
+      _saveRecentActivities();
+    }
+  }
+
+  void removeActivity(ActivityTimer activity) {
+    state = state.where((item) => item.id != activity.id).toList();
+    _saveRecentActivities();
+  }
+
+  Future<void> _saveRecentActivities() async {
+    final prefs = await SharedPreferences.getInstance();
+    final recentActivitiesJson =
+        state.map((activity) => jsonEncode(activity.toJson())).toList();
+    await prefs.setStringList(
+        'recentActivities_$_userId', recentActivitiesJson);
   }
 }

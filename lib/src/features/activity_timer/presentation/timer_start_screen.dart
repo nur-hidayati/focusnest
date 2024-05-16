@@ -3,19 +3,21 @@ import 'dart:async';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
+import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/app_logger.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
-class TimerStartScreen extends StatefulWidget {
+class TimerStartScreen extends ConsumerStatefulWidget {
   final String userId;
   final Duration duration;
   final String label;
@@ -28,10 +30,10 @@ class TimerStartScreen extends StatefulWidget {
   });
 
   @override
-  State<TimerStartScreen> createState() => _TimerStartScreenState();
+  ConsumerState<TimerStartScreen> createState() => _TimerStartScreenState();
 }
 
-class _TimerStartScreenState extends State<TimerStartScreen> {
+class _TimerStartScreenState extends ConsumerState<TimerStartScreen> {
   bool isPaused = false;
   Timer? _timer;
   late Duration _remainingDuration;
@@ -89,16 +91,19 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
   }
 
   void _stopTimer() async {
-    bool? confirmAddActivity = await showAlertDialog(
-      context: context,
-      title: 'Activity Incomplete',
-      content:
-          'Would you like to add this incomplete activity to your calendar?',
-      isNoAsCancel: true,
-    );
-
-    if (confirmAddActivity == true) {
-      _addActivityToDatabase();
+    final durationInSeconds =
+        widget.duration.inSeconds - _remainingDuration.inSeconds;
+    if (durationInSeconds >= 60) {
+      bool? confirmAddActivity = await showAlertDialog(
+        context: context,
+        title: 'Activity Incomplete',
+        content:
+            'Would you like to add this incomplete activity to your calendar?',
+        isNoAsCancel: true,
+      );
+      if (confirmAddActivity == true) {
+        await _addActivityToDatabase();
+      }
     }
     if (mounted) context.pop();
   }
@@ -123,6 +128,21 @@ class _TimerStartScreenState extends State<TimerStartScreen> {
       );
 
       await dao.insertActivityTimer(newActivity);
+
+      final recentActivity = ActivityTimer(
+        id: _uuid.v4(),
+        userId: widget.userId,
+        activityLabel: widget.label,
+        actualDurationInSeconds: durationInSeconds,
+        targetedDurationInSeconds: targetedDurationInSeconds,
+        startDateTime: _startDateTime,
+        endDateTime: endDateTime,
+        createdDate: DateTime.now(),
+      );
+
+      final recentActivitiesNotifier =
+          ref.read(recentActivitiesProvider(widget.userId).notifier);
+      recentActivitiesNotifier.addActivity(recentActivity);
     } catch (error) {
       AppLogger.logError(error.toString());
       if (mounted) {

@@ -20,35 +20,20 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
         .watchSingleOrNull();
   }
 
-  Stream<List<ActivityTimer>> watchRecentActivities(String userId) {
-    return (select(activityTimers)
-          ..where((tbl) => tbl.userId.equals(userId))
-          ..orderBy([
-            (t) =>
-                OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc)
-          ])
-          ..limit(10))
-        .watch()
-        .map((timers) => filterDuplicates(timers));
+  Future<List<ActivityTimer>> getRecentActivities(String userId) async {
+    final query = select(activityTimers)
+      ..where((tbl) => tbl.userId.equals(userId))
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc)
+      ])
+      ..limit(10);
+
+    final result = await query.get();
+    return filterDuplicates(result);
   }
 
   Future<int> insertActivityTimer(ActivityTimersCompanion entry) {
     return into(activityTimers).insert(entry);
-  }
-
-  Future<bool> updateActivityTimer(ActivityTimersCompanion entry) {
-    return update(activityTimers).replace(entry);
-  }
-
-  Future<int> deleteActivityTimerById(String id, String userId) {
-    return (delete(activityTimers)
-          ..where((t) => t.id.equals(id) & t.userId.equals(userId)))
-        .go();
-  }
-
-  Future<List<ActivityTimer>> getAllActivityTimers(String userId) {
-    return (select(activityTimers)..where((tbl) => tbl.userId.equals(userId)))
-        .get();
   }
 
   List<ActivityTimer> filterDuplicates(List<ActivityTimer> timers) {
