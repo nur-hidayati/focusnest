@@ -63,10 +63,10 @@ class TimerDurationNotifier extends StateNotifier<Duration> {
 }
 
 class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
-  final ActivityTimersDao _dao;
+  final ActivityTimersDao dao;
   final String _userId;
 
-  RecentActivitiesNotifier(this._dao, this._userId) : super([]) {
+  RecentActivitiesNotifier(this.dao, this._userId) : super([]) {
     _loadRecentActivities();
   }
 
