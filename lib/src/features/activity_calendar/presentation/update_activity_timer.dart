@@ -30,9 +30,11 @@ class UpdateActivityTimer extends StatefulWidget {
 class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
   late TextEditingController activityLabelController;
   DateTime _selectedStartDateTime = DateTime.now();
-  DateTime? _temporarySelectedStartDateTime;
+  DateTime? _tempSelectedStartDateTime;
   DateTime _selectedEndDateTime = DateTime.now();
-  DateTime? _temporarySelectedEndDateTime;
+  DateTime? _tempSelectedEndDateTime;
+  Duration _selectedDuration = Duration(seconds: 60);
+  Duration? _tempSelectedDuration;
 
   @override
   void initState() {
@@ -40,29 +42,43 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
     activityLabelController = TextEditingController(text: widget.label);
     _selectedStartDateTime = widget.startDateTime;
     _selectedEndDateTime = widget.endDateTime;
+    _selectedDuration = widget.duration;
   }
 
   void _handleStartDateTimeOnChanged(DateTime newDate) {
-    _temporarySelectedStartDateTime = newDate;
+    _tempSelectedStartDateTime = newDate;
   }
 
   void _handleStartDateTimeOnConfirmed() {
-    if (_temporarySelectedStartDateTime != null) {
+    if (_tempSelectedStartDateTime != null) {
       setState(() {
-        _selectedStartDateTime = _temporarySelectedStartDateTime!;
+        _selectedStartDateTime = _tempSelectedStartDateTime!;
       });
       context.pop();
     }
   }
 
   void _handleEndDateTimeOnChanged(DateTime newDate) {
-    _temporarySelectedEndDateTime = newDate;
+    _tempSelectedEndDateTime = newDate;
   }
 
   void _handleEndDateTimeOnConfirmed() {
-    if (_temporarySelectedEndDateTime != null) {
+    if (_tempSelectedEndDateTime != null) {
       setState(() {
-        _selectedEndDateTime = _temporarySelectedEndDateTime!;
+        _selectedEndDateTime = _tempSelectedEndDateTime!;
+      });
+      context.pop();
+    }
+  }
+
+  void _handleDurationOnChanged(Duration newDuration) {
+    _tempSelectedDuration = newDuration;
+  }
+
+  void _handleDurationOnConfirmed() {
+    if (_tempSelectedDuration != null) {
+      setState(() {
+        _selectedDuration = _tempSelectedDuration!;
       });
       context.pop();
     }
@@ -90,7 +106,7 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
                 onDateTimeChanged: _handleStartDateTimeOnChanged,
                 mode: CupertinoDatePickerMode.dateAndTime,
                 dateSelectionMode: DateSelectionMode.past,
-                onCancel: () {},
+                onCancel: () => context.pop(),
                 initialDateTime: _selectedStartDateTime,
                 onDone: _handleStartDateTimeOnConfirmed,
               );
@@ -107,7 +123,7 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
                 onDateTimeChanged: _handleEndDateTimeOnChanged,
                 mode: CupertinoDatePickerMode.dateAndTime,
                 dateSelectionMode: DateSelectionMode.past,
-                onCancel: () {},
+                onCancel: () => context.pop(),
                 initialDateTime: _selectedEndDateTime,
                 onDone: _handleEndDateTimeOnConfirmed,
               );
@@ -117,14 +133,14 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
           SelectionInputCard(
             label: 'Duration',
             hintText: 'Please select',
-            value: formatDurationsToReadable(widget.duration),
+            value: formatDurationsToReadable(_selectedDuration),
             onPressed: () {
               durationPickerModal(
                 context: context,
-                currentDuration: widget.duration,
-                onTimerDurationChanged: (Duration picked) {},
+                currentDuration: _selectedDuration,
+                onTimerDurationChanged: _handleDurationOnChanged,
                 onCancel: () => context.pop(),
-                onDone: () {},
+                onDone: _handleDurationOnConfirmed,
               );
             },
           ),

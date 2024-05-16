@@ -53,14 +53,22 @@ Future<void> durationPickerModal({
   required VoidCallback onCancel,
   required VoidCallback onDone,
 }) {
+  Duration? tempDuration;
   return cupertinoPickerModal(
     context: context,
     child: CupertinoTimerPicker(
       mode: CupertinoTimerPickerMode.hm,
       initialTimerDuration: currentDuration,
-      onTimerDurationChanged: onTimerDurationChanged,
+      onTimerDurationChanged: (Duration duration) {
+        tempDuration = duration;
+      },
     ),
-    onDone: onDone,
+    onDone: () {
+      if (tempDuration != null) {
+        onTimerDurationChanged(tempDuration!);
+      }
+      onDone();
+    },
     onCancel: onCancel,
   );
 }
