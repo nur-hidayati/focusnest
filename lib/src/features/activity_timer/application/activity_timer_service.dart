@@ -74,21 +74,27 @@ class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
     final prefs = await SharedPreferences.getInstance();
     final recentActivitiesJson =
         prefs.getStringList('recentActivities_$_userId') ?? [];
+
     if (recentActivitiesJson.isNotEmpty) {
       final recentActivities = recentActivitiesJson
           .map((json) => ActivityTimer.fromJson(jsonDecode(json)))
           .toList();
       state = recentActivities;
     } else {
-      final recentActivities = await _dao.getRecentActivities(_userId);
-      state = recentActivities;
-      _saveRecentActivities();
+      state = [];
     }
   }
 
   void addActivity(ActivityTimer activity) {
-    state = [activity, ...state];
-    _saveRecentActivities();
+    final exists = state.any((existingActivity) =>
+        existingActivity.activityLabel == activity.activityLabel &&
+        existingActivity.targetedDurationInSeconds ==
+            activity.targetedDurationInSeconds);
+
+    if (!exists) {
+      state = [activity, ...state];
+      _saveRecentActivities();
+    }
   }
 
   void removeActivity(ActivityTimer activity) {

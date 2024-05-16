@@ -102,7 +102,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen> {
         isNoAsCancel: true,
       );
       if (confirmAddActivity == true) {
-        _addActivityToDatabase();
+        await _addActivityToDatabase();
       }
     }
     if (mounted) context.pop();
