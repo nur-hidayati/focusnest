@@ -21,7 +21,7 @@ String formatDurationToHms(Duration duration) {
   }
 }
 
-String formatSecondsToReadable(Duration duration) {
+String formatDurationsToReadable(Duration duration) {
   String formattedTime = "";
 
   if (duration.inHours > 0) {
@@ -39,4 +39,8 @@ String formatSecondsToReadable(Duration duration) {
 
 String formatTime(DateTime dateTime) {
   return DateFormat.jm().format(dateTime);
+}
+
+String formatDateTime(DateTime dateTime) {
+  return DateFormat('d MMM yyyy, h:mm a').format(dateTime);
 }
