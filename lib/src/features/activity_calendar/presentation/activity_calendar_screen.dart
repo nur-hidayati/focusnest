@@ -6,6 +6,7 @@ import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_providers.dart';
+import 'package:focusnest/src/features/activity_calendar/presentation/add_activity_timer.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/custom_calendar.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/update_activity_timer.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
@@ -58,6 +59,23 @@ class _ActivityCalendarScreenState
                   : Icons.calendar_month,
             ),
             onPressed: _toggleCalendarFormat,
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.add,
+            ),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                useRootNavigator: true,
+                builder: (BuildContext context) {
+                  return AddActivityTimer(
+                    startDateTime: DateTime.now(),
+                    duration: const Duration(minutes: 15),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
