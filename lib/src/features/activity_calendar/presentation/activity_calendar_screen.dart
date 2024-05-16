@@ -1,7 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:focusnest/src/common_widgets/bottom_sheet_contents.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
+import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
+import 'package:focusnest/src/common_widgets/link_text_button.dart';
+import 'package:focusnest/src/common_widgets/selection_input_card.dart';
 import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
@@ -11,6 +16,8 @@ import 'package:focusnest/src/features/activity_timer/data/activity_timer_databa
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
+import 'package:focusnest/src/utils/modal_helper.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ActivityCalendarScreen extends ConsumerStatefulWidget {
@@ -117,7 +124,15 @@ class _ActivityCalendarScreenState
                               children: [
                                 const Divider(height: 1),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      useRootNavigator: true,
+                                      builder: (BuildContext context) {
+                                        return const UpdateActivityTimer();
+                                      },
+                                    );
+                                  },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20),
@@ -125,13 +140,13 @@ class _ActivityCalendarScreenState
                                       contentPadding: EdgeInsets.zero,
                                       dense: true,
                                       title: CustomText(
-                                        title: formatSecondsToReadable(Duration(
-                                            seconds: activity
-                                                .actualDurationInSeconds)),
+                                        title: activity.activityLabel,
                                         fontWeight: FontWeight.bold,
                                       ),
                                       subtitle: CustomText(
-                                        title: activity.activityLabel,
+                                        title: formatSecondsToReadable(Duration(
+                                            seconds: activity
+                                                .actualDurationInSeconds)),
                                       ),
                                       trailing: Column(
                                         mainAxisAlignment:
@@ -166,6 +181,83 @@ class _ActivityCalendarScreenState
               ],
             )
           : const UserNotFound(),
+    );
+  }
+}
+
+class UpdateActivityTimer extends StatefulWidget {
+  const UpdateActivityTimer({super.key});
+
+  @override
+  State<UpdateActivityTimer> createState() => _UpdateActivityTimerState();
+}
+
+class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
+  final activityLabelController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return BottomSheetContents(
+      headerTitle: 'Edit Record',
+      onDoneActivityLabelUpdate: () {},
+      child: Column(
+        children: [
+          CustomTextFormField(
+            controller: activityLabelController,
+            hintText: 'Activity Label',
+          ),
+          Spacers.smallVertical,
+          SelectionInputCard(
+            label: 'Start from',
+            hintText: 'Please select',
+            onPressed: () {
+              datePickerModal(
+                context: context,
+                onDateTimeChanged: (p0) {},
+                mode: CupertinoDatePickerMode.dateAndTime,
+                dateSelectionMode: DateSelectionMode.past,
+                onDone: () {},
+                onCancel: () {},
+              );
+            },
+          ),
+          Spacers.smallVertical,
+          SelectionInputCard(
+            label: 'End at',
+            hintText: 'Please select',
+            onPressed: () {
+              datePickerModal(
+                context: context,
+                onDateTimeChanged: (p0) {},
+                mode: CupertinoDatePickerMode.dateAndTime,
+                dateSelectionMode: DateSelectionMode.past,
+                onDone: () {},
+                onCancel: () {},
+              );
+            },
+          ),
+          Spacers.smallVertical,
+          SelectionInputCard(
+            label: 'Duration',
+            hintText: 'Please select',
+            onPressed: () {
+              durationPickerModal(
+                context: context,
+                currentDuration: const Duration(minutes: 5),
+                onTimerDurationChanged: (Duration picked) {},
+                onCancel: () => context.pop(),
+                onDone: () {},
+              );
+            },
+          ),
+          Spacers.smallVertical,
+          LinkTextButton(
+            title: 'Delete',
+            color: AppColor.warningColor,
+            onPressed: () {},
+          ),
+          Spacers.largeVertical,
+        ],
+      ),
     );
   }
 }
