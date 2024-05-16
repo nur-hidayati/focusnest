@@ -88,72 +88,75 @@ class _ActivityCalendarScreenState
                           final dao =
                               ActivityTimerDatabase().activityCalendarDao;
                           final activity = activities[index];
-                          return Column(
-                            children: [
-                              const Divider(height: 1),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: Slidable(
-                                  key: ValueKey(activity.id),
-                                  closeOnScroll: true,
-                                  endActionPane: ActionPane(
-                                    motion: const ScrollMotion(),
-                                    children: [
-                                      SlidableAction(
-                                        onPressed: (context) async {
-                                          bool? isDeleteConfirm =
-                                              await showAlertDialog(
-                                                  context: context,
-                                                  title: 'Delete Record',
-                                                  content:
-                                                      'Are you sure want to delete this record permanently? You cannot undo this action.');
-                                          if (isDeleteConfirm == true) {
-                                            await dao.deleteActivityTimerById(
-                                                activity.id, userId);
-                                          }
-                                        },
-                                        icon: Icons.delete,
-                                        backgroundColor: Colors.red,
-                                        label: 'Delete',
+                          return Slidable(
+                            key: ValueKey(activity.id),
+                            closeOnScroll: true,
+                            endActionPane: ActionPane(
+                              extentRatio: 0.3,
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) async {
+                                    bool? isDeleteConfirm = await showAlertDialog(
+                                        context: context,
+                                        title: 'Delete Record',
+                                        content:
+                                            'Are you sure want to delete this record permanently? You cannot undo this action.');
+                                    if (isDeleteConfirm == true) {
+                                      await dao.deleteActivityTimerById(
+                                          activity.id, userId);
+                                    }
+                                  },
+                                  icon: Icons.delete,
+                                  backgroundColor: Colors.red,
+                                  label: 'Delete',
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                const Divider(height: 1),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      dense: true,
+                                      title: CustomText(
+                                        title: formatSecondsToReadable(Duration(
+                                            seconds: activity
+                                                .actualDurationInSeconds)),
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ],
-                                  ),
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    dense: true,
-                                    title: CustomText(
-                                      title: formatSecondsToReadable(Duration(
-                                          seconds: activity
-                                              .actualDurationInSeconds)),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    subtitle: CustomText(
-                                      title: activity.activityLabel,
-                                    ),
-                                    trailing: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        CustomText(
-                                          title: formatTime(
-                                              activity.startDateTime),
-                                          fontSize: 14,
-                                          color: AppColor.greyColor,
-                                        ),
-                                        Spacers.extraSmallVertical,
-                                        CustomText(
-                                          title:
-                                              formatTime(activity.endDateTime),
-                                          fontSize: 14,
-                                          color: AppColor.greyColor,
-                                        ),
-                                      ],
+                                      subtitle: CustomText(
+                                        title: activity.activityLabel,
+                                      ),
+                                      trailing: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CustomText(
+                                            title: formatTime(
+                                                activity.startDateTime),
+                                            fontSize: 14,
+                                            color: AppColor.greyColor,
+                                          ),
+                                          Spacers.extraSmallVertical,
+                                          CustomText(
+                                            title: formatTime(
+                                                activity.endDateTime),
+                                            fontSize: 14,
+                                            color: AppColor.greyColor,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         },
                       );
