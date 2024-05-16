@@ -82,9 +82,7 @@ Future<void> showOKAlert({
   );
 }
 
-Future<void> showInvalidDurationAlert(
-  BuildContext ctx,
-) {
+Future<void> showInvalidDurationAlert(BuildContext ctx) {
   return showOKAlert(
     context: ctx,
     title: 'Invalid Duration',
@@ -92,12 +90,18 @@ Future<void> showInvalidDurationAlert(
   );
 }
 
-Future<void> showInvalidLabelAlert(
-  BuildContext ctx,
-) {
+Future<void> showInvalidLabelAlert(BuildContext ctx) {
   return showOKAlert(
     context: ctx,
     title: 'Invalid Activity Label',
     content: 'Activity Label cannot be empty',
   );
+}
+
+Future<bool?> showDeleteRecordAlert(BuildContext ctx) {
+  return showAlertDialog(
+      context: ctx,
+      title: 'Delete Record',
+      content:
+          'Are you sure want to delete this record permanently? You cannot undo this action.');
 }

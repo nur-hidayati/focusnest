@@ -119,11 +119,8 @@ class _ActivityCalendarScreenState
                               children: [
                                 SlidableAction(
                                   onPressed: (context) async {
-                                    bool? isDeleteConfirm = await showAlertDialog(
-                                        context: context,
-                                        title: 'Delete Record',
-                                        content:
-                                            'Are you sure want to delete this record permanently? You cannot undo this action.');
+                                    bool? isDeleteConfirm =
+                                        await showDeleteRecordAlert(context);
                                     if (isDeleteConfirm == true) {
                                       await dao.deleteActivityTimerById(
                                           activity.id, userId);
@@ -145,6 +142,7 @@ class _ActivityCalendarScreenState
                                       useRootNavigator: true,
                                       builder: (BuildContext context) {
                                         return UpdateActivityTimer(
+                                          userId: userId,
                                           timerId: activity.id,
                                           startDateTime: activity.startDateTime,
                                           label: activity.activityLabel,

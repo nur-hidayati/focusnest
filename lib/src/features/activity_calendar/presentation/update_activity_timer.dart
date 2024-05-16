@@ -9,12 +9,14 @@ import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
 class UpdateActivityTimer extends ConsumerStatefulWidget {
+  final String userId;
   final String timerId;
   final String label;
   final DateTime startDateTime;
   final Duration duration;
 
   const UpdateActivityTimer({
+    required this.userId,
     required this.timerId,
     required this.label,
     required this.startDateTime,
@@ -33,6 +35,15 @@ class _UpdateActivityTimerState extends ConsumerState<UpdateActivityTimer>
   void initState() {
     super.initState();
     initActivityTimerForm(widget.label, widget.startDateTime, widget.duration);
+  }
+
+  void _handleOnDeleteRecord() async {
+    final dao = ActivityTimerDatabase().activityCalendarDao;
+    bool? isDeleteConfirm = await showDeleteRecordAlert(context);
+    if (isDeleteConfirm == true) {
+      await dao.deleteActivityTimerById(widget.timerId, widget.userId);
+      if (mounted) context.pop();
+    }
   }
 
   Future<void> _updateActivityTimer() async {
@@ -65,7 +76,7 @@ class _UpdateActivityTimerState extends ConsumerState<UpdateActivityTimer>
       onDurationChanged: handleOnDurationChanged,
       onDurationConfirmed: handleOnDurationConfirmed,
       onUpdateActivityTimer: _updateActivityTimer,
-      onDeleteAction: () {},
+      onDeleteAction: _handleOnDeleteRecord,
     );
   }
 }
