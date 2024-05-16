@@ -64,7 +64,6 @@ class TimerSection extends ConsumerWidget {
                 onTap: () => showModalBottomSheet(
                   context: context,
                   useRootNavigator: true,
-                  isDismissible: false,
                   builder: (BuildContext context) {
                     return const ActivityLabelForm();
                   },

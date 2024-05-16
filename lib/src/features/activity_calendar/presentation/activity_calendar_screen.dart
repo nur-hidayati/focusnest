@@ -1,23 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:focusnest/src/common_widgets/bottom_sheet_contents.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
-import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
-import 'package:focusnest/src/common_widgets/link_text_button.dart';
-import 'package:focusnest/src/common_widgets/selection_input_card.dart';
 import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_providers.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/custom_calendar.dart';
+import 'package:focusnest/src/features/activity_calendar/presentation/update_activity_timer.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
-import 'package:focusnest/src/utils/modal_helper.dart';
-import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ActivityCalendarScreen extends ConsumerStatefulWidget {
@@ -189,106 +183,6 @@ class _ActivityCalendarScreenState
               ],
             )
           : const UserNotFound(),
-    );
-  }
-}
-
-class UpdateActivityTimer extends StatefulWidget {
-  final String label;
-  final DateTime startDateTime;
-  final DateTime endDateTime;
-  final Duration duration;
-
-  const UpdateActivityTimer({
-    required this.label,
-    required this.startDateTime,
-    required this.endDateTime,
-    required this.duration,
-    super.key,
-  });
-
-  @override
-  State<UpdateActivityTimer> createState() => _UpdateActivityTimerState();
-}
-
-class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
-  late TextEditingController activityLabelController;
-
-  @override
-  void initState() {
-    super.initState();
-    activityLabelController = TextEditingController(text: widget.label);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomSheetContents(
-      headerTitle: 'Edit Record',
-      onDoneActivityLabelUpdate: () {},
-      child: Column(
-        children: [
-          CustomTextFormField(
-            controller: activityLabelController,
-            hintText: 'Activity Label',
-          ),
-          Spacers.smallVertical,
-          SelectionInputCard(
-            label: 'Start from',
-            value: formatDateTime(widget.startDateTime),
-            hintText: 'Please select',
-            onPressed: () {
-              datePickerModal(
-                context: context,
-                onDateTimeChanged: (p0) {},
-                mode: CupertinoDatePickerMode.dateAndTime,
-                dateSelectionMode: DateSelectionMode.past,
-                onDone: () {},
-                onCancel: () {},
-                initialDateTime: widget.startDateTime,
-              );
-            },
-          ),
-          Spacers.smallVertical,
-          SelectionInputCard(
-            label: 'End at',
-            value: formatDateTime(widget.endDateTime),
-            hintText: 'Please select',
-            onPressed: () {
-              datePickerModal(
-                context: context,
-                onDateTimeChanged: (p0) {},
-                mode: CupertinoDatePickerMode.dateAndTime,
-                dateSelectionMode: DateSelectionMode.past,
-                onDone: () {},
-                onCancel: () {},
-                initialDateTime: widget.endDateTime,
-              );
-            },
-          ),
-          Spacers.smallVertical,
-          SelectionInputCard(
-            label: 'Duration',
-            hintText: 'Please select',
-            value: formatDurationsToReadable(widget.duration),
-            onPressed: () {
-              durationPickerModal(
-                context: context,
-                currentDuration: widget.duration,
-                onTimerDurationChanged: (Duration picked) {},
-                onCancel: () => context.pop(),
-                onDone: () {},
-              );
-            },
-          ),
-          Spacers.smallVertical,
-          LinkTextButton(
-            title: 'Delete',
-            color: AppColor.warningColor,
-            onPressed: () {},
-          ),
-          Spacers.largeVertical,
-        ],
-      ),
     );
   }
 }
