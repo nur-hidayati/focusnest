@@ -46,5 +46,17 @@ ThemeData appTheme() {
         borderSide: const BorderSide(width: 0, style: BorderStyle.none),
       ),
     ),
+    cardTheme: CardTheme(
+      surfaceTintColor: Colors.white,
+      margin: EdgeInsets.zero,
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(
+          color: AppColor.inputColor,
+          width: 1,
+        ),
+      ),
+    ),
   );
 }
