@@ -20,6 +20,10 @@ class ActivityCalendarDao extends DatabaseAccessor<ActivityTimerDatabase>
         .watch();
   }
 
+  Future<int> insertActivityTimer(ActivityTimersCompanion entry) {
+    return into(activityTimers).insert(entry);
+  }
+
   Future<int> updateActivityTimer(String id, ActivityTimersCompanion entry) {
     return (update(activityTimers)..where((t) => t.id.equals(id))).write(entry);
   }

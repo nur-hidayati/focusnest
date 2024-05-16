@@ -69,10 +69,13 @@ class _ActivityCalendarScreenState
                 context: context,
                 useRootNavigator: true,
                 builder: (BuildContext context) {
-                  return AddActivityTimer(
-                    startDateTime: DateTime.now(),
-                    duration: const Duration(minutes: 15),
-                  );
+                  return userId != null
+                      ? AddActivityTimer(
+                          userId: userId,
+                          startDateTime: DateTime.now(),
+                          duration: const Duration(minutes: 15),
+                        )
+                      : const UserNotFound();
                 },
               );
             },

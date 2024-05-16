@@ -35,16 +35,14 @@ class _UpdateActivityTimerState extends ConsumerState<UpdateActivityTimer>
   }
 
   Future<void> _updateActivityTimer() async {
-    final totalDuration = selectedDuration.inSeconds;
-
     final dao = ref.read(activityCalendarDaoProvider);
 
     final entry = ActivityTimersCompanion(
       activityLabel: drift.Value(activityLabelController.text.trim()),
       startDateTime: drift.Value(selectedStartDateTime),
-      endDateTime: drift.Value(selectedStartDateTime.add(selectedDuration)),
-      actualDurationInSeconds: drift.Value(totalDuration),
-      targetedDurationInSeconds: drift.Value(totalDuration),
+      endDateTime: drift.Value(endDateTime),
+      actualDurationInSeconds: drift.Value(totalDurationInSeconds),
+      targetedDurationInSeconds: drift.Value(totalDurationInSeconds),
     );
 
     await dao.updateActivityTimer(widget.timerId, entry);

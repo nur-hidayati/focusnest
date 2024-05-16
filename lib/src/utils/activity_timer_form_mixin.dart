@@ -17,6 +17,9 @@ mixin ActivityTimerFormMixin<T extends StatefulWidget> on State<T> {
   Duration? _tempSelectedDuration;
   Duration? get tempSelectedDuration => _tempSelectedDuration;
 
+  DateTime get endDateTime => _selectedStartDateTime.add(_selectedDuration);
+  int get totalDurationInSeconds => _selectedDuration.inSeconds;
+
   @override
   void dispose() {
     super.dispose();
