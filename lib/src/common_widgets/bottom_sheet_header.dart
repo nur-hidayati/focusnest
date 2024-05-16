@@ -1,25 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
+import 'package:focusnest/src/constants/app_padding.dart';
 
 class BottomSheetHeader extends StatelessWidget {
   final String title;
   final VoidCallback onCancel;
   final VoidCallback? onDone;
-  final EdgeInsetsGeometry? headerPadding;
 
   const BottomSheetHeader({
     required this.title,
     this.onDone,
     required this.onCancel,
-    this.headerPadding,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: headerPadding,
+      padding: AppPadding.horizontalPadding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
