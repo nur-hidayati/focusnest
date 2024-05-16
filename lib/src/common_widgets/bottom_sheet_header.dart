@@ -6,18 +6,20 @@ class BottomSheetHeader extends StatelessWidget {
   final String title;
   final VoidCallback onCancel;
   final VoidCallback? onDone;
+  final EdgeInsetsGeometry? headerPadding;
 
   const BottomSheetHeader({
     required this.title,
     this.onDone,
     required this.onCancel,
+    this.headerPadding,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+    return Container(
+      padding: headerPadding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
