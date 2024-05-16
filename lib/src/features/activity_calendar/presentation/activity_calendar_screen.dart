@@ -5,6 +5,7 @@ import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_dao.dart';
 import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_providers.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/add_activity_timer.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/custom_calendar.dart';
@@ -42,6 +43,38 @@ class _ActivityCalendarScreenState
     });
   }
 
+  void _showAddActivityTimerModal(String? userId) {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      builder: (BuildContext context) {
+        return userId != null
+            ? AddActivityTimer(
+                userId: userId,
+                startDateTime: DateTime.now(),
+                duration: const Duration(minutes: 15),
+              )
+            : const UserNotFound();
+      },
+    );
+  }
+
+  void _showUpdateActivityTimerModal(ActivityTimer activity) {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      builder: (BuildContext context) {
+        return UpdateActivityTimer(
+          userId: activity.userId,
+          timerId: activity.id,
+          startDateTime: activity.startDateTime,
+          label: activity.activityLabel,
+          duration: Duration(seconds: activity.actualDurationInSeconds),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
@@ -51,157 +84,132 @@ class _ActivityCalendarScreenState
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calendar'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              _calendarFormat == CalendarFormat.month
-                  ? Icons.calendar_view_week
-                  : Icons.calendar_month,
-            ),
-            onPressed: _toggleCalendarFormat,
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.add,
-            ),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                useRootNavigator: true,
-                builder: (BuildContext context) {
-                  return userId != null
-                      ? AddActivityTimer(
-                          userId: userId,
-                          startDateTime: DateTime.now(),
-                          duration: const Duration(minutes: 15),
-                        )
-                      : const UserNotFound();
-                },
-              );
-            },
-          ),
-        ],
+        centerTitle: true,
+        actions: _buildCalendarAppBarActions(userId),
       ),
       body: userId != null
-          ? Column(
-              children: [
-                CustomCalendar(
-                  selectedDate: _selectedDate,
-                  onDateSelectedChanged: _handleOnDateSelectionChanged,
-                  calendarFormat: _calendarFormat,
-                ),
-                Expanded(
-                  child: StreamBuilder<List<ActivityTimer>>(
-                    stream: dao.watchActivitiesForDate(userId, _selectedDate),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
-                            child: Text('No activities found.'));
-                      }
-                      final activities = snapshot.data!;
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: activities.length,
-                        itemBuilder: (context, index) {
-                          final dao =
-                              ActivityTimerDatabase().activityCalendarDao;
-                          final activity = activities[index];
-                          return Slidable(
-                            key: ValueKey(activity.id),
-                            closeOnScroll: true,
-                            endActionPane: ActionPane(
-                              extentRatio: 0.3,
-                              motion: const ScrollMotion(),
-                              children: [
-                                SlidableAction(
-                                  onPressed: (context) async {
-                                    bool? isDeleteConfirm =
-                                        await showDeleteRecordAlert(context);
-                                    if (isDeleteConfirm == true) {
-                                      await dao.deleteActivityTimerById(
-                                          activity.id, userId);
-                                    }
-                                  },
-                                  icon: Icons.delete,
-                                  backgroundColor: Colors.red,
-                                  label: 'Delete',
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                const Divider(height: 1),
-                                GestureDetector(
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      useRootNavigator: true,
-                                      builder: (BuildContext context) {
-                                        return UpdateActivityTimer(
-                                          userId: userId,
-                                          timerId: activity.id,
-                                          startDateTime: activity.startDateTime,
-                                          label: activity.activityLabel,
-                                          duration: Duration(
-                                              seconds: activity
-                                                  .actualDurationInSeconds),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      dense: true,
-                                      title: CustomText(
-                                        title: activity.activityLabel,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      subtitle: CustomText(
-                                        title: formatDurationsToReadable(
-                                            Duration(
-                                                seconds: activity
-                                                    .actualDurationInSeconds)),
-                                      ),
-                                      trailing: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          CustomText(
-                                            title: formatTime(
-                                                activity.startDateTime),
-                                            fontSize: 14,
-                                            color: AppColor.greyColor,
-                                          ),
-                                          Spacers.extraSmallVertical,
-                                          CustomText(
-                                            title: formatTime(
-                                                activity.endDateTime),
-                                            fontSize: 14,
-                                            color: AppColor.greyColor,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            )
+          ? _buildCalendarContent(userId, dao)
           : const UserNotFound(),
+    );
+  }
+
+  List<Widget> _buildCalendarAppBarActions(String? userId) {
+    return [
+      IconButton(
+        icon: Icon(
+          _calendarFormat == CalendarFormat.month
+              ? Icons.calendar_view_week
+              : Icons.calendar_month,
+        ),
+        onPressed: _toggleCalendarFormat,
+      ),
+      IconButton(
+        icon: const Icon(Icons.add),
+        onPressed: () => _showAddActivityTimerModal(userId),
+      ),
+    ];
+  }
+
+  Widget _buildCalendarContent(String userId, ActivityCalendarDao dao) {
+    return Column(
+      children: [
+        CustomCalendar(
+          selectedDate: _selectedDate,
+          onDateSelectedChanged: _handleOnDateSelectionChanged,
+          calendarFormat: _calendarFormat,
+        ),
+        Expanded(
+          child: StreamBuilder<List<ActivityTimer>>(
+            stream: dao.watchActivitiesForDate(userId, _selectedDate),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No activities found.'));
+              }
+              return _buildActivityList(snapshot.data!, userId);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActivityList(List<ActivityTimer> activities, String userId) {
+    return ListView.builder(
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      itemCount: activities.length,
+      itemBuilder: (context, index) {
+        final activity = activities[index];
+        return Slidable(
+          key: ValueKey(activity.id),
+          closeOnScroll: true,
+          endActionPane: ActionPane(
+            extentRatio: 0.3,
+            motion: const ScrollMotion(),
+            children: [
+              SlidableAction(
+                onPressed: (context) async {
+                  bool? isDeleteConfirm = await showDeleteRecordAlert(context);
+                  if (isDeleteConfirm == true) {
+                    await ActivityTimerDatabase()
+                        .activityCalendarDao
+                        .deleteActivityTimerById(activity.id, userId);
+                  }
+                },
+                icon: Icons.delete,
+                backgroundColor: Colors.red,
+                label: 'Delete',
+              ),
+            ],
+          ),
+          child: _buildActivityTile(activity),
+        );
+      },
+    );
+  }
+
+  Widget _buildActivityTile(ActivityTimer activity) {
+    return Column(
+      children: [
+        const Divider(height: 1),
+        GestureDetector(
+          onTap: () => _showUpdateActivityTimerModal(activity),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              title: CustomText(
+                title: activity.activityLabel,
+                fontWeight: FontWeight.bold,
+              ),
+              subtitle: CustomText(
+                title: formatDurationsToReadable(
+                    Duration(seconds: activity.actualDurationInSeconds)),
+              ),
+              trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomText(
+                    title: formatTime(activity.startDateTime),
+                    fontSize: 14,
+                    color: AppColor.greyColor,
+                  ),
+                  Spacers.extraSmallVertical,
+                  CustomText(
+                    title: formatTime(activity.endDateTime),
+                    fontSize: 14,
+                    color: AppColor.greyColor,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
