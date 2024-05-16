@@ -4,18 +4,19 @@ import 'package:focusnest/src/common_widgets/bottom_sheet_header.dart';
 Future<void> datePickerModal({
   required BuildContext context,
   required void Function(DateTime) onDateTimeChanged,
+  required VoidCallback onDone,
+  required VoidCallback onCancel,
   DateTime? initialDateTime,
   DateTime? minimumDate,
   DateTime? maximumDate,
   CupertinoDatePickerMode mode = CupertinoDatePickerMode.date,
   DateSelectionMode dateSelectionMode = DateSelectionMode.both,
-  required VoidCallback onDone,
-  required VoidCallback onCancel,
 }) {
   final DateTime now = DateTime.now();
   final DateTime todayMidnight = DateTime(now.year, now.month, now.day);
   final DateTime endOfToday = DateTime(now.year, now.month, now.day, 23, 59);
   final DateTime effectiveInitialDateTime = initialDateTime ?? now;
+  DateTime? tempDateTime;
 
   if (dateSelectionMode == DateSelectionMode.past) {
     maximumDate = endOfToday;
@@ -25,12 +26,19 @@ Future<void> datePickerModal({
 
   return cupertinoPickerModal(
     context: context,
-    onDone: onDone,
+    onDone: () {
+      if (tempDateTime != null) {
+        onDateTimeChanged(tempDateTime!);
+      }
+      onDone();
+    },
     onCancel: onCancel,
     child: CupertinoDatePicker(
       dateOrder: DatePickerDateOrder.dmy,
       mode: mode,
-      onDateTimeChanged: onDateTimeChanged,
+      onDateTimeChanged: (DateTime date) {
+        tempDateTime = date;
+      },
       initialDateTime: effectiveInitialDateTime,
       minimumDate: minimumDate,
       maximumDate: maximumDate,
