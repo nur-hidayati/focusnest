@@ -62,7 +62,7 @@ class _TimerDoneScreenState extends State<TimerDoneScreen> {
               Spacers.mediumVertical,
               CustomText(
                 title:
-                    'Total Time : ${formatSecondsToReadable(widget.duration)}',
+                    'Total Time : ${formatDurationsToReadable(widget.duration)}',
                 textType: TextType.title,
               ),
               Spacers.largeVertical,

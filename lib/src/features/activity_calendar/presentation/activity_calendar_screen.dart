@@ -129,7 +129,14 @@ class _ActivityCalendarScreenState
                                       context: context,
                                       useRootNavigator: true,
                                       builder: (BuildContext context) {
-                                        return const UpdateActivityTimer();
+                                        return UpdateActivityTimer(
+                                          startDateTime: activity.startDateTime,
+                                          endDateTime: activity.endDateTime,
+                                          label: activity.activityLabel,
+                                          duration: Duration(
+                                              seconds: activity
+                                                  .actualDurationInSeconds),
+                                        );
                                       },
                                     );
                                   },
@@ -144,9 +151,10 @@ class _ActivityCalendarScreenState
                                         fontWeight: FontWeight.bold,
                                       ),
                                       subtitle: CustomText(
-                                        title: formatSecondsToReadable(Duration(
-                                            seconds: activity
-                                                .actualDurationInSeconds)),
+                                        title: formatDurationsToReadable(
+                                            Duration(
+                                                seconds: activity
+                                                    .actualDurationInSeconds)),
                                       ),
                                       trailing: Column(
                                         mainAxisAlignment:
@@ -186,14 +194,32 @@ class _ActivityCalendarScreenState
 }
 
 class UpdateActivityTimer extends StatefulWidget {
-  const UpdateActivityTimer({super.key});
+  final String label;
+  final DateTime startDateTime;
+  final DateTime endDateTime;
+  final Duration duration;
+
+  const UpdateActivityTimer({
+    required this.label,
+    required this.startDateTime,
+    required this.endDateTime,
+    required this.duration,
+    super.key,
+  });
 
   @override
   State<UpdateActivityTimer> createState() => _UpdateActivityTimerState();
 }
 
 class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
-  final activityLabelController = TextEditingController();
+  late TextEditingController activityLabelController;
+
+  @override
+  void initState() {
+    super.initState();
+    activityLabelController = TextEditingController(text: widget.label);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomSheetContents(
@@ -208,6 +234,7 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
           Spacers.smallVertical,
           SelectionInputCard(
             label: 'Start from',
+            value: formatDateTime(widget.startDateTime),
             hintText: 'Please select',
             onPressed: () {
               datePickerModal(
@@ -217,12 +244,14 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
                 dateSelectionMode: DateSelectionMode.past,
                 onDone: () {},
                 onCancel: () {},
+                initialDateTime: widget.startDateTime,
               );
             },
           ),
           Spacers.smallVertical,
           SelectionInputCard(
             label: 'End at',
+            value: formatDateTime(widget.endDateTime),
             hintText: 'Please select',
             onPressed: () {
               datePickerModal(
@@ -232,6 +261,7 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
                 dateSelectionMode: DateSelectionMode.past,
                 onDone: () {},
                 onCancel: () {},
+                initialDateTime: widget.endDateTime,
               );
             },
           ),
@@ -239,10 +269,11 @@ class _UpdateActivityTimerState extends State<UpdateActivityTimer> {
           SelectionInputCard(
             label: 'Duration',
             hintText: 'Please select',
+            value: formatDurationsToReadable(widget.duration),
             onPressed: () {
               durationPickerModal(
                 context: context,
-                currentDuration: const Duration(minutes: 5),
+                currentDuration: widget.duration,
                 onTimerDurationChanged: (Duration picked) {},
                 onCancel: () => context.pop(),
                 onDone: () {},
