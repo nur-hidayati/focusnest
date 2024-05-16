@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:focusnest/src/common_widgets/bottom_sheet_header.dart';
+import 'package:focusnest/src/constants/app_padding.dart';
 
 class DurationPicker extends StatelessWidget {
   final Duration duration;
@@ -26,6 +27,7 @@ class DurationPicker extends StatelessWidget {
               title: 'Select Duration',
               onDone: onDone,
               onCancel: onCancel,
+              headerPadding: AppPadding.horizontalPadding,
             ),
             Expanded(
               child: CupertinoTimerPicker(
