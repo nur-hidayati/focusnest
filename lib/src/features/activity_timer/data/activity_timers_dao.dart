@@ -20,16 +20,16 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
         .watchSingleOrNull();
   }
 
-  Stream<List<ActivityTimer>> watchRecentActivities(String userId) {
-    return (select(activityTimers)
-          ..where((tbl) => tbl.userId.equals(userId))
-          ..orderBy([
-            (t) =>
-                OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc)
-          ])
-          ..limit(10))
-        .watch()
-        .map((timers) => filterDuplicates(timers));
+  Future<List<ActivityTimer>> getRecentActivities(String userId) async {
+    final query = select(activityTimers)
+      ..where((tbl) => tbl.userId.equals(userId))
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc)
+      ])
+      ..limit(10);
+
+    final result = await query.get();
+    return filterDuplicates(result);
   }
 
   Future<int> insertActivityTimer(ActivityTimersCompanion entry) {
