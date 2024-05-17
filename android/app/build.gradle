@@ -81,13 +81,13 @@ android {
 
 task switchGoogleServicesFile(type: Copy) {
     def flavor = gradle.startParameter.taskNames.find {
-        it.contains("Prod")
+        it.toLowerCase().contains("production")
     } ? "production" : gradle.startParameter.taskNames.find {
-        it.contains("Stg")
+        it.toLowerCase().contains("staging")
     } ? "staging" : "development"
 
     from "src/$flavor/google-services.json"
-    into "app"
+    into "."
     rename {
         "google-services.json"
     }
