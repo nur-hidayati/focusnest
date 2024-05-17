@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +34,9 @@ class TimerStartScreen extends ConsumerStatefulWidget {
   ConsumerState<TimerStartScreen> createState() => _TimerStartScreenState();
 }
 
-class _TimerStartScreenState extends ConsumerState<TimerStartScreen> {
+class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
+    with WidgetsBindingObserver {
+  AppLifecycleState? _lastLifecycleState;
   bool isPaused = false;
   Timer? _timer;
   late Duration _remainingDuration;
@@ -48,13 +51,20 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen> {
     _startDateTime = DateTime.now();
     _startTimer();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _lastLifecycleState = state;
   }
 
   void _startTimer() {
@@ -66,14 +76,23 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen> {
         });
       } else {
         _timer?.cancel();
+        context.pushNamed(
+          RoutesName.timerDone,
+          queryParameters: {
+            'duration': widget.duration.inSeconds.toString(),
+          },
+        );
         _addActivityToDatabase();
-        if (mounted) {
-          context.pushNamed(
-            RoutesName.timerDone,
-            queryParameters: {
-              'duration': widget.duration.inSeconds.toString(),
-            },
-          );
+        if (_lastLifecycleState == AppLifecycleState.paused ||
+            _lastLifecycleState == AppLifecycleState.detached) {
+          AwesomeNotifications().createNotification(
+              content: NotificationContent(
+            id: DateTime.now().millisecondsSinceEpoch.remainder(1000),
+            title: 'FocusNest',
+            body:
+                'Congratulations! You have completed the task ${Emojis.hand_clapping_hands}',
+            channelKey: 'basic_channel',
+          ));
         }
       }
     });
