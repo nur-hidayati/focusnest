@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +11,7 @@ import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
+import 'package:focusnest/src/services/notfication_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/app_logger.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
@@ -75,6 +75,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
           _remainingDuration = _remainingDuration - const Duration(seconds: 1);
         });
       } else {
+        // Timer done
         _timer?.cancel();
         context.pushNamed(
           RoutesName.timerDone,
@@ -85,14 +86,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
         _addActivityToDatabase();
         if (_lastLifecycleState == AppLifecycleState.paused ||
             _lastLifecycleState == AppLifecycleState.detached) {
-          AwesomeNotifications().createNotification(
-              content: NotificationContent(
-            id: DateTime.now().millisecondsSinceEpoch.remainder(1000),
-            title: 'FocusNest',
-            body:
-                'Congratulations! You have completed the task ${Emojis.hand_clapping_hands}',
-            channelKey: 'basic_channel',
-          ));
+          NotificationController.createTimerDoneNotification(context);
         }
       }
     });
