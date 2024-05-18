@@ -4,17 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/app.dart';
 import 'package:focusnest/firebase_options_dev.dart' as dev;
+import 'package:focusnest/src/services/notification_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
-
   await Firebase.initializeApp(
     options: dev.DefaultFirebaseOptions.currentPlatform,
   );
-
+  await NotificationController.initializeLocalNotifications();
   runApp(
     const ProviderScope(
       child: App(flavor: 'DEVELOPMENT'),

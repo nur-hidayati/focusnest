@@ -51,3 +51,4 @@ ios/config/staging/GoogleService-Info.plist
 lib/firebase_options_dev.dart
 lib/firebase_options_prod.dart
 lib/firebase_options_stg.dart
+android/app/google-services.json

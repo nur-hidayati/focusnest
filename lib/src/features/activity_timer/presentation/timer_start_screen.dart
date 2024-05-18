@@ -11,6 +11,7 @@ import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
+import 'package:focusnest/src/services/notification_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/app_logger.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
@@ -33,7 +34,9 @@ class TimerStartScreen extends ConsumerStatefulWidget {
   ConsumerState<TimerStartScreen> createState() => _TimerStartScreenState();
 }
 
-class _TimerStartScreenState extends ConsumerState<TimerStartScreen> {
+class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
+    with WidgetsBindingObserver {
+  AppLifecycleState? _lastLifecycleState;
   bool isPaused = false;
   Timer? _timer;
   late Duration _remainingDuration;
@@ -48,13 +51,20 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen> {
     _startDateTime = DateTime.now();
     _startTimer();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _lastLifecycleState = state;
   }
 
   void _startTimer() {
@@ -65,15 +75,18 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen> {
           _remainingDuration = _remainingDuration - const Duration(seconds: 1);
         });
       } else {
+        // Timer done
         _timer?.cancel();
+        context.pushNamed(
+          RoutesName.timerDone,
+          queryParameters: {
+            'duration': widget.duration.inSeconds.toString(),
+          },
+        );
         _addActivityToDatabase();
-        if (mounted) {
-          context.pushNamed(
-            RoutesName.timerDone,
-            queryParameters: {
-              'duration': widget.duration.inSeconds.toString(),
-            },
-          );
+        if (_lastLifecycleState == AppLifecycleState.paused ||
+            _lastLifecycleState == AppLifecycleState.detached) {
+          NotificationController.createTimerDoneNotification(context);
         }
       }
     });

@@ -6,7 +6,6 @@ import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
-import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:go_router/go_router.dart';
 
 class TimerDoneScreen extends StatefulWidget {
@@ -43,6 +42,7 @@ class _TimerDoneScreenState extends State<TimerDoneScreen> {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Icon(
                 Icons.check_circle_outline,
@@ -57,13 +57,9 @@ class _TimerDoneScreenState extends State<TimerDoneScreen> {
               ),
               Spacers.mediumVertical,
               const CustomText(
-                title: 'You managed to complete the activity.',
-              ),
-              Spacers.mediumVertical,
-              CustomText(
-                title:
-                    'Total Time : ${formatDurationsToReadable(widget.duration)}',
-                textType: TextType.title,
+                title: 'You managed to complete the activity. Keep Going.',
+                overflow: TextOverflow.visible,
+                textAlign: TextAlign.center,
               ),
               Spacers.largeVertical,
               CustomButton(
