@@ -123,7 +123,6 @@
 				2BF1FBE79835B1035DBC30AD /* Pods-RunnerTests.profile-development.xcconfig */,
 				0C1A67397C2B5B11BC80C4D9 /* Pods-RunnerTests.profile-staging.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -523,7 +522,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_production.dart;
+				FLUTTER_TARGET = lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -656,7 +655,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_staging.dart;
+				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -758,7 +757,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_development.dart;
+				FLUTTER_TARGET = lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -857,7 +856,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_staging.dart;
+				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -953,7 +952,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_development.dart;
+				FLUTTER_TARGET = lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1047,7 +1046,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_staging.dart;
+				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1141,7 +1140,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_development.dart;
+				FLUTTER_TARGET = lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1294,7 +1293,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_production.dart;
+				FLUTTER_TARGET = lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1321,7 +1320,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = HB7L3VPF65;
 				ENABLE_BITCODE = NO;
-				FLUTTER_TARGET = /Users/nurhidayati/development/projects/focusnest/lib/main_production.dart;
+				FLUTTER_TARGET = lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
