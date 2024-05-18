@@ -56,8 +56,8 @@ class NotificationController {
   // Create Timer Notification
   static Future<void> createTimerDoneNotification(BuildContext context) async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+
     if (!isAllowed) {
-      // If permission is still not granted, return
       return;
     }
     await AwesomeNotifications().createNotification(
