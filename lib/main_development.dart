@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/app.dart';
 import 'package:focusnest/firebase_options_dev.dart' as dev;
-import 'package:focusnest/src/services/notfication_controller.dart';
+import 'package:focusnest/src/services/notification_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

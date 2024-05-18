@@ -3,7 +3,7 @@ import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/recents_timer_activity_section.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/timer_section.dart';
-import 'package:focusnest/src/services/notfication_controller.dart';
+import 'package:focusnest/src/services/notification_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ActivityTimerScreen extends StatefulWidget {
