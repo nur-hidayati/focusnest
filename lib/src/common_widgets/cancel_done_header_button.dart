@@ -29,12 +29,16 @@ class CancelDoneHeaderButton extends StatelessWidget {
             title: 'Cancel',
             onPressed: onCancel,
           ),
-          CustomText(
-            title: title,
-            fontWeight: FontWeight.bold,
+          Expanded(
+            child: Center(
+              child: CustomText(
+                title: title,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           LinkTextButton(
-            title: doneTitle ?? 'Done',
+            title: doneTitle != null ? 'Done' : '',
             onPressed: onDone,
           ),
         ],
