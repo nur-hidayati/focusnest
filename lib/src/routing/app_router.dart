@@ -9,7 +9,6 @@ import 'package:focusnest/src/features/authentication/presentation/auth_form_typ
 import 'package:focusnest/src/features/authentication/presentation/auth_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/account_settings_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen.dart';
-import 'package:focusnest/src/features/settings/presentation/update_email_screen.dart';
 import 'package:focusnest/src/routing/go_router_refresh_stream.dart';
 import 'package:focusnest/src/routing/scaffold_with_nested_navigation.dart';
 import 'package:go_router/go_router.dart';
@@ -179,42 +178,6 @@ GoRouter goRouter(GoRouterRef ref) {
                         transitionDuration: const Duration(milliseconds: 300),
                       );
                     },
-                    routes: [
-                      GoRoute(
-                        path: 'update-email',
-                        name: RoutesName.updateEmail,
-                        parentNavigatorKey: _rootNavigatorKey,
-                        pageBuilder: (context, state) {
-                          final userId = state.pathParameters['userId']!;
-                          final userEmail =
-                              state.uri.queryParameters['userEmail']!;
-
-                          return CustomTransitionPage<void>(
-                            child: UpdateEmailScreen(
-                              userId: userId,
-                              userEmail: userEmail,
-                            ),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(0.0, 1.0);
-                              const end = Offset.zero;
-                              const curve = Curves.easeInOut;
-
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              var offsetAnimation = animation.drive(tween);
-
-                              return SlideTransition(
-                                position: offsetAnimation,
-                                child: child,
-                              );
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 300),
-                          );
-                        },
-                      ),
-                    ],
                   ),
                 ],
               ),

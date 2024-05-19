@@ -10,5 +10,4 @@ class RoutesName {
   // Settings
   static const String settings = 'settings';
   static const String accountSettings = 'accountSettings';
-  static const String updateEmail = 'updateEmail';
 }

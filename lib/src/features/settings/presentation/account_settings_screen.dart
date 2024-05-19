@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
-import 'package:go_router/go_router.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   final String userId;
@@ -33,17 +31,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   title: 'Email',
                   subtitle: widget.userEmail,
                   icon: Icons.email_outlined,
-                  action: () {
-                    context.pushNamed(
-                      RoutesName.updateEmail,
-                      pathParameters: {
-                        'userId': widget.userId,
-                      },
-                      queryParameters: {
-                        'userEmail': widget.userEmail,
-                      },
-                    );
-                  },
+                  hasTrailingIcon: false,
                 ),
                 const SettingTile(
                   title: 'Change Password',
