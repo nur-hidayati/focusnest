@@ -10,6 +10,7 @@ class AppUser with _$AppUser {
   factory AppUser({
     required String id,
     required String email,
+    @Default(false) bool isVerified,
     @TimestampConverter() required DateTime createdDate,
   }) = _AppUser;
 
