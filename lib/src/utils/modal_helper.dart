@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/cancel_done_header_button.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 
@@ -106,6 +107,16 @@ Future<void> cupertinoPickerModal({
           ],
         ),
       ),
+    ),
+  );
+}
+
+void showCustomSnackBar(BuildContext context, String message,
+    {int durationInSeconds = 2}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: durationInSeconds),
     ),
   );
 }
