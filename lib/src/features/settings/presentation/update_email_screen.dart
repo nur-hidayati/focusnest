@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/cancel_done_header_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
+import 'package:focusnest/src/common_widgets/loading_manager.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
+import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_validators.dart';
@@ -33,6 +35,8 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen>
   String? _emailError;
   String? _passwordError;
 
+  bool _isLoading = false;
+
   @override
   void dispose() {
     _newEmailController.dispose();
@@ -44,6 +48,7 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen>
     FocusScope.of(context).unfocus();
 
     setState(() {
+      _isLoading = true;
       _emailError = null;
       _passwordError = null;
     });
@@ -55,6 +60,7 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen>
         await ref.read(authRepositoryProvider).isEmailAlreadyInUse(newEmail);
     if (emailInUse) {
       setState(() {
+        _isLoading = false;
         _emailError = 'This email is already in use';
       });
     }
@@ -65,70 +71,86 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen>
 
     if (!passwordValid) {
       setState(() {
+        _isLoading = false;
         _passwordError = 'Incorrect current password';
       });
     }
 
     if (_formKey.currentState!.validate()) {
-      // If everything is fine, proceed with the next steps
-      // ...
+      if (mounted) {
+        context.pushNamed(
+          RoutesName.updateEmailVerify,
+          pathParameters: {
+            'userId': widget.userId,
+          },
+          queryParameters: {
+            'userEmail': widget.userEmail,
+          },
+        );
+      }
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: AppPadding.screenPadding,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CancelDoneHeaderButton(
-                padding: const EdgeInsets.only(top: 10),
-                title: 'Update Email',
-                doneTitle: 'Next',
-                onCancel: () => context.pop(),
-                onDone: () async {
-                  await updateEmail();
-                },
-              ),
-              Spacers.extraSmallVertical,
-              CustomText(
-                title:
-                    'The email currently associated with this account is ${widget.userEmail}. Please provide a new email address if you wish to update the existing one.',
-                overflow: TextOverflow.visible,
-                textType: TextType.subtitle,
-              ),
-              Spacers.mediumVertical,
-              CustomTextFormField(
-                label: 'New Email Address',
-                controller: _newEmailController,
-                hintText: 'Enter your new email..',
-                validator: (value) => _emailError,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.emailAddress,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                inputFormatters: [
-                  ValidatorInputFormatter(
-                    editingValidator: EmailEditingRegexValidator(),
-                  ),
-                ],
-                prefixIcon: const Icon(Icons.email),
-              ),
-              Spacers.mediumVertical,
-              CustomTextFormField(
-                label: 'Current Password',
-                controller: _currentPasswordController,
-                hintText: 'Enter your current password..',
-                textInputAction: TextInputAction.done,
-                obscureText: true,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                prefixIcon: const Icon(Icons.lock),
-                validator: (value) => _passwordError,
-              ),
-            ],
+    return LoadingManager(
+      isLoading: _isLoading,
+      child: Scaffold(
+        body: SingleChildScrollView(
+          padding: AppPadding.screenPadding,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CancelDoneHeaderButton(
+                  padding: const EdgeInsets.only(top: 10),
+                  title: 'Update Email',
+                  doneTitle: 'Next',
+                  onCancel: () => context.pop(),
+                  onDone: () async {
+                    await updateEmail();
+                  },
+                ),
+                Spacers.extraSmallVertical,
+                CustomText(
+                  title:
+                      'The email currently associated with this account is ${widget.userEmail}. Please provide a new email address if you wish to update the existing one.',
+                  overflow: TextOverflow.visible,
+                ),
+                Spacers.mediumVertical,
+                CustomTextFormField(
+                  label: 'New Email Address',
+                  controller: _newEmailController,
+                  hintText: 'Enter your new email..',
+                  validator: (value) => _emailError,
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  inputFormatters: [
+                    ValidatorInputFormatter(
+                      editingValidator: EmailEditingRegexValidator(),
+                    ),
+                  ],
+                  prefixIcon: const Icon(Icons.email),
+                ),
+                Spacers.mediumVertical,
+                CustomTextFormField(
+                  label: 'Current Password',
+                  controller: _currentPasswordController,
+                  hintText: 'Enter your current password..',
+                  textInputAction: TextInputAction.done,
+                  obscureText: true,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  prefixIcon: const Icon(Icons.lock),
+                  validator: (value) => _passwordError,
+                ),
+              ],
+            ),
           ),
         ),
       ),
