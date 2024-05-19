@@ -44,6 +44,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                     pathParameters: {
                       'userId': widget.userId,
                     },
+                    queryParameters: {
+                      'userEmail': widget.userEmail,
+                    },
                   ),
                 ),
                 const SettingTile(
