@@ -48,6 +48,7 @@ ThemeData appTheme() {
     ),
     cardTheme: CardTheme(
       surfaceTintColor: Colors.white,
+      color: AppColor.inputColor,
       margin: EdgeInsets.zero,
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(
