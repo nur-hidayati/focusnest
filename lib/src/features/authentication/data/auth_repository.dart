@@ -69,6 +69,13 @@ class AuthRepository {
       return false;
     }
   }
+
+  Future<void> sendEmailVerification() async {
+    final user = _auth.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+    }
+  }
 }
 
 @Riverpod(keepAlive: true)

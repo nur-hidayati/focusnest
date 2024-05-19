@@ -5,7 +5,6 @@ import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
 import 'package:focusnest/src/common_widgets/loading_manager.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
-import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_validators.dart';
@@ -77,17 +76,17 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen>
     }
 
     if (_formKey.currentState!.validate()) {
-      if (mounted) {
-        context.pushNamed(
-          RoutesName.updateEmailVerify,
-          pathParameters: {
-            'userId': widget.userId,
-          },
-          queryParameters: {
-            'userEmail': widget.userEmail,
-          },
-        );
-      }
+      // if (mounted) {
+      //   context.pushNamed(
+      //     RoutesName.updateEmailVerify,
+      //     pathParameters: {
+      //       'userId': widget.userId,
+      //     },
+      //     queryParameters: {
+      //       'userEmail': widget.userEmail,
+      //     },
+      //   );
+      // }
     }
 
     setState(() {
