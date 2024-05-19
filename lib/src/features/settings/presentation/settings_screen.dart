@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
-import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
+import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
@@ -45,6 +45,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
     final userId = authRepository.currentUser?.uid;
+    final userEmail = authRepository.currentUser?.email;
 
     ref.listen<AsyncValue>(
       settingsScreenControllerProvider,
@@ -71,6 +72,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         RoutesName.accountSettings,
                         pathParameters: {
                           'userId': userId,
+                        },
+                        queryParameters: {
+                          'userEmail': userEmail,
                         },
                       );
                     } else {
@@ -136,44 +140,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class SettingTile extends StatelessWidget {
-  final String title;
-  final String? subtitle;
-  final IconData icon;
-  final bool hasTrailingIcon;
-  final VoidCallback? action;
-
-  const SettingTile({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    this.hasTrailingIcon = true,
-    this.action,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          leading: Icon(icon),
-          title: Text(title),
-          subtitle: subtitle != null ? Text(subtitle!) : null,
-          trailing: hasTrailingIcon
-              ? const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: AppColor.lightGreyColor,
-                )
-              : null,
-          onTap: action,
-        ),
-      ],
     );
   }
 }
