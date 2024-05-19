@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusnest/src/constants/firebase_collection.dart';
 import 'package:focusnest/src/features/authentication/domain/app_user.dart';
+import 'package:focusnest/src/utils/app_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_repository.g.dart';
@@ -46,6 +47,27 @@ class AuthRepository {
 
   Future<void> signOut() {
     return _auth.signOut();
+  }
+
+  Future<bool> isEmailAlreadyInUse(String email) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection(FirebaseCollections.users)
+        .where('email', isEqualTo: email)
+        .get();
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<bool> validateCurrentPassword(String email, String password) async {
+    try {
+      UserCredential userCredential =
+          await _auth.currentUser!.reauthenticateWithCredential(
+        EmailAuthProvider.credential(email: email, password: password),
+      );
+      return userCredential.user != null;
+    } catch (e) {
+      AppLogger.logError('Error validating current password : $e');
+      return false;
+    }
   }
 }
 
