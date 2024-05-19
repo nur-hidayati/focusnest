@@ -6,12 +6,40 @@ import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  PackageInfo _packageInfo = PackageInfo(
+    appName: '',
+    packageName: '',
+    version: '',
+    buildNumber: '',
+    buildSignature: '',
+    installerStore: '',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ref.listen<AsyncValue>(
       settingsScreenControllerProvider,
       (_, state) => state.showAlertDialogOnError(context),
@@ -26,23 +54,23 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             ListView(
               shrinkWrap: true,
-              children: const [
-                SettingTile(
+              children: [
+                const SettingTile(
                   title: 'Account Settings',
                   subtitle: 'Manage your account settings and preferences',
                   icon: Icons.account_box_outlined,
                 ),
-                SettingTile(
+                const SettingTile(
                   title: 'Privacy Policy',
                   subtitle: 'Learn how we handle and protect your data',
                   icon: Icons.lock_outline,
                 ),
-                SettingTile(
+                const SettingTile(
                   title: 'Terms of Service',
                   subtitle: 'Understand your rights and obligations',
                   icon: Icons.gavel_outlined,
                 ),
-                SettingTile(
+                const SettingTile(
                   title: 'Contact Us',
                   // TODO: Use real email
                   subtitle: 'Reach out to us at my_email@gmail.com',
@@ -51,7 +79,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 SettingTile(
                   title: 'App Version',
-                  subtitle: 'Current app version: 1.0.0',
+                  subtitle: 'Current app version: ${_packageInfo.version}',
                   icon: Icons.info_outline,
                   hasTrailingIcon: false,
                 ),
