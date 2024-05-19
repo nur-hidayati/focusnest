@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:focusnest/src/common_widgets/bottom_sheet_header.dart';
+import 'package:focusnest/src/common_widgets/cancel_done_header_button.dart';
+import 'package:focusnest/src/constants/app_padding.dart';
 
 Future<void> datePickerModal({
   required BuildContext context,
@@ -95,7 +96,8 @@ Future<void> cupertinoPickerModal({
         top: false,
         child: Column(
           children: [
-            BottomSheetHeader(
+            CancelDoneHeaderButton(
+              padding: AppPadding.horizontalPadding,
               title: 'Select Duration',
               onDone: onDone,
               onCancel: onCancel,

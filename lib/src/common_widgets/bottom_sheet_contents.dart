@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusnest/src/common_widgets/bottom_sheet_header.dart';
+import 'package:focusnest/src/common_widgets/cancel_done_header_button.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,7 +24,8 @@ class BottomSheetContents extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            BottomSheetHeader(
+            CancelDoneHeaderButton(
+              padding: AppPadding.horizontalPadding,
               title: headerTitle ?? '',
               onDone: onDoneActivityLabelUpdate,
               onCancel: () => context.pop(),
