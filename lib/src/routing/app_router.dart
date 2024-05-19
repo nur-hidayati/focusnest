@@ -8,6 +8,7 @@ import 'package:focusnest/src/features/authentication/data/auth_repository.dart'
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/account_settings_screen.dart';
+import 'package:focusnest/src/features/settings/presentation/change_password_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen.dart';
 import 'package:focusnest/src/routing/go_router_refresh_stream.dart';
 import 'package:focusnest/src/routing/scaffold_with_nested_navigation.dart';
@@ -178,6 +179,39 @@ GoRouter goRouter(GoRouterRef ref) {
                         transitionDuration: const Duration(milliseconds: 300),
                       );
                     },
+                    routes: [
+                      GoRoute(
+                        path: 'change-password',
+                        name: RoutesName.changePassword,
+                        parentNavigatorKey: _rootNavigatorKey,
+                        pageBuilder: (context, state) {
+                          final userId = state.pathParameters['userId']!;
+
+                          return CustomTransitionPage<void>(
+                            child: ChangePasswordScreen(
+                              userId: userId,
+                            ),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(0.0, 1.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              var offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                            transitionDuration:
+                                const Duration(milliseconds: 300),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
