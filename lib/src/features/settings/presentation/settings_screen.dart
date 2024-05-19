@@ -58,17 +58,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SettingTile(
                   title: 'Account Settings',
                   subtitle: 'Manage your account settings and preferences',
-                  icon: Icons.account_box_outlined,
+                  icon: Icons.account_circle_outlined,
                 ),
                 const SettingTile(
                   title: 'Privacy Policy',
                   subtitle: 'Learn how we handle and protect your data',
-                  icon: Icons.lock_outline,
+                  icon: Icons.privacy_tip_outlined,
                 ),
                 const SettingTile(
                   title: 'Terms of Service',
                   subtitle: 'Understand your rights and obligations',
-                  icon: Icons.gavel_outlined,
+                  icon: Icons.description_outlined,
                 ),
                 const SettingTile(
                   title: 'Contact Us',
