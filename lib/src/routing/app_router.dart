@@ -154,8 +154,12 @@ GoRouter goRouter(GoRouterRef ref) {
                     parentNavigatorKey: _rootNavigatorKey,
                     pageBuilder: (context, state) {
                       final userId = state.pathParameters['userId']!;
+                      final userEmail = state.uri.queryParameters['userEmail']!;
                       return CustomTransitionPage<void>(
-                        child: AccountSettingsScreen(userId: userId),
+                        child: AccountSettingsScreen(
+                          userId: userId,
+                          userEmail: userEmail,
+                        ),
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
                           const begin = Offset(1.0, 0.0);
