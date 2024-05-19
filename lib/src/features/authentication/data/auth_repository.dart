@@ -81,6 +81,17 @@ class AuthRepository {
       await user.updatePassword(newPassword);
     }
   }
+
+  Future<void> deleteUserAccount() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection(FirebaseCollections.users)
+          .doc(user.uid)
+          .delete();
+      await user.delete();
+    }
+  }
 }
 
 @Riverpod(keepAlive: true)

@@ -3,16 +3,19 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:focusnest/src/common_widgets/custom_text.dart';
+import 'package:focusnest/src/constants/app_color.dart';
 
 const kDialogDefaultKey = Key('dialog-default-key');
 
 Future<bool?> showAlertDialog({
   required BuildContext context,
   required String title,
-  String? content,
+  Object? content,
   String defaultActionText = 'Yes',
   bool isNoAsCancel = false,
   bool isCancelAction = true,
+  final Color? defaultActionTextColor,
 }) async {
   String cancelActionText = !isNoAsCancel ? 'Cancel' : 'No';
   return showDialog(
@@ -20,7 +23,7 @@ Future<bool?> showAlertDialog({
     barrierDismissible: isCancelAction,
     builder: (context) => AlertDialog.adaptive(
       title: Text(title),
-      content: content != null ? Text(content) : null,
+      content: content is String ? Text(content) : content as Widget?,
       actions: kIsWeb || !Platform.isIOS
           ? <Widget>[
               if (isCancelAction)
@@ -30,7 +33,10 @@ Future<bool?> showAlertDialog({
                 ),
               TextButton(
                 key: kDialogDefaultKey,
-                child: Text(defaultActionText),
+                child: CustomText(
+                  title: defaultActionText,
+                  color: defaultActionTextColor ?? AppColor.primaryColor,
+                ),
                 onPressed: () => Navigator.of(context).pop(true),
               ),
             ]
@@ -42,7 +48,10 @@ Future<bool?> showAlertDialog({
                 ),
               CupertinoDialogAction(
                 key: kDialogDefaultKey,
-                child: Text(defaultActionText),
+                child: CustomText(
+                  title: defaultActionText,
+                  color: defaultActionTextColor ?? AppColor.primaryColor,
+                ),
                 onPressed: () => Navigator.of(context).pop(true),
               ),
             ],
