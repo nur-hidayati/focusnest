@@ -3,12 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
+import 'package:focusnest/src/common_widgets/loading_manager.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_validators.dart';
+import 'package:focusnest/src/features/settings/presentation/change_password_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
+import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:focusnest/src/utils/modal_helper.dart';
+import 'package:go_router/go_router.dart';
 
 class ChangePasswordScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -35,6 +40,10 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen>
   String? _newPasswordErrorText;
   String? _confirmNewPasswordErrorText;
 
+  String get currentPassword => _currentPasswordController.text.trim();
+  String get newPassword => _newPasswordController.text.trim();
+  String get confirmNewPassword => _confirmNewPasswordController.text.trim();
+
   @override
   void dispose() {
     _currentPasswordController.dispose();
@@ -43,88 +52,117 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen>
     super.dispose();
   }
 
-  Future<void> _isFormValid() async {
+  Future<bool> _isFormValid() async {
     FocusScope.of(context).unfocus();
+    bool isFormValid = true;
 
     final currentPasswordValid =
         await ref.read(authRepositoryProvider).validateCurrentPassword(
               widget.userEmail,
-              _currentPasswordController.text,
+              currentPassword,
             );
     if (!currentPasswordValid && mounted) {
       showOKAlert(
-          context: context,
-          title: 'Error',
-          content: 'Invalid Current Password');
-    } else {
-      final newPassword = _newPasswordController.text;
-      final confirmNewPassword = _confirmNewPasswordController.text;
+        context: context,
+        title: 'Error',
+        content: 'Invalid Current Password',
+      );
+      return false;
+    }
 
-      setState(() {
-        _newPasswordErrorText =
-            passwordErrorText(newPassword, AuthFormType.register);
-        _confirmNewPasswordErrorText =
-            newPassword == confirmNewPassword ? null : 'Passwords do not match';
-      });
+    setState(() {
+      _newPasswordErrorText =
+          passwordErrorText(newPassword, AuthFormType.register);
+      _confirmNewPasswordErrorText =
+          newPassword == confirmNewPassword ? null : 'Passwords do not match';
+    });
+
+    if (_newPasswordErrorText != null || _confirmNewPasswordErrorText != null) {
+      return false;
+    }
+    return isFormValid;
+  }
+
+  void _handleSubmit() async {
+    final success = await ref
+        .read(changePasswordScreenControllerProvider.notifier)
+        .submitNewPassword(newPassword);
+
+    if (success && mounted) {
+      showCustomSnackBar(context, 'Password successfully updated!');
+      context.pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Change Password'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: LinkTextButton(
-              title: 'Save',
-              onPressed: _isFormValid,
-            ),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: AppPadding.screenPadding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const CustomText(
-                title: 'Your password must at least be 8 characters.'),
-            Spacers.smallVertical,
-            CustomTextFormField(
-              label: 'Current Password',
-              controller: _currentPasswordController,
-              hintText: 'Enter your current password',
-              textInputAction: TextInputAction.next,
-              obscureText: true,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              prefixIcon: const Icon(Icons.lock_outline),
-              errorText: _currentPasswordErrorText,
-            ),
-            Spacers.smallVertical,
-            CustomTextFormField(
-              label: 'New Password',
-              controller: _newPasswordController,
-              hintText: 'Enter a new password',
-              textInputAction: TextInputAction.next,
-              obscureText: true,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              prefixIcon: const Icon(Icons.lock_outline),
-              errorText: _newPasswordErrorText,
-            ),
-            Spacers.smallVertical,
-            CustomTextFormField(
-              label: 'Confirm New Password',
-              controller: _confirmNewPasswordController,
-              hintText: 'Confirm your new password',
-              textInputAction: TextInputAction.done,
-              obscureText: true,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              prefixIcon: const Icon(Icons.lock_outline),
-              errorText: _confirmNewPasswordErrorText,
-            ),
+    ref.listen<AsyncValue>(
+      changePasswordScreenControllerProvider,
+      (_, state) => state.showAlertDialogOnError(context),
+    );
+    final state = ref.watch(changePasswordScreenControllerProvider);
+
+    return LoadingManager(
+      isLoading: state.isLoading,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Change Password'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: LinkTextButton(
+                title: 'Save',
+                onPressed: () async {
+                  if (await _isFormValid()) {
+                    _handleSubmit();
+                  }
+                },
+              ),
+            )
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: AppPadding.screenPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const CustomText(
+                  title: 'Your password must at least be 8 characters.'),
+              Spacers.smallVertical,
+              CustomTextFormField(
+                label: 'Current Password',
+                controller: _currentPasswordController,
+                hintText: 'Enter your current password',
+                textInputAction: TextInputAction.next,
+                obscureText: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                prefixIcon: const Icon(Icons.lock_outline),
+                errorText: _currentPasswordErrorText,
+              ),
+              Spacers.smallVertical,
+              CustomTextFormField(
+                label: 'New Password',
+                controller: _newPasswordController,
+                hintText: 'Enter a new password',
+                textInputAction: TextInputAction.next,
+                obscureText: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                prefixIcon: const Icon(Icons.lock_outline),
+                errorText: _newPasswordErrorText,
+              ),
+              Spacers.smallVertical,
+              CustomTextFormField(
+                label: 'Confirm New Password',
+                controller: _confirmNewPasswordController,
+                hintText: 'Confirm your new password',
+                textInputAction: TextInputAction.done,
+                obscureText: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                prefixIcon: const Icon(Icons.lock_outline),
+                errorText: _confirmNewPasswordErrorText,
+              ),
+            ],
+          ),
         ),
       ),
     );
