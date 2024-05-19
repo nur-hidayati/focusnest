@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
+import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
-class AccountSettingsScreen extends StatefulWidget {
+class AccountSettingsScreen extends ConsumerStatefulWidget {
   final String userId;
   final String userEmail;
+
   const AccountSettingsScreen({
     required this.userId,
     required this.userEmail,
@@ -13,10 +17,34 @@ class AccountSettingsScreen extends StatefulWidget {
   });
 
   @override
-  State<AccountSettingsScreen> createState() => _AccountSettingsScreenState();
+  ConsumerState<AccountSettingsScreen> createState() =>
+      _AccountSettingsScreenState();
 }
 
-class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
+class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
+  void _handleDeleteUser() async {
+    bool? confirmDelete = await showAlertDialog(
+      context: context,
+      title: 'Delete Account',
+      defaultActionText: 'Continue',
+      defaultActionTextColor: AppColor.warningColor,
+      content:
+          'Deleting your account is permanent. All your data will be wiped out immediately and you wont be able to get it back. Are you sure?',
+    );
+
+    if (confirmDelete == true && mounted) {
+      context.pushNamed(
+        RoutesName.verifyDeleteAccount,
+        pathParameters: {
+          'userId': widget.userId,
+        },
+        queryParameters: {
+          'userEmail': widget.userEmail,
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,11 +77,12 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                     },
                   ),
                 ),
-                const SettingTile(
+                SettingTile(
                   title: 'Delete Account',
                   subtitle:
                       'Permanently remove your account and all associated data',
                   icon: Icons.delete_forever_outlined,
+                  action: _handleDeleteUser,
                 ),
               ],
             ),

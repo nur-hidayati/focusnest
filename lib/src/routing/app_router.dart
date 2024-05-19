@@ -10,6 +10,7 @@ import 'package:focusnest/src/features/authentication/presentation/auth_screen.d
 import 'package:focusnest/src/features/settings/presentation/account_settings_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/change_password_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen.dart';
+import 'package:focusnest/src/features/settings/presentation/verify_delete_account_screen.dart';
 import 'package:focusnest/src/routing/go_router_refresh_stream.dart';
 import 'package:focusnest/src/routing/scaffold_with_nested_navigation.dart';
 import 'package:go_router/go_router.dart';
@@ -191,6 +192,40 @@ GoRouter goRouter(GoRouterRef ref) {
 
                           return CustomTransitionPage<void>(
                             child: ChangePasswordScreen(
+                              userId: userId,
+                              userEmail: userEmail,
+                            ),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(0.0, 1.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              var offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                            transitionDuration:
+                                const Duration(milliseconds: 300),
+                          );
+                        },
+                      ),
+                      GoRoute(
+                        path: 'verify-delete',
+                        name: RoutesName.verifyDeleteAccount,
+                        parentNavigatorKey: _rootNavigatorKey,
+                        pageBuilder: (context, state) {
+                          final userId = state.pathParameters['userId']!;
+                          final userEmail =
+                              state.uri.queryParameters['userEmail']!;
+
+                          return CustomTransitionPage<void>(
+                            child: VerifyDeleteAccount(
                               userId: userId,
                               userEmail: userEmail,
                             ),
