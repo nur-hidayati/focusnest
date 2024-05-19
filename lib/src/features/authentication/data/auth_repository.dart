@@ -74,6 +74,13 @@ class AuthRepository {
       await user.sendEmailVerification();
     }
   }
+
+  Future<void> updatePassword(String newPassword) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.updatePassword(newPassword);
+    }
+  }
 }
 
 @Riverpod(keepAlive: true)
