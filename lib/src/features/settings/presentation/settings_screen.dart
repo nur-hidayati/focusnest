@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
 import 'package:focusnest/src/constants/app_color.dart';
+import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -40,6 +43,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authRepository = ref.watch(authRepositoryProvider);
+    final userId = authRepository.currentUser?.uid;
+
     ref.listen<AsyncValue>(
       settingsScreenControllerProvider,
       (_, state) => state.showAlertDialogOnError(context),
@@ -55,10 +61,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ListView(
               shrinkWrap: true,
               children: [
-                const SettingTile(
+                SettingTile(
                   title: 'Account Settings',
                   subtitle: 'Manage your account settings and preferences',
                   icon: Icons.account_circle_outlined,
+                  action: () {
+                    if (userId != null) {
+                      context.pushNamed(
+                        RoutesName.accountSettings,
+                        pathParameters: {
+                          'userId': userId,
+                        },
+                      );
+                    } else {
+                      showOKAlert(
+                        context: context,
+                        title: 'Error',
+                        content: 'User not login',
+                      );
+                    }
+                  },
                 ),
                 const SettingTile(
                   title: 'Privacy Policy',
@@ -123,12 +145,14 @@ class SettingTile extends StatelessWidget {
   final String? subtitle;
   final IconData icon;
   final bool hasTrailingIcon;
+  final VoidCallback? action;
 
   const SettingTile({
     required this.title,
     required this.subtitle,
     required this.icon,
     this.hasTrailingIcon = true,
+    this.action,
     super.key,
   });
 
@@ -147,9 +171,7 @@ class SettingTile extends StatelessWidget {
                   color: AppColor.lightGreyColor,
                 )
               : null,
-          onTap: () {
-            // Handle your tile tap here
-          },
+          onTap: action,
         ),
       ],
     );

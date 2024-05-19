@@ -7,6 +7,7 @@ import 'package:focusnest/src/features/activity_timer/presentation/timer_start_s
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_screen.dart';
+import 'package:focusnest/src/features/settings/presentation/account_settings_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen.dart';
 import 'package:focusnest/src/routing/go_router_refresh_stream.dart';
 import 'package:focusnest/src/routing/scaffold_with_nested_navigation.dart';
@@ -146,6 +147,35 @@ GoRouter goRouter(GoRouterRef ref) {
                 pageBuilder: (context, state) => const NoTransitionPage(
                   child: SettingsScreen(),
                 ),
+                routes: [
+                  GoRoute(
+                    path: ':userId-user',
+                    name: RoutesName.accountSettings,
+                    parentNavigatorKey: _rootNavigatorKey,
+                    pageBuilder: (context, state) {
+                      final userId = state.pathParameters['userId']!;
+                      return CustomTransitionPage<void>(
+                        child: AccountSettingsScreen(userId: userId),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.easeInOut;
+
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          var offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
