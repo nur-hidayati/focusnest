@@ -126,7 +126,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const CustomText(
-                  title: 'Your password must at least be 8 characters.'),
+                  title: 'Your password must at least be 6 characters.'),
               Spacers.smallVertical,
               _passwordTextFormField(
                 label: 'Current Password',

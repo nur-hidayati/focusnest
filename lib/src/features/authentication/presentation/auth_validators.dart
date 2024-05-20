@@ -4,7 +4,7 @@ import 'package:focusnest/src/features/authentication/presentation/string_valida
 mixin AuthValidators {
   final StringValidator emailSubmitValidator = EmailSubmitRegexValidator();
   final StringValidator passwordRegisterSubmitValidator =
-      MinLengthStringValidator(8);
+      MinLengthStringValidator(6);
   final StringValidator passwordSignInSubmitValidator =
       NonEmptyStringValidator();
 
@@ -30,7 +30,7 @@ mixin AuthValidators {
     final bool showErrorText = !canSubmitPassword(password, formType);
     final String errorText = password.isEmpty
         ? 'Password can\'t be empty'
-        : 'Password need to be at least 8 characters';
+        : 'Password need to be at least 6 characters';
     return showErrorText ? errorText : null;
   }
 }
