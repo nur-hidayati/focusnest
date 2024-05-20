@@ -151,33 +151,17 @@ GoRouter goRouter(GoRouterRef ref) {
                 ),
                 routes: [
                   GoRoute(
-                    path: ':userId-user',
+                    path: ':userId-account',
                     name: RoutesName.accountSettings,
                     parentNavigatorKey: _rootNavigatorKey,
                     pageBuilder: (context, state) {
                       final userId = state.pathParameters['userId']!;
                       final userEmail = state.uri.queryParameters['userEmail']!;
-                      return CustomTransitionPage<void>(
-                        child: AccountSettingsScreen(
+                      return _buildCustomTransitionPage(
+                        AccountSettingsScreen(
                           userId: userId,
                           userEmail: userEmail,
                         ),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(1.0, 0.0);
-                          const end = Offset.zero;
-                          const curve = Curves.easeInOut;
-
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
-                          var offsetAnimation = animation.drive(tween);
-
-                          return SlideTransition(
-                            position: offsetAnimation,
-                            child: child,
-                          );
-                        },
-                        transitionDuration: const Duration(milliseconds: 300),
                       );
                     },
                     routes: [
@@ -189,29 +173,11 @@ GoRouter goRouter(GoRouterRef ref) {
                           final userId = state.pathParameters['userId']!;
                           final userEmail =
                               state.uri.queryParameters['userEmail']!;
-
-                          return CustomTransitionPage<void>(
-                            child: ChangePasswordScreen(
+                          return _buildBottomTransitionPage(
+                            ChangePasswordScreen(
                               userId: userId,
                               userEmail: userEmail,
                             ),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(0.0, 1.0);
-                              const end = Offset.zero;
-                              const curve = Curves.easeInOut;
-
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              var offsetAnimation = animation.drive(tween);
-
-                              return SlideTransition(
-                                position: offsetAnimation,
-                                child: child,
-                              );
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 300),
                           );
                         },
                       ),
@@ -224,28 +190,11 @@ GoRouter goRouter(GoRouterRef ref) {
                           final userEmail =
                               state.uri.queryParameters['userEmail']!;
 
-                          return CustomTransitionPage<void>(
-                            child: VerifyDeleteAccount(
+                          return _buildBottomTransitionPage(
+                            VerifyDeleteAccount(
                               userId: userId,
                               userEmail: userEmail,
                             ),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(0.0, 1.0);
-                              const end = Offset.zero;
-                              const curve = Curves.easeInOut;
-
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              var offsetAnimation = animation.drive(tween);
-
-                              return SlideTransition(
-                                position: offsetAnimation,
-                                child: child,
-                              );
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 300),
                           );
                         },
                       ),
@@ -258,5 +207,45 @@ GoRouter goRouter(GoRouterRef ref) {
         ],
       )
     ],
+  );
+}
+
+CustomTransitionPage<void> _buildCustomTransitionPage(Widget child) {
+  return CustomTransitionPage<void>(
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.easeInOut;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 300),
+  );
+}
+
+CustomTransitionPage<void> _buildBottomTransitionPage(Widget child) {
+  return CustomTransitionPage<void>(
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.easeInOut;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 300),
   );
 }
