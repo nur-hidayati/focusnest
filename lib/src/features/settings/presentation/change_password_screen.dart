@@ -36,13 +36,13 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen>
   final _newPasswordController = TextEditingController();
   final _confirmNewPasswordController = TextEditingController();
 
-  String? _currentPasswordErrorText;
-  String? _newPasswordErrorText;
-  String? _confirmNewPasswordErrorText;
-
   String get currentPassword => _currentPasswordController.text.trim();
   String get newPassword => _newPasswordController.text.trim();
   String get confirmNewPassword => _confirmNewPasswordController.text.trim();
+
+  String? _currentPasswordErrorText;
+  String? _newPasswordErrorText;
+  String? _confirmNewPasswordErrorText;
 
   @override
   void dispose() {
@@ -55,7 +55,6 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen>
   Future<bool> _isFormValid() async {
     FocusScope.of(context).unfocus();
     bool isFormValid = true;
-
     final currentPasswordValid =
         await ref.read(authRepositoryProvider).validateCurrentPassword(
               widget.userEmail,
@@ -129,42 +128,50 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen>
               const CustomText(
                   title: 'Your password must at least be 8 characters.'),
               Spacers.smallVertical,
-              CustomTextFormField(
+              _passwordTextFormField(
                 label: 'Current Password',
                 controller: _currentPasswordController,
                 hintText: 'Enter your current password',
-                textInputAction: TextInputAction.next,
-                obscureText: true,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                prefixIcon: const Icon(Icons.lock_outline),
                 errorText: _currentPasswordErrorText,
               ),
               Spacers.smallVertical,
-              CustomTextFormField(
+              _passwordTextFormField(
                 label: 'New Password',
                 controller: _newPasswordController,
                 hintText: 'Enter a new password',
-                textInputAction: TextInputAction.next,
-                obscureText: true,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                prefixIcon: const Icon(Icons.lock_outline),
                 errorText: _newPasswordErrorText,
               ),
               Spacers.smallVertical,
-              CustomTextFormField(
+              _passwordTextFormField(
                 label: 'Confirm New Password',
                 controller: _confirmNewPasswordController,
                 hintText: 'Confirm your new password',
-                textInputAction: TextInputAction.done,
-                obscureText: true,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                prefixIcon: const Icon(Icons.lock_outline),
                 errorText: _confirmNewPasswordErrorText,
+                textInputAction: TextInputAction.done,
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _passwordTextFormField({
+    required String label,
+    required String hintText,
+    required TextEditingController controller,
+    TextInputAction textInputAction = TextInputAction.next,
+    String? errorText,
+  }) {
+    return CustomTextFormField(
+      label: label,
+      controller: controller,
+      hintText: hintText,
+      textInputAction: textInputAction,
+      obscureText: true,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      prefixIcon: const Icon(Icons.lock_outline),
+      errorText: errorText,
     );
   }
 }

@@ -44,10 +44,6 @@ class AuthRepository {
         .set(newUser);
   }
 
-  Future<void> signOut() {
-    return _auth.signOut();
-  }
-
   Future<bool> isEmailAlreadyInUse(String email) async {
     final snapshot = await FirebaseFirestore.instance
         .collection(FirebaseCollections.users)
@@ -68,6 +64,13 @@ class AuthRepository {
     }
   }
 
+  Future<void> updatePassword(String newPassword) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.updatePassword(newPassword);
+    }
+  }
+
   Future<void> sendEmailVerification() async {
     final user = _auth.currentUser;
     if (user != null && !user.emailVerified) {
@@ -75,11 +78,8 @@ class AuthRepository {
     }
   }
 
-  Future<void> updatePassword(String newPassword) async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      await user.updatePassword(newPassword);
-    }
+  Future<void> signOut() {
+    return _auth.signOut();
   }
 
   Future<void> deleteUserAccount() async {
