@@ -11,20 +11,21 @@ class NotificationController {
 
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications().initialize(
-        null,
-        // 'resource://drawable/res_app_icon',
-        [
-          NotificationChannel(
-            channelGroupKey: 'basic_channel_group',
-            channelKey: 'basic_channel',
-            channelName: 'Basic Notifications',
-            channelDescription: 'Basic Notifications channel',
-            defaultColor: AppColor.primaryColor,
-            importance: NotificationImportance.High,
-            ledColor: Colors.white,
-          )
-        ],
-        debug: true);
+      // null,
+      'resource://drawable/res_app_icon',
+      [
+        NotificationChannel(
+          channelGroupKey: 'basic_channel_group',
+          channelKey: 'basic_channel',
+          channelName: 'Basic Notifications',
+          channelDescription: 'Basic Notifications channel',
+          defaultColor: AppColor.primaryColor,
+          importance: NotificationImportance.High,
+          ledColor: Colors.white,
+        )
+      ],
+      debug: true,
+    );
 
     initialAction = await AwesomeNotifications()
         .getInitialNotificationAction(removeFromActionEvents: false);
