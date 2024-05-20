@@ -133,8 +133,8 @@ GoRouter goRouter(GoRouterRef ref) {
                           0;
                       final duration = Duration(seconds: durationInSeconds);
                       final label = state.uri.queryParameters['label']!;
-                      return NoTransitionPage(
-                        child: TimerStartScreen(
+                      return _buildCustomTransitionPage(
+                        TimerStartScreen(
                           userId: userId,
                           duration: duration,
                           label: label,
