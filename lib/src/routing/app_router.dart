@@ -7,6 +7,7 @@ import 'package:focusnest/src/features/activity_timer/presentation/timer_start_s
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_screen.dart';
+import 'package:focusnest/src/features/authentication/presentation/email_sent_screen.dart';
 import 'package:focusnest/src/features/authentication/presentation/reset_password_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/account_settings_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/change_password_screen.dart';
@@ -74,9 +75,23 @@ GoRouter goRouter(GoRouterRef ref) {
           GoRoute(
             path: 'reset-password',
             name: RoutesName.resetPassword,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: ResetPasswordScreen(),
+            pageBuilder: (context, state) => _buildCustomTransitionPage(
+              const ResetPasswordScreen(),
             ),
+            routes: [
+              GoRoute(
+                path: ':userEmail-sent',
+                name: RoutesName.emailSent,
+                pageBuilder: (context, state) {
+                  final userEmail = state.pathParameters['userEmail']!;
+                  return _buildCustomTransitionPage(
+                    EmailSentScreen(
+                      userEmail: userEmail,
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),
