@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen_controller.dart';
@@ -99,7 +100,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SettingTile(
                   title: 'Contact Us',
                   // TODO: Use real email
-                  subtitle: 'Reach out to us at my_email@gmail.com',
+                  subtitle: 'Reach out to us at ${Strings.emailName}',
                   icon: Icons.mail_outline,
                   hasTrailingIcon: false,
                 ),
