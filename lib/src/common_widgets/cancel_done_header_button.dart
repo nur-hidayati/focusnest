@@ -37,11 +37,10 @@ class CancelDoneHeaderButton extends StatelessWidget {
               ),
             ),
           ),
-          if (!hideDoneButton)
-            LinkTextButton(
-              title: 'Done',
-              onPressed: onDone,
-            ),
+          LinkTextButton(
+            title: !hideDoneButton ? 'Done' : '',
+            onPressed: onDone,
+          ),
         ],
       ),
     );
