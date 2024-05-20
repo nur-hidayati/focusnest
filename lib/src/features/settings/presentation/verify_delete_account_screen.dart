@@ -77,6 +77,7 @@ class _VerifyDeleteAccountState extends ConsumerState<VerifyDeleteAccount> {
               CancelDoneHeaderButton(
                 padding: const EdgeInsets.only(top: 10),
                 title: 'Delete Account',
+                hideDoneButton: true,
                 onCancel: () => context.pop(),
               ),
               const CustomText(
