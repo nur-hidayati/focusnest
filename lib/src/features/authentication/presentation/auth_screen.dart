@@ -7,6 +7,7 @@ import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
+import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_controller.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
@@ -14,6 +15,7 @@ import 'package:focusnest/src/features/authentication/presentation/auth_validato
 import 'package:focusnest/src/features/authentication/presentation/string_validators.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
+import 'package:go_router/go_router.dart';
 
 class AuthScreen extends StatelessWidget {
   final AuthFormType formType;
@@ -176,7 +178,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
               child: LinkTextButton(
                 title: 'Forgot Password?',
                 fontSize: 16,
-                onPressed: () {},
+                onPressed: () => context.pushNamed(RoutesName.resetPassword),
               ),
             ),
             Spacers.smallVertical,
