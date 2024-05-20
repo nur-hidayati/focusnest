@@ -92,14 +92,14 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
     final state = ref.watch(authControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(),
       body: SingleChildScrollView(
         padding: AppPadding.screenPadding,
-        child: Column(
-          children: [
-            Center(
-              child: Column(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Column(
                 children: [
+                  Spacers.largeVertical,
                   _headerSection(),
                   Spacers.largeVertical,
                   _formSection(state.isLoading),
@@ -107,8 +107,8 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
                   _bottomSection(),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
