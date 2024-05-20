@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/bottom_sheet_contents.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
@@ -66,12 +66,17 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
   @override
   Widget build(BuildContext context) {
     return BottomSheetContents(
-      headerTitle: 'Edit Record',
+      headerTitle: 'Edit',
       onDoneActivityLabelUpdate: () => _handleOnDoneActivityLabelUpdate(),
-      child: CustomTextFormField(
-        controller: activityLabelController,
-        hintText: 'Activity Label',
-        maxLength: 40,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 40),
+        child: CustomTextFormField(
+          label: 'Activity Label',
+          controller: activityLabelController,
+          hintText: 'Activity Label',
+          isActivityLabel: true,
+          textCapitalization: TextCapitalization.sentences,
+        ),
       ),
     );
   }

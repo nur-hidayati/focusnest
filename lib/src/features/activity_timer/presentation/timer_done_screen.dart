@@ -51,13 +51,14 @@ class _TimerDoneScreenState extends State<TimerDoneScreen> {
               ),
               Spacers.mediumVertical,
               const CustomText(
-                title: 'Congratulations!',
+                title: 'Well Done!',
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
               Spacers.mediumVertical,
               const CustomText(
-                title: 'You managed to complete the activity. Keep Going.',
+                title:
+                    'You have successfully completed the activity. Keep up the great work and continue pushing forward!',
                 overflow: TextOverflow.visible,
                 textAlign: TextAlign.center,
               ),

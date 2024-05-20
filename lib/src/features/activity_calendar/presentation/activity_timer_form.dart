@@ -45,6 +45,8 @@ class ActivityTimerForm extends StatelessWidget {
           CustomTextFormField(
             controller: activityLabelController,
             hintText: 'Activity Label',
+            isActivityLabel: true,
+            textCapitalization: TextCapitalization.sentences,
           ),
           Spacers.smallVertical,
           SelectionInputCard(

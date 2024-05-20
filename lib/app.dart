@@ -31,6 +31,7 @@ class _AppState extends ConsumerState<App> {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
+        FocusScope.of(context).unfocus();
       },
       child: MaterialApp.router(
         routerConfig: goRouter,

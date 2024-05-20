@@ -104,9 +104,9 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
             children: [
               Column(
                 children: [
-                  Spacers.largeVertical,
+                  Spacers.smallVertical,
                   _headerSection(),
-                  Spacers.largeVertical,
+                  Spacers.mediumVertical,
                   _formSection(state.isLoading),
                   Spacers.mediumVertical,
                   _bottomSection(),
@@ -121,7 +121,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
 
   Widget _headerSection() {
     Size screenSize = MediaQuery.of(context).size;
-    double imageSize = screenSize.width * 0.3;
+    double imageSize = screenSize.width * 0.25;
     return Column(
       children: [
         Image.asset(
@@ -129,7 +129,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
           width: imageSize,
           height: imageSize,
         ),
-        Spacers.mediumVertical,
+        Spacers.smallVertical,
         CustomText(
           title: _formType.headerText,
           textType: TextType.titleLarge,
@@ -181,9 +181,8 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
                 onPressed: () => context.pushNamed(RoutesName.resetPassword),
               ),
             ),
-            Spacers.smallVertical,
           ] else ...[
-            Spacers.largeVertical,
+            Spacers.mediumVertical,
           ],
           CustomButton(
             title: _formType.title,
@@ -210,8 +209,8 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
                 ],
               ),
             ),
-            Spacers.smallVertical,
-          ]
+          ],
+          Spacers.smallVertical,
         ],
       ),
     );
@@ -237,11 +236,12 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
     String url,
   ) {
     return TextSpan(
-        text: title,
-        style: const TextStyle(
-          color: AppColor.primaryColor,
-          fontWeight: FontWeight.bold,
-        ),
-        recognizer: TapGestureRecognizer()..onTap = () => launchURL(url));
+      text: title,
+      style: const TextStyle(
+        color: AppColor.primaryColor,
+        fontWeight: FontWeight.bold,
+      ),
+      recognizer: TapGestureRecognizer()..onTap = () => launchURL(url),
+    );
   }
 }

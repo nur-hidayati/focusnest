@@ -77,13 +77,14 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
       } else {
         // Timer done
         _timer?.cancel();
+        final endDateTime = DateTime.now();
         context.pushNamed(
           RoutesName.timerDone,
           queryParameters: {
             'duration': widget.duration.inSeconds.toString(),
           },
         );
-        _addActivityToDatabase();
+        _addActivityToDatabase(endDateTime);
         if (_lastLifecycleState == AppLifecycleState.paused ||
             _lastLifecycleState == AppLifecycleState.detached) {
           NotificationController.createTimerDoneNotification(context);
@@ -104,26 +105,27 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   }
 
   void _stopTimer() async {
+    final endDateTime = DateTime.now();
     final durationInSeconds =
         widget.duration.inSeconds - _remainingDuration.inSeconds;
+
     if (durationInSeconds >= 60) {
       bool? confirmAddActivity = await showAlertDialog(
         context: context,
-        title: 'Activity Incomplete',
+        title: 'Incomplete Activity',
         content:
-            'Would you like to add this incomplete activity to your calendar?',
+            'It looks like you did not finish the activity. Would you like to add it to your calendar anyway?',
         isNoAsCancel: true,
       );
       if (confirmAddActivity == true) {
-        await _addActivityToDatabase();
+        await _addActivityToDatabase(endDateTime);
       }
     }
     if (mounted) context.pop();
   }
 
-  Future<void> _addActivityToDatabase() async {
+  Future<void> _addActivityToDatabase(DateTime endDateTime) async {
     try {
-      final endDateTime = DateTime.now();
       final targetedDurationInSeconds = widget.duration.inSeconds;
       final durationInSeconds =
           targetedDurationInSeconds - _remainingDuration.inSeconds;

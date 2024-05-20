@@ -37,7 +37,7 @@ class RecentsTimerActivitySection extends ConsumerWidget {
             textType: TextType.title,
           ),
         ),
-        Spacers.extraSmallVertical,
+        Spacers.smallVertical,
         if (recentActivities.isEmpty) ...[
           const Padding(
             padding: EdgeInsets.only(top: 10),
@@ -47,7 +47,7 @@ class RecentsTimerActivitySection extends ConsumerWidget {
           ...recentActivities.map((activityTimer) {
             return Column(
               children: [
-                const Divider(),
+                const Divider(height: 1),
                 Slidable(
                   key: ValueKey(activityTimer.id),
                   closeOnScroll: true,
@@ -102,7 +102,7 @@ class RecentsTimerActivitySection extends ConsumerWidget {
               ],
             );
           }),
-          const Divider(),
+          const Divider(height: 1),
         ],
       ],
     );

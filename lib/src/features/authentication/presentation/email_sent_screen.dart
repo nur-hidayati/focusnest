@@ -36,7 +36,7 @@ class EmailSentScreen extends StatelessWidget {
             Spacers.smallVertical,
             CustomText(
               title:
-                  'If the email address you entered, $userEmail, is registered with us, you will receive a link to reset your password.',
+                  'An email with a password reset link will be sent to $userEmail if it is registered with us.',
               overflow: TextOverflow.visible,
               textAlign: TextAlign.center,
             ),
