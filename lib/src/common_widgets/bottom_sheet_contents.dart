@@ -31,7 +31,7 @@ class BottomSheetContents extends StatelessWidget {
               onCancel: () => context.pop(),
             ),
             Padding(
-              padding: AppPadding.screenPadding,
+              padding: AppPadding.horizontalPadding,
               child: child,
             ),
           ],

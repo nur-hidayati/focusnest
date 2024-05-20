@@ -66,12 +66,16 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
   @override
   Widget build(BuildContext context) {
     return BottomSheetContents(
-      headerTitle: 'Edit Record',
+      headerTitle: 'Edit',
       onDoneActivityLabelUpdate: () => _handleOnDoneActivityLabelUpdate(),
-      child: CustomTextFormField(
-        controller: activityLabelController,
-        hintText: 'Activity Label',
-        maxLength: 40,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 40),
+        child: CustomTextFormField(
+          label: 'Activity Label',
+          controller: activityLabelController,
+          hintText: 'Activity Label',
+          maxLength: 40,
+        ),
       ),
     );
   }
