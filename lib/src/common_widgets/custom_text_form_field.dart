@@ -26,6 +26,7 @@ class CustomTextFormField extends StatelessWidget {
     this.focusNode,
     this.suffixIcon,
     this.prefixIcon,
+    this.isActivityLabel = false,
   });
 
   final TextEditingController controller;
@@ -49,6 +50,7 @@ class CustomTextFormField extends StatelessWidget {
   final FocusNode? focusNode;
   final Widget? suffixIcon;
   final Icon? prefixIcon;
+  final bool isActivityLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +81,7 @@ class CustomTextFormField extends StatelessWidget {
               counterText: '',
               errorText: errorText,
             ),
-            maxLength: maxLength,
+            maxLength: !isActivityLabel ? maxLength : 40,
             keyboardType: keyboardType,
             inputFormatters: inputFormatters,
             onChanged: onChanged,

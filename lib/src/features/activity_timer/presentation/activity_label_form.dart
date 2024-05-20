@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/bottom_sheet_contents.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
@@ -74,7 +74,8 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
           label: 'Activity Label',
           controller: activityLabelController,
           hintText: 'Activity Label',
-          maxLength: 40,
+          isActivityLabel: true,
+          textCapitalization: TextCapitalization.sentences,
         ),
       ),
     );
