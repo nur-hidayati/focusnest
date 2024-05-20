@@ -44,8 +44,53 @@ class AuthRepository {
         .set(newUser);
   }
 
+  Future<bool> isEmailAlreadyInUse(String email) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection(FirebaseCollections.users)
+        .where('email', isEqualTo: email)
+        .get();
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<bool> validateCurrentPassword(String email, String password) async {
+    try {
+      UserCredential userCredential =
+          await _auth.currentUser!.reauthenticateWithCredential(
+        EmailAuthProvider.credential(email: email, password: password),
+      );
+      return userCredential.user != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.updatePassword(newPassword);
+    }
+  }
+
+  Future<void> sendEmailVerification() async {
+    final user = _auth.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+    }
+  }
+
   Future<void> signOut() {
     return _auth.signOut();
+  }
+
+  Future<void> deleteUserAccount() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection(FirebaseCollections.users)
+          .doc(user.uid)
+          .delete();
+      await user.delete();
+    }
   }
 }
 

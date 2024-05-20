@@ -29,7 +29,10 @@ class LinkTextButton extends StatelessWidget {
       ),
       child: Text(
         title,
-        style: TextStyle(fontSize: 16.0, color: color),
+        style: TextStyle(
+          fontSize: 18.0,
+          color: color,
+        ),
       ),
     );
   }

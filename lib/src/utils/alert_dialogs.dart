@@ -13,6 +13,7 @@ Future<bool?> showAlertDialog({
   String defaultActionText = 'Yes',
   bool isNoAsCancel = false,
   bool isCancelAction = true,
+  final Color? defaultActionTextColor,
 }) async {
   String cancelActionText = !isNoAsCancel ? 'Cancel' : 'No';
   return showDialog(

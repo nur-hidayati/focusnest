@@ -28,8 +28,9 @@ mixin AuthValidators {
 
   String? passwordErrorText(String password, AuthFormType formType) {
     final bool showErrorText = !canSubmitPassword(password, formType);
-    final String errorText =
-        password.isEmpty ? 'Password can\'t be empty' : 'Password is too short';
+    final String errorText = password.isEmpty
+        ? 'Password can\'t be empty'
+        : 'Password need to be at least 8 characters';
     return showErrorText ? errorText : null;
   }
 }

@@ -7,11 +7,13 @@ class CustomButton extends StatelessWidget {
     required this.title,
     this.isFullWidth = false,
     this.onPressed,
+    this.buttonColor,
   });
 
   final String title;
   final bool isFullWidth;
   final VoidCallback? onPressed;
+  final Color? buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +22,13 @@ class CustomButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         shape: const StadiumBorder(),
         minimumSize: isFullWidth ? const Size.fromHeight(40) : null,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: buttonColor ?? Theme.of(context).colorScheme.primary,
       ),
       child: CustomText(
         title: title,
         color: Colors.white,
-        fontWeight: FontWeight.bold,
-        fontSize: 18.0,
+        fontWeight: FontWeight.w500,
+        fontSize: 16.0,
       ),
     );
   }

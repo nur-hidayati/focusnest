@@ -1,24 +1,27 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
-import 'package:focusnest/src/constants/app_padding.dart';
 
-class BottomSheetHeader extends StatelessWidget {
+class CancelDoneHeaderButton extends StatelessWidget {
   final String title;
   final VoidCallback onCancel;
   final VoidCallback? onDone;
+  final EdgeInsetsGeometry? padding;
+  final bool hideDoneButton;
 
-  const BottomSheetHeader({
+  const CancelDoneHeaderButton({
     required this.title,
-    this.onDone,
     required this.onCancel,
+    this.onDone,
+    this.padding,
+    this.hideDoneButton = false,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: AppPadding.horizontalPadding,
+      padding: padding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -26,12 +29,16 @@ class BottomSheetHeader extends StatelessWidget {
             title: 'Cancel',
             onPressed: onCancel,
           ),
-          CustomText(
-            title: title,
-            fontWeight: FontWeight.bold,
+          Expanded(
+            child: Center(
+              child: CustomText(
+                title: title,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           LinkTextButton(
-            title: 'Done',
+            title: !hideDoneButton ? 'Done' : '',
             onPressed: onDone,
           ),
         ],

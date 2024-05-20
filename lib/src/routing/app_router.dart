@@ -7,7 +7,10 @@ import 'package:focusnest/src/features/activity_timer/presentation/timer_start_s
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_screen.dart';
+import 'package:focusnest/src/features/settings/presentation/account_settings_screen.dart';
+import 'package:focusnest/src/features/settings/presentation/change_password_screen.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen.dart';
+import 'package:focusnest/src/features/settings/presentation/verify_delete_account_screen.dart';
 import 'package:focusnest/src/routing/go_router_refresh_stream.dart';
 import 'package:focusnest/src/routing/scaffold_with_nested_navigation.dart';
 import 'package:go_router/go_router.dart';
@@ -146,11 +149,103 @@ GoRouter goRouter(GoRouterRef ref) {
                 pageBuilder: (context, state) => const NoTransitionPage(
                   child: SettingsScreen(),
                 ),
+                routes: [
+                  GoRoute(
+                    path: ':userId-account',
+                    name: RoutesName.accountSettings,
+                    parentNavigatorKey: _rootNavigatorKey,
+                    pageBuilder: (context, state) {
+                      final userId = state.pathParameters['userId']!;
+                      final userEmail = state.uri.queryParameters['userEmail']!;
+                      return _buildCustomTransitionPage(
+                        AccountSettingsScreen(
+                          userId: userId,
+                          userEmail: userEmail,
+                        ),
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                        path: 'change-password',
+                        name: RoutesName.changePassword,
+                        parentNavigatorKey: _rootNavigatorKey,
+                        pageBuilder: (context, state) {
+                          final userId = state.pathParameters['userId']!;
+                          final userEmail =
+                              state.uri.queryParameters['userEmail']!;
+                          return _buildBottomTransitionPage(
+                            ChangePasswordScreen(
+                              userId: userId,
+                              userEmail: userEmail,
+                            ),
+                          );
+                        },
+                      ),
+                      GoRoute(
+                        path: 'verify-delete',
+                        name: RoutesName.verifyDeleteAccount,
+                        parentNavigatorKey: _rootNavigatorKey,
+                        pageBuilder: (context, state) {
+                          final userId = state.pathParameters['userId']!;
+                          final userEmail =
+                              state.uri.queryParameters['userEmail']!;
+
+                          return _buildBottomTransitionPage(
+                            VerifyDeleteAccount(
+                              userId: userId,
+                              userEmail: userEmail,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
         ],
       )
     ],
+  );
+}
+
+CustomTransitionPage<void> _buildCustomTransitionPage(Widget child) {
+  return CustomTransitionPage<void>(
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.easeInOut;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 300),
+  );
+}
+
+CustomTransitionPage<void> _buildBottomTransitionPage(Widget child) {
+  return CustomTransitionPage<void>(
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.easeInOut;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 300),
   );
 }
