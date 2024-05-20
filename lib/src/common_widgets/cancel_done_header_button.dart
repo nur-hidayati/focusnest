@@ -7,14 +7,12 @@ class CancelDoneHeaderButton extends StatelessWidget {
   final VoidCallback onCancel;
   final VoidCallback? onDone;
   final EdgeInsetsGeometry? padding;
-  final String? doneTitle;
 
   const CancelDoneHeaderButton({
     required this.title,
     required this.onCancel,
     this.onDone,
     this.padding,
-    this.doneTitle,
     super.key,
   });
 
@@ -38,7 +36,7 @@ class CancelDoneHeaderButton extends StatelessWidget {
             ),
           ),
           LinkTextButton(
-            title: doneTitle != null ? 'Done' : '',
+            title: 'Done',
             onPressed: onDone,
           ),
         ],

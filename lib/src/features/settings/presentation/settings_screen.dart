@@ -11,6 +11,7 @@ import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -40,6 +41,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() {
       _packageInfo = info;
     });
+  }
+
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -87,19 +97,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     }
                   },
                 ),
-                const SettingTile(
+                SettingTile(
                   title: 'Privacy Policy',
                   subtitle: 'Learn how we handle and protect your data',
                   icon: Icons.privacy_tip_outlined,
+                  action: () {
+                    _launchURL('https://focusnest-app.github.io/focusnest/');
+                  },
                 ),
-                const SettingTile(
+                SettingTile(
                   title: 'Terms of Service',
                   subtitle: 'Understand your rights and obligations',
                   icon: Icons.description_outlined,
+                  action: () {
+                    _launchURL(
+                        'https://focusnest-app.github.io/focusnest/terms_of_use');
+                  },
                 ),
                 const SettingTile(
                   title: 'Contact Us',
-                  // TODO: Use real email
                   subtitle: 'Reach out to us at ${Strings.emailName}',
                   icon: Icons.mail_outline,
                   hasTrailingIcon: false,
