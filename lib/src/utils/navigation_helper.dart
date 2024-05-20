@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void navigateToTimerStart({
   required BuildContext context,
@@ -26,4 +27,13 @@ void navigateToTimerStart({
       'label': activityLabel,
     },
   );
+}
+
+Future<void> launchURL(String url) async {
+  final Uri uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri);
+  } else {
+    throw 'Could not launch $url';
+  }
 }

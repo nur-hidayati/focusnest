@@ -1,16 +1,21 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
+import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
+import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_controller.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_validators.dart';
 import 'package:focusnest/src/features/authentication/presentation/string_validators.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:focusnest/src/utils/navigation_helper.dart';
+import 'package:go_router/go_router.dart';
 
 class AuthScreen extends StatelessWidget {
   final AuthFormType formType;
@@ -92,14 +97,14 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
     final state = ref.watch(authControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(),
       body: SingleChildScrollView(
         padding: AppPadding.screenPadding,
-        child: Column(
-          children: [
-            Center(
-              child: Column(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Column(
                 children: [
+                  Spacers.largeVertical,
                   _headerSection(),
                   Spacers.largeVertical,
                   _formSection(state.isLoading),
@@ -107,8 +112,8 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
                   _bottomSection(),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -167,12 +172,46 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
                 : passwordErrorText(password ?? '', AuthFormType.register),
             prefixIcon: const Icon(Icons.lock),
           ),
-          Spacers.largeVertical,
+          if (_formType == AuthFormType.signIn) ...[
+            Align(
+              alignment: Alignment.centerRight,
+              child: LinkTextButton(
+                title: 'Forgot Password?',
+                fontSize: 16,
+                onPressed: () => context.pushNamed(RoutesName.resetPassword),
+              ),
+            ),
+            Spacers.smallVertical,
+          ] else ...[
+            Spacers.largeVertical,
+          ],
           CustomButton(
             title: _formType.title,
             isFullWidth: true,
             onPressed: isLoading ? null : () => _submitAuth(),
           ),
+          if (_formType == AuthFormType.register) ...[
+            Spacers.smallVertical,
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: 'By signing up, you agree to our ',
+                style: const TextStyle(
+                  color: AppColor.greyColor,
+                  height: 1.5,
+                  fontSize: 12,
+                ),
+                children: [
+                  _linkTextSpan('Terms of Use',
+                      'https://focusnest-app.github.io/focusnest/terms_of_use'),
+                  const TextSpan(text: ' and '),
+                  _linkTextSpan('Privacy Policy.',
+                      'https://focusnest-app.github.io/focusnest/'),
+                ],
+              ),
+            ),
+            Spacers.smallVertical,
+          ]
         ],
       ),
     );
@@ -191,5 +230,18 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
         ),
       ],
     );
+  }
+
+  TextSpan _linkTextSpan(
+    String title,
+    String url,
+  ) {
+    return TextSpan(
+        text: title,
+        style: const TextStyle(
+          color: AppColor.primaryColor,
+          fontWeight: FontWeight.bold,
+        ),
+        recognizer: TapGestureRecognizer()..onTap = () => launchURL(url));
   }
 }

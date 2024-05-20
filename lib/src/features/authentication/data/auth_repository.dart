@@ -82,6 +82,10 @@ class AuthRepository {
     return _auth.signOut();
   }
 
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+
   Future<void> deleteUserAccount() async {
     final user = _auth.currentUser;
     if (user != null) {
