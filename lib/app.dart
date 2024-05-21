@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:focusnest/main_common.dart';
 import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/routing/app_router.dart';
 import 'package:focusnest/src/services/notification_controller.dart';
@@ -22,6 +23,10 @@ class _AppState extends ConsumerState<App> {
   void initState() {
     super.initState();
     NotificationController.startListeningNotificationEvents();
+
+    Future.delayed(Duration.zero, () {
+      removeSplashScreen();
+    });
   }
 
   @override
