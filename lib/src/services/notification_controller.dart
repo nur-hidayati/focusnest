@@ -15,10 +15,10 @@ class NotificationController {
       'resource://drawable/res_app_icon',
       [
         NotificationChannel(
-          channelGroupKey: 'basic_channel_group',
-          channelKey: 'basic_channel',
-          channelName: 'Basic Notifications',
-          channelDescription: 'Basic Notifications channel',
+          channelGroupKey: 'timer_channel_group',
+          channelKey: 'timer_channel',
+          channelName: 'Timer Notifications',
+          channelDescription: 'Notifications for timer activity',
           defaultColor: AppColor.primaryColor,
           importance: NotificationImportance.High,
           ledColor: Colors.white,
@@ -66,8 +66,8 @@ class NotificationController {
       id: DateTime.now().millisecondsSinceEpoch.remainder(1000),
       title: 'FocusNest',
       body:
-          'Congratulations! You have completed the task ${Emojis.hand_clapping_hands}',
-      channelKey: 'basic_channel',
+          'You\'ve successfully completed the task! Great job! ${Emojis.hand_clapping_hands}',
+      channelKey: 'timer_channel',
     ));
   }
 }
