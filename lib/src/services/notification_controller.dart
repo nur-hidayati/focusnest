@@ -24,6 +24,12 @@ class NotificationController {
           ledColor: Colors.white,
         )
       ],
+      channelGroups: [
+        NotificationChannelGroup(
+          channelGroupKey: 'timer_channel_group',
+          channelGroupName: 'Timer Group',
+        )
+      ],
       debug: true,
     );
 
