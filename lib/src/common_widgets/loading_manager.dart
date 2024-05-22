@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// Overlay a loading indicator and message on its child during loading states.
 class LoadingManager extends StatelessWidget {
   const LoadingManager({
     super.key,
@@ -15,13 +16,15 @@ class LoadingManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // List of widgets to be stacked  (always includes the main content)
     List<Widget> stackChildren = [child];
 
     if (isLoading) {
       stackChildren.addAll(
         [
           Container(
-            color: Colors.black.withOpacity(0.7),
+            color:
+                Colors.black.withOpacity(0.7), // Dark semi-transparent overlay
           ),
           Center(
             child: Column(

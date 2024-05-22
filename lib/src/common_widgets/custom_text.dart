@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Customizable Text widget
 class CustomText extends StatelessWidget {
   final String title;
   final TextAlign textAlign;
@@ -65,6 +66,7 @@ class CustomText extends StatelessWidget {
   }
 }
 
+// Predefined text styles
 enum TextType {
   titleLarge,
   title,

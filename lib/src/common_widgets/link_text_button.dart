@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Customizable text button that acts like a hyperlink style
 class LinkTextButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final String title;

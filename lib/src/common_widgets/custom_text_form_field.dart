@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 
+// Customizable Text Form Field
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
     super.key,
@@ -57,6 +58,7 @@ class CustomTextFormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Optional label on top of the input
         if (label != null) ...[
           CustomText(
             title: label!,

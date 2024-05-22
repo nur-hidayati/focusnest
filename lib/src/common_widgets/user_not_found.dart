@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 
+// User Not Found Text
 class UserNotFound extends StatelessWidget {
   const UserNotFound({super.key});
 

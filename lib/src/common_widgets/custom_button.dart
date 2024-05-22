@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 
+// Customizable button with an option for full-width display.
 class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,

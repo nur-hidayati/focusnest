@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:focusnest/src/common_widgets/cancel_done_header_button.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
+import 'package:focusnest/src/common_widgets/header_actions_button.dart';
 import 'package:focusnest/src/common_widgets/loading_manager.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
@@ -75,7 +75,7 @@ class _VerifyDeleteAccountState extends ConsumerState<VerifyDeleteAccount> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CancelDoneHeaderButton(
+              HeaderActionButtons(
                 padding: const EdgeInsets.only(top: 10),
                 title: 'Delete Account',
                 hideDoneButton: true,

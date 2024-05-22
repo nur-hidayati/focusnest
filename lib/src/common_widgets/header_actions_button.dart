@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
 
-class CancelDoneHeaderButton extends StatelessWidget {
+// Customizable header with 'Cancel' and 'Done' action buttons and a central title.
+// Commonly used in bottom sheets that need header with navigation buttons.
+class HeaderActionButtons extends StatelessWidget {
   final String title;
   final VoidCallback onCancel;
   final VoidCallback? onDone;
   final EdgeInsetsGeometry? padding;
   final bool hideDoneButton;
 
-  const CancelDoneHeaderButton({
+  const HeaderActionButtons({
     required this.title,
     required this.onCancel,
     this.onDone,
@@ -21,7 +23,8 @@ class CancelDoneHeaderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding,
+      padding:
+          padding, // Apply the specified padding, defaults to null if not provided.
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
