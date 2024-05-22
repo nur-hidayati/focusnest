@@ -39,6 +39,7 @@ class _VerifyDeleteAccountState extends ConsumerState<VerifyDeleteAccount> {
   }
 
   void _handleVerifyDeleteAccount() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     final currentPasswordValid =
         await ref.read(authRepositoryProvider).validateCurrentPassword(
               widget.userEmail,
