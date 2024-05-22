@@ -1,10 +1,10 @@
-// tools/generate_firebase_options.dart
 import 'dart:io';
+
+// Used in CI/CD pipelines to dynamically configure Firebase options based on the development environment
 
 void main() {
   var envVars = Platform.environment;
 
-  // Construct FirebaseOptions based on the platform
   var firebaseOptions = '''
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform, kIsWeb;
