@@ -7,6 +7,7 @@ import 'package:focusnest/src/features/authentication/data/auth_repository.dart'
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
+// Bottom Sheet that display Activity Label Input with Cancel and Done header
 class ActivityLabelForm extends ConsumerStatefulWidget {
   const ActivityLabelForm({
     super.key,

@@ -4,6 +4,9 @@ import 'package:focusnest/src/features/activity_timer/data/activity_timers_dao.d
 
 import 'activity_timer_database.dart';
 
+// Providers for accessing and managing activity timers and related state.
+// Includes database and DAO providers, as well as state notifiers for
+// activity labels, timer durations, and recent activities
 final activityTimerDatabaseProvider = Provider<ActivityTimerDatabase>((ref) {
   return ActivityTimerDatabase();
 });

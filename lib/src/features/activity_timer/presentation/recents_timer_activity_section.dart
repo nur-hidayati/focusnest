@@ -10,6 +10,7 @@ import 'package:focusnest/src/features/authentication/data/auth_repository.dart'
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
 
+// The Activity Timer section that display Recents Timer
 class RecentsTimerActivitySection extends ConsumerWidget {
   const RecentsTimerActivitySection({super.key});
 

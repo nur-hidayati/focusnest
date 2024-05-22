@@ -16,6 +16,7 @@ part 'activity_timer_database.g.dart';
 // ignore: prefer_const_constructors
 final _uuid = Uuid();
 
+// Defines the schema and database setup for storing and managing activity timers.
 class ActivityTimers extends Table {
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
   TextColumn get userId => text()();
