@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/// This file contains various functions to display alert dialogs
 const kDialogDefaultKey = Key('dialog-default-key');
 
 Future<bool?> showAlertDialog({

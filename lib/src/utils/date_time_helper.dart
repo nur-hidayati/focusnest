@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 
+// Contains utility functions for manipulating and formatting DateTime and Duration objects
 DateTime addDays(DateTime dateTime, int days) {
   return dateTime.add(Duration(days: days));
 }
@@ -8,6 +9,8 @@ DateTime subtractDays(DateTime dateTime, int days) {
   return dateTime.subtract(Duration(days: days));
 }
 
+// Format Duration object into a string in the format HH:MM:SS i.e. "1:02:02"
+// If the duration is less than an hour, it formats it as MM:SS i.e. "12:02".
 String formatDurationToHms(Duration duration) {
   String twoDigits(int n) => n.toString().padLeft(2, '0');
   String hours = twoDigits(duration.inHours);
@@ -20,6 +23,9 @@ String formatDurationToHms(Duration duration) {
     return '$minutes:$seconds';
   }
 }
+
+// Formats Duration into a human-readable string
+// It displays the duration in hours and minutes i.e. "1 hour 2 minutes" and "2 minutes".
 
 String formatDurationsToReadable(Duration duration) {
   String formattedTime = "";
@@ -37,10 +43,12 @@ String formatDurationsToReadable(Duration duration) {
   return formattedTime;
 }
 
+// Formats DateTime into HH:MM i.e. "1.30 PM".
 String formatTime(DateTime dateTime) {
   return DateFormat.jm().format(dateTime);
 }
 
+// Formats DateTime into 'd MMM yyyy, h:mm a' i.e. "1 Jan 2022, 1:30 PM" .
 String formatDateTime(DateTime dateTime) {
   return DateFormat('d MMM yyyy, h:mm a').format(dateTime);
 }

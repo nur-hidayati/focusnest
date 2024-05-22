@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+// Provide functionality for converting between Timestamp and DateTime objects.
+// The TimestampConverter class handles non-nullable Timestamp and DateTime objects,
+// while the TimestampNullableConverter class handles nullable Timestamp and DateTime objects.
 class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
   const TimestampConverter();
 

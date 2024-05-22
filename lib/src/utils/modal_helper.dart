@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/header_actions_button.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 
+// This file contains several utility functions for displaying modals and snack bars
+
+// Displays a date picker modal.
+// Allows user to select date within specified range.
+// Which can be past dates, future dates, or both
 Future<void> datePickerModal({
   required BuildContext context,
   required void Function(DateTime) onDateTimeChanged,
@@ -49,6 +54,8 @@ Future<void> datePickerModal({
   );
 }
 
+// Displays a duration picker modal.
+// Allows user to select duration for the timer
 Future<void> durationPickerModal({
   required BuildContext context,
   required Duration currentDuration,
@@ -77,6 +84,8 @@ Future<void> durationPickerModal({
   );
 }
 
+// Displays a generic Cupertino picker modal
+// Used by the date and duration picker modals.
 Future<void> cupertinoPickerModal({
   required BuildContext context,
   required Widget child,
