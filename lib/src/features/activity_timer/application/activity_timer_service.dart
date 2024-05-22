@@ -16,7 +16,7 @@ String getActivityLabelKey(String userId) => '$userId-$activityLabelKeySuffix';
 String getTimerDurationKey(String userId) => '$userId-$timerDurationKeySuffix';
 String getDeletedItemIdsKey(String userId) => '$userId-$deletedItemIdsSuffix';
 
-/// Notifier to manage the state of the activity label
+// Notifier to manage the state of the activity label
 class ActivityLabelNotifier extends StateNotifier<String> {
   final String userId;
 

@@ -6,7 +6,7 @@ import 'package:focusnest/src/routing/app_router.dart';
 import 'package:focusnest/src/services/notification_controller.dart';
 import 'package:focusnest/src/utils/theme.dart';
 
-/// Main application widget - configured to support different flavors
+// Main application widget - configured to support different flavors
 class App extends ConsumerStatefulWidget {
   final String flavor;
 
