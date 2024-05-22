@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 
 // Manages the initialization, event handling and creation of notifications
 // Using AwesomeNotifications plugin
-
 class NotificationController {
   static ReceivedAction? initialAction;
 

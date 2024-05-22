@@ -8,6 +8,7 @@ import 'package:focusnest/src/utils/activity_timer_form_mixin.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
+// Add Activity Timer - for user to add new record
 class AddActivityTimer extends ConsumerStatefulWidget {
   final String userId;
   final DateTime startDateTime;

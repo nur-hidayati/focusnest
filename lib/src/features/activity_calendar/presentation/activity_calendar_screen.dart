@@ -16,6 +16,9 @@ import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+// Screen for Activity Calendar where it displayed Calendar using TableCalendar package.
+// The items is displayed if the start date same as selected date in calendar
+// Items displayed is Activity label, timer duration, start time and end time
 class ActivityCalendarScreen extends ConsumerStatefulWidget {
   const ActivityCalendarScreen({super.key});
 
