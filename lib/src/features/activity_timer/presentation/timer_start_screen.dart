@@ -18,6 +18,7 @@ import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
+// Full Screen that is displayed when user start the timer
 class TimerStartScreen extends ConsumerStatefulWidget {
   final String userId;
   final Duration duration;
@@ -50,14 +51,21 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
     _remainingDuration = widget.duration;
     _startDateTime = DateTime.now();
     _startTimer();
+
+    // Set the app to full-screen mode
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    // Add an observer to monitor app lifecycle changes
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+
+    // Restore the system UI to its normal state
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -85,6 +93,8 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
           },
         );
         _addActivityToDatabase(endDateTime);
+
+        // Show a notification if the app is in the background or closed
         if (_lastLifecycleState == AppLifecycleState.paused ||
             _lastLifecycleState == AppLifecycleState.detached) {
           NotificationController.createTimerDoneNotification(context);
@@ -110,6 +120,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
         widget.duration.inSeconds - _remainingDuration.inSeconds;
 
     if (durationInSeconds >= 60) {
+      // Show a dialog to confirm adding an incomplete activity (only if the duration is longer than 60 seconds)
       bool? confirmAddActivity = await showAlertDialog(
         context: context,
         title: 'Incomplete Activity',

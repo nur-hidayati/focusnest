@@ -4,6 +4,8 @@ import 'activity_timer_database.dart';
 
 part 'activity_timers_dao.g.dart';
 
+// Methods to watch activity timers, get recent activities, insert new timers,
+// and filter duplicates based on duration and activity label
 @DriftAccessor(tables: [ActivityTimers])
 class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
     with _$ActivityTimersDaoMixin {

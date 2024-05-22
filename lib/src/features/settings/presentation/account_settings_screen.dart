@@ -6,6 +6,7 @@ import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
+// Account Settings Screen for user to view their email, update password and delete their account
 class AccountSettingsScreen extends ConsumerStatefulWidget {
   final String userId;
   final String userEmail;

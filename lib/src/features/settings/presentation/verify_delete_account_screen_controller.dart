@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'verify_delete_account_screen_controller.g.dart';
 
+// Controller class for managing delete user permanently logic using Riverpod
+
 @riverpod
 class VerifyDeleteAccountScreenController
     extends _$VerifyDeleteAccountScreenController {

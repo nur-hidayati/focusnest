@@ -5,6 +5,7 @@ import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+// Custom Calendar that uses Table Calendar package
 class CustomCalendar extends StatefulWidget {
   final DateTime selectedDate;
   final Function(DateTime) onDateSelectedChanged;

@@ -4,6 +4,7 @@ abstract class StringValidator {
   bool isValid(String value);
 }
 
+// Implementation of [StringValidator] using regular expressions
 class RegexValidator implements StringValidator {
   RegexValidator({required this.regexSource});
 
@@ -27,6 +28,7 @@ class RegexValidator implements StringValidator {
   }
 }
 
+// Input formatter that uses a [StringValidator] to validate text input
 class ValidatorInputFormatter implements TextInputFormatter {
   ValidatorInputFormatter({required this.editingValidator});
 
@@ -44,14 +46,17 @@ class ValidatorInputFormatter implements TextInputFormatter {
   }
 }
 
+// Validator for email input during editing
 class EmailEditingRegexValidator extends RegexValidator {
   EmailEditingRegexValidator() : super(regexSource: '^(|\\S)+\$');
 }
 
+// Validator for email input on submission
 class EmailSubmitRegexValidator extends RegexValidator {
   EmailSubmitRegexValidator() : super(regexSource: '^\\S+@\\S+\\.\\S+\$');
 }
 
+// Validator that checks if a string is not empty
 class NonEmptyStringValidator extends StringValidator {
   @override
   bool isValid(String value) {
@@ -59,6 +64,7 @@ class NonEmptyStringValidator extends StringValidator {
   }
 }
 
+// Validator that checks if a string meets a minimum length requirement
 class MinLengthStringValidator extends StringValidator {
   MinLengthStringValidator(this.minLength);
   final int minLength;

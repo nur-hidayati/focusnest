@@ -4,6 +4,7 @@ import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// Utility functions for navigation & URL launching
 void navigateToTimerStart({
   required BuildContext context,
   String? userId,

@@ -5,7 +5,10 @@ import 'package:focusnest/src/exceptions/app_exception.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/app_logger.dart';
 
+// This extension provides additional functionality to AsyncValue objects.
 extension AsyncValueUI on AsyncValue {
+  // Displays an alert dialog when error occurs.
+  // Checks if the AsyncValue is not loading and has an error before showing the dialog.
   void showAlertDialogOnError(BuildContext context) {
     if (!isLoading && hasError) {
       final message = _errorMessage(error);
@@ -17,6 +20,8 @@ extension AsyncValueUI on AsyncValue {
     }
   }
 
+  // Returns appropriate error message based on the error type
+  // Handles FirebaseAuthException, AppException, and other types of exceptions.
   String _errorMessage(Object? error) {
     if (error is FirebaseAuthException) {
       String errorMessage;

@@ -6,6 +6,7 @@ import 'package:focusnest/src/routing/app_router.dart';
 import 'package:focusnest/src/services/notification_controller.dart';
 import 'package:focusnest/src/utils/theme.dart';
 
+// Main application widget - configured to support different flavors
 class App extends ConsumerStatefulWidget {
   final String flavor;
 
@@ -22,8 +23,11 @@ class _AppState extends ConsumerState<App> {
   @override
   void initState() {
     super.initState();
+
+    // Start listening to notification events as soon as the app initializes
     NotificationController.startListeningNotificationEvents();
 
+    // Remove the splash screen once the initial frame is rendered
     Future.delayed(Duration.zero, () {
       removeSplashScreen();
     });

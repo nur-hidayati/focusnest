@@ -9,6 +9,8 @@ import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:go_router/go_router.dart';
 
+// Bottom sheet that displayed Activity Timer form ( activity label, start date/time and duration)
+// Used when user want to edit or add new record in the Calendar screen
 class ActivityTimerForm extends StatelessWidget {
   final String headerTitle;
   final TextEditingController activityLabelController;

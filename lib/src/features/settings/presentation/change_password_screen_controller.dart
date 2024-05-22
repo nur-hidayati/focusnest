@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'change_password_screen_controller.g.dart';
 
+// Controller class for managing updating user password logic using Riverpod
 @riverpod
 class ChangePasswordScreenController extends _$ChangePasswordScreenController {
   @override

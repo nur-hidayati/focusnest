@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'activity_timer.g.dart';
 
+// Model class representing an activity timer
+// This class is serializable to and from JSON using the `json_serializable` package
 @JsonSerializable()
 class ActivityTimer {
   final String id;

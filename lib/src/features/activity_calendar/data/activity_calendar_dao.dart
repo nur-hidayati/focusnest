@@ -3,11 +3,15 @@ import 'package:focusnest/src/features/activity_timer/data/activity_timer_databa
 
 part 'activity_calendar_dao.g.dart';
 
+// Provides methods to watch, insert, update, and delete activity timers
 @DriftAccessor(tables: [ActivityTimers])
 class ActivityCalendarDao extends DatabaseAccessor<ActivityTimerDatabase>
     with _$ActivityCalendarDaoMixin {
   ActivityCalendarDao(super.db);
 
+  // Watches activities for a specific date for a given user
+  // The date range is set to the entire day from start to end
+  // The results are ordered by the startDateTime
   Stream<List<ActivityTimer>> watchActivitiesForDate(
       String userId, DateTime date) {
     final startOfDay = DateTime(date.year, date.month, date.day);

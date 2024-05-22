@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Provide predefined vertical and horizontal spacers for consistent spacing throughout the app.
 class Spacers {
   static const Widget extraSmallVertical = SizedBox(height: 5);
   static const Widget smallVertical = SizedBox(height: 10);

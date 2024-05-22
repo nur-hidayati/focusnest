@@ -8,6 +8,8 @@ import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:go_router/go_router.dart';
 
+// Full screen that is displayed only when the timer completes naturally
+// Does not show if the user manually stops the timer
 class TimerDoneScreen extends StatefulWidget {
   final Duration duration;
 
@@ -24,11 +26,13 @@ class _TimerDoneScreenState extends State<TimerDoneScreen> {
   @override
   void initState() {
     super.initState();
+    // Set the app to full-screen mode
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   @override
   void dispose() {
+    // Restore the system UI to its normal state
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }

@@ -11,10 +11,12 @@ const String deletedItemIdsSuffix = 'deletedItemIds';
 const String initialActivityLabelValue = 'Work';
 const Duration initialTimerDurationValue = Duration(minutes: 15);
 
+// Generate unique keys for each user
 String getActivityLabelKey(String userId) => '$userId-$activityLabelKeySuffix';
 String getTimerDurationKey(String userId) => '$userId-$timerDurationKeySuffix';
 String getDeletedItemIdsKey(String userId) => '$userId-$deletedItemIdsSuffix';
 
+// Notifier to manage the state of the activity label
 class ActivityLabelNotifier extends StateNotifier<String> {
   final String userId;
 
@@ -22,12 +24,14 @@ class ActivityLabelNotifier extends StateNotifier<String> {
     _loadActivityLabel();
   }
 
+  // Loads the activity label from SharedPreferences
   void _loadActivityLabel() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key = getActivityLabelKey(userId);
     state = prefs.getString(key) ?? initialActivityLabelValue;
   }
 
+  // Updates the activity label and saves it to SharedPreferences
   void updateActivityLabel(String newLabel) async {
     state = newLabel;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -36,6 +40,7 @@ class ActivityLabelNotifier extends StateNotifier<String> {
   }
 }
 
+// Notifier to manage the state of the timer duration
 class TimerDurationNotifier extends StateNotifier<Duration> {
   final String userId;
 
@@ -43,6 +48,7 @@ class TimerDurationNotifier extends StateNotifier<Duration> {
     _loadTimerDuration();
   }
 
+  // Loads the timer duration from SharedPreferences
   void _loadTimerDuration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key = getTimerDurationKey(userId);
@@ -54,6 +60,7 @@ class TimerDurationNotifier extends StateNotifier<Duration> {
     }
   }
 
+  // Updates the timer duration and saves it to SharedPreferences
   void updateTimerDuration(Duration newDuration) async {
     state = newDuration;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -62,6 +69,7 @@ class TimerDurationNotifier extends StateNotifier<Duration> {
   }
 }
 
+// Notifier to manage the state of recent activities
 class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
   final ActivityTimersDao dao;
   final String _userId;
@@ -70,6 +78,7 @@ class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
     _loadRecentActivities();
   }
 
+  // Loads the list of recent activities from SharedPreferences
   Future<void> _loadRecentActivities() async {
     final prefs = await SharedPreferences.getInstance();
     final recentActivitiesJson =
@@ -85,6 +94,7 @@ class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
     }
   }
 
+  // Add new activity to the list and saves it to SharedPreferences
   void addActivity(ActivityTimer activity) {
     final exists = state.any((existingActivity) =>
         existingActivity.activityLabel == activity.activityLabel &&
@@ -97,11 +107,13 @@ class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
     }
   }
 
+  // Removes an activity from the list and updates SharedPreferences
   void removeActivity(ActivityTimer activity) {
     state = state.where((item) => item.id != activity.id).toList();
     _saveRecentActivities();
   }
 
+  // Saves the list of recent activities to SharedPreferences
   Future<void> _saveRecentActivities() async {
     final prefs = await SharedPreferences.getInstance();
     final recentActivitiesJson =

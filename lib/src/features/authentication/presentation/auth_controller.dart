@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_controller.g.dart';
 
+// Controller class for managing authentication logic using Riverpod
 @riverpod
 class AuthController extends _$AuthController {
   @override

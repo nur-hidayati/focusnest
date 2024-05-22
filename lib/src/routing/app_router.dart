@@ -20,6 +20,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
 
+// Setup the routing using GoRouter with nested navigation support.
+// Defines routes for authentication, activity calendar, activity timer, and settings.
+// GoRouter instance manages navigation state and redirects based on user authentication status
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _activityTimerNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: RoutesName.activityTimer);
@@ -235,6 +238,7 @@ GoRouter goRouter(GoRouterRef ref) {
   );
 }
 
+// Custom page transition from right to left
 CustomTransitionPage<void> _buildCustomTransitionPage(Widget child) {
   return CustomTransitionPage<void>(
     child: child,
@@ -255,6 +259,7 @@ CustomTransitionPage<void> _buildCustomTransitionPage(Widget child) {
   );
 }
 
+// Custom page transition from bottom to top
 CustomTransitionPage<void> _buildBottomTransitionPage(Widget child) {
   return CustomTransitionPage<void>(
     child: child,

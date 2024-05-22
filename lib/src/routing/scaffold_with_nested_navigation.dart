@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:go_router/go_router.dart';
 
+// Scaffold widget with nested navigation
+// Use the bottom navigation bar for smaller screens and a navigation rail for larger screens.
 class ScaffoldWithNestedNavigation extends StatelessWidget {
   const ScaffoldWithNestedNavigation({
     Key? key,
@@ -129,6 +131,7 @@ class ScaffoldWithNavigationRail extends StatelessWidget {
   }
 }
 
+// Predefined items for the bottom navigation bar and navigation rail.
 final List<BottomNavBarItems> bottomNavBarItems = [
   BottomNavBarItems(
     icon: Icons.calendar_today_outlined,

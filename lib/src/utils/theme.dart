@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 
+// This function sets the visual theme for the app
 ThemeData appTheme() {
   return ThemeData(
     useMaterial3: true,

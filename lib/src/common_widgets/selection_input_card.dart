@@ -3,6 +3,7 @@ import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 
+// Card that displays a label and a selectable input with a hint or value in it.
 class SelectionInputCard extends StatelessWidget {
   final String label;
   final String? value;

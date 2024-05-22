@@ -13,6 +13,7 @@ import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
 import 'package:go_router/go_router.dart';
 
+// The Activity Timer section that display Activity label and Duration
 class TimerSection extends ConsumerWidget {
   const TimerSection({super.key});
 

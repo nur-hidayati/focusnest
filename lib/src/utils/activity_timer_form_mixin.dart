@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
+// Mixin for managing the state and behavior of activity timer form
 mixin ActivityTimerFormMixin<T extends StatefulWidget> on State<T> {
   late TextEditingController _activityLabelController;
   TextEditingController get activityLabelController => _activityLabelController;

@@ -6,6 +6,7 @@ import 'package:focusnest/src/features/activity_timer/presentation/timer_section
 import 'package:focusnest/src/services/notification_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Main Activity Timer Screen
 class ActivityTimerScreen extends StatefulWidget {
   const ActivityTimerScreen({super.key});
 
@@ -20,6 +21,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
     _displayReqPermissionFirstTimeRunApp();
   }
 
+  // Checks if app is being run for the first time and, if so, requests notification permissions
   Future<void> _displayReqPermissionFirstTimeRunApp() async {
     final prefs = await SharedPreferences.getInstance();
     final isFirstTime = prefs.getBool('isFirstTime') ?? true;

@@ -1,5 +1,8 @@
 import 'package:logger/logger.dart';
 
+// This class provides a centralized logging utility using Logger package
+// Configures a logger with a PrettyPrinter for enhanced readability and provides static methods
+// for different log levels, such as debug, info, warning, error, trace, and fatal.
 class AppLogger {
   static final logger = Logger(
     printer: PrettyPrinter(

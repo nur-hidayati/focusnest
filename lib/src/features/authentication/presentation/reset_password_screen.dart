@@ -13,6 +13,7 @@ import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
 import 'package:go_router/go_router.dart';
 
+// Screen displayed when the user click on reset password link during login
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   const ResetPasswordScreen({super.key});
 

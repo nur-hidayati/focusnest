@@ -8,6 +8,7 @@ import 'package:focusnest/src/utils/activity_timer_form_mixin.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:go_router/go_router.dart';
 
+// Update Activity Timer - for user to edit the existing record
 class UpdateActivityTimer extends ConsumerStatefulWidget {
   final String userId;
   final String timerId;

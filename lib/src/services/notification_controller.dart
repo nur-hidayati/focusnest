@@ -6,12 +6,14 @@ import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:go_router/go_router.dart';
 
+// Manages the initialization, event handling and creation of notifications
+// Using AwesomeNotifications plugin
 class NotificationController {
   static ReceivedAction? initialAction;
 
+  // Initialize local notifications
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications().initialize(
-      // null,
       'resource://drawable/res_app_icon',
       [
         NotificationChannel(
@@ -39,28 +41,33 @@ class NotificationController {
 
   // NOTIFICATION EVENTS LISTENER
 
+  // Listen for notification events
   static Future<void> startListeningNotificationEvents() async {
     AwesomeNotifications()
         .setListeners(onActionReceivedMethod: onActionReceivedMethod);
   }
 
+  // Handle notification creation events
   @pragma("vm:entry-point")
   static Future<void> onNotificationCreatedMethod(
       ReceivedNotification receivedNotification) async {}
 
+  // Handle notification display events
   @pragma("vm:entry-point")
   static Future<void> onNotificationDisplayedMethod(
       ReceivedNotification receivedNotification) async {}
 
+  // Handle notification dismissal events
   @pragma("vm:entry-point")
   static Future<void> onDismissActionReceivedMethod(
       ReceivedAction receivedAction) async {}
 
+  // Handle notification action events (e.g., when user taps on the notification)
   @pragma("vm:entry-point")
   static Future<void> onActionReceivedMethod(
       ReceivedAction receivedAction) async {}
 
-  // Create Timer Notification
+  // Create Timer Completion Notification
   static Future<void> createTimerDoneNotification(BuildContext context) async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
 
