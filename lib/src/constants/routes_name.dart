@@ -2,6 +2,8 @@ class RoutesName {
   static const String auth = 'auth';
   static const String resetPassword = 'resetPassword';
   static const String emailSent = 'emailSent';
+
+  // Calendar
   static const String activityCalendar = 'activityCalendar';
 
   // Timer
