@@ -14,7 +14,7 @@ class CustomText extends StatelessWidget {
   const CustomText({
     required this.title,
     this.textAlign = TextAlign.left,
-    this.overflow = TextOverflow.ellipsis,
+    this.overflow = TextOverflow.visible,
     this.softWrap = true,
     this.textType = TextType.body,
     this.fontSize = 16.0,
