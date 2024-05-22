@@ -14,6 +14,10 @@ import 'package:focusnest/src/utils/navigation_helper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+// Main settings screen that displays various settings options to the user.
+// This screen includes account settings, privacy policy, terms of service,
+// contact information, and app version details. It also provides a sign-out
+// option for the user.
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 

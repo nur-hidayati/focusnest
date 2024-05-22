@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 
+// Settings tile widget that displays a title, subtitle, and icon - required,
+// Optional for trailing icon and tap action.
 class SettingTile extends StatelessWidget {
   final String title;
-  final String? subtitle;
+  final String subtitle;
   final IconData icon;
   final bool hasTrailingIcon;
   final VoidCallback? action;
@@ -24,7 +26,7 @@ class SettingTile extends StatelessWidget {
         ListTile(
           leading: Icon(icon),
           title: Text(title),
-          subtitle: subtitle != null ? Text(subtitle!) : null,
+          subtitle: Text(subtitle),
           trailing: hasTrailingIcon
               ? const Icon(
                   Icons.arrow_forward_ios,

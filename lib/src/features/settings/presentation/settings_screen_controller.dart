@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'settings_screen_controller.g.dart';
 
+// Controller class for managing sign out logic using Riverpod
 @riverpod
 class SettingsScreenController extends _$SettingsScreenController {
   @override

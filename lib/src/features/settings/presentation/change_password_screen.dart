@@ -15,6 +15,8 @@ import 'package:focusnest/src/utils/async_value_ui.dart';
 import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:go_router/go_router.dart';
 
+// Screen that displayed when user click on update password in account settings.
+// User need to enter their current password in order to update password
 class ChangePasswordScreen extends ConsumerStatefulWidget {
   final String userId;
   final String userEmail;
