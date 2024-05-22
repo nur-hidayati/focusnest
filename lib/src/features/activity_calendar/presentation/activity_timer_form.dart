@@ -50,7 +50,7 @@ class ActivityTimerForm extends StatelessWidget {
           ),
           Spacers.smallVertical,
           SelectionInputCard(
-            label: 'Start from',
+            label: 'Start',
             value: formatDateTime(selectedStartDateTime),
             hintText: 'Please select',
             onPressed: () {

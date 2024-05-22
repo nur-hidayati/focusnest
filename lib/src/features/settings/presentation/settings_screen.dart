@@ -104,7 +104,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 children: [
                   SettingTile(
                     title: 'Account Settings',
-                    subtitle: 'Manage your account settings and preferences',
+                    subtitle: 'Manage your account settings',
                     icon: Icons.account_circle_outlined,
                     action: () => _handleNavigateToUserSettings(
                       userId: userId,
@@ -127,7 +127,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const SettingTile(
                     title: 'Contact Us',
-                    subtitle: 'Reach out to us at ${Strings.emailName}',
+                    subtitle: Strings.emailName,
                     icon: Icons.mail_outline,
                     hasTrailingIcon: false,
                   ),

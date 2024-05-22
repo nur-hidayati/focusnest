@@ -53,7 +53,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen>
   }
 
   Future<bool> _isFormValid() async {
-    FocusScope.of(context).unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
     bool isFormValid = true;
     final currentPasswordValid =
         await ref.read(authRepositoryProvider).validateCurrentPassword(

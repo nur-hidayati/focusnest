@@ -68,6 +68,7 @@ class TimerSection extends ConsumerWidget {
                   title: activityLabel,
                   textType: TextType.titleLarge,
                   color: AppColor.primaryColor,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),

@@ -37,7 +37,7 @@ class _UpdateActivityTimerState extends ConsumerState<AddActivityTimer>
       final dao = ref.read(activityCalendarDaoProvider);
       final entry = ActivityTimersCompanion(
         userId: drift.Value(widget.userId),
-        activityLabel: drift.Value(activityLabelController.text),
+        activityLabel: drift.Value(activityLabelController.text.trim()),
         startDateTime: drift.Value(selectedStartDateTime),
         endDateTime: drift.Value(endDateTime),
         actualDurationInSeconds: drift.Value(totalDurationInSeconds),

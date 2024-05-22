@@ -72,7 +72,7 @@ class NotificationController {
       id: DateTime.now().millisecondsSinceEpoch.remainder(1000),
       title: 'FocusNest',
       body:
-          'You\'ve successfully completed the task! Great job! ${Emojis.hand_clapping_hands}',
+          'You\'ve successfully completed the task. Great job! ${Emojis.hand_clapping_hands}',
       channelKey: 'timer_channel',
     ));
   }

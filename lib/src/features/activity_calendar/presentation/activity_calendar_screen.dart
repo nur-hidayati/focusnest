@@ -185,6 +185,7 @@ class _ActivityCalendarScreenState
               title: CustomText(
                 title: activity.activityLabel,
                 fontWeight: FontWeight.bold,
+                overflow: TextOverflow.ellipsis,
               ),
               subtitle: CustomText(
                 title: formatDurationsToReadable(

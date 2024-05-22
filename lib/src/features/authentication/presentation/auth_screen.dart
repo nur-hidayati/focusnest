@@ -66,7 +66,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
 
   Future<void> _submitAuth() async {
     setState(() => _submitted = true);
-    FocusScope.of(context).unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
 
     if (_formKey.currentState!.validate()) {
       final controller = ref.read(authControllerProvider.notifier);

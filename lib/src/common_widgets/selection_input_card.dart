@@ -25,7 +25,9 @@ class SelectionInputCard extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Row(
           children: [
-            CustomText(title: label),
+            Expanded(
+              child: CustomText(title: label),
+            ),
             const Spacer(),
             LinkTextButton(
               title: value ?? hintText,

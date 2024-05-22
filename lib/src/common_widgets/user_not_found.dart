@@ -13,7 +13,6 @@ class UserNotFound extends StatelessWidget {
         child: CustomText(
           title: 'You are not logged in. Please login to view this',
           textAlign: TextAlign.center,
-          overflow: TextOverflow.visible,
         ),
       ),
     );
