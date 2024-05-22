@@ -198,6 +198,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
                 style: const TextStyle(
                   color: AppColor.greyColor,
                   height: 1.5,
+                  fontSize: 12,
                 ),
                 children: [
                   _linkTextSpan('Terms of Use',
