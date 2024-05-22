@@ -22,7 +22,7 @@ part 'app_router.g.dart';
 
 // Setup the routing using GoRouter with nested navigation support.
 // Defines routes for authentication, activity calendar, activity timer, and settings.
-// GoRouter instance manages navigation state and redirects based on user authentication status.s
+// GoRouter instance manages navigation state and redirects based on user authentication status
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _activityTimerNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: RoutesName.activityTimer);
