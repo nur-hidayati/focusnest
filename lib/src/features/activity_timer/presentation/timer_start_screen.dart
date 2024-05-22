@@ -184,6 +184,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
               CustomText(
                 title: widget.label,
                 textType: TextType.titleLarge,
+                textAlign: TextAlign.center,
               ),
               Spacers.extraLargeVertical,
               CustomText(

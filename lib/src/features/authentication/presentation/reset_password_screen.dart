@@ -31,7 +31,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   }
 
   void _handleSubmitReset() async {
-    FocusScope.of(context).unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
     if (_emailController.text.isNotEmpty) {
       final success = await ref
           .read(resetPasswordScreenControllerProvider.notifier)
@@ -73,7 +73,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               const CustomText(
                 title:
                     'Enter the email address associated with your account and we will send you a link to reset your password.',
-                overflow: TextOverflow.visible,
               ),
               Spacers.mediumVertical,
               CustomTextFormField(

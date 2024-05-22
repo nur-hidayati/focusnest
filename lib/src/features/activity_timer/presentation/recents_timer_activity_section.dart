@@ -78,6 +78,7 @@ class RecentsTimerActivitySection extends ConsumerWidget {
                     ),
                     subtitle: CustomText(
                       title: activityTimer.activityLabel,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     trailing: IconButton(
                       onPressed: () {

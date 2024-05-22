@@ -127,7 +127,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const SettingTile(
                     title: 'Contact Us',
-                    subtitle: 'Reach out to us at ${Strings.emailName}',
+                    subtitle: Strings.emailName,
                     icon: Icons.mail_outline,
                     hasTrailingIcon: false,
                   ),

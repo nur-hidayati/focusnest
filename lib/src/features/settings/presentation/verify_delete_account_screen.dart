@@ -83,7 +83,6 @@ class _VerifyDeleteAccountState extends ConsumerState<VerifyDeleteAccount> {
               const CustomText(
                 title:
                     'To ensure your account security, please enter your current password to proceed with account deletion.',
-                overflow: TextOverflow.visible,
               ),
               Spacers.smallVertical,
               CustomTextFormField(

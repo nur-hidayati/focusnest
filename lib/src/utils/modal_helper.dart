@@ -45,6 +45,7 @@ Future<void> datePickerModal({
       minimumDate: minimumDate,
       maximumDate: maximumDate,
     ),
+    title: 'Select Start Time',
   );
 }
 
@@ -72,6 +73,7 @@ Future<void> durationPickerModal({
       onDone();
     },
     onCancel: onCancel,
+    title: 'Select Duration,',
   );
 }
 
@@ -82,6 +84,7 @@ Future<void> cupertinoPickerModal({
   required VoidCallback onCancel,
   bool isDismissed = true,
   bool isTime = false,
+  required String title,
 }) {
   return showCupertinoModalPopup<void>(
     barrierDismissible: isDismissed,
@@ -99,7 +102,7 @@ Future<void> cupertinoPickerModal({
           children: [
             CancelDoneHeaderButton(
               padding: AppPadding.horizontalPadding,
-              title: 'Select Duration',
+              title: title,
               onDone: onDone,
               onCancel: onCancel,
             ),
