@@ -49,7 +49,7 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
       if (userId != null) {
         ref
             .read(activityLabelProvider(userId).notifier)
-            .updateActivityLabel(activityLabelController.text);
+            .updateActivityLabel(activityLabelController.text.trim());
         context.pop();
       } else {
         showOKAlert(
