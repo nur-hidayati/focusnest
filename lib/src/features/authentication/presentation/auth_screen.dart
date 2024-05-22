@@ -66,7 +66,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
 
   Future<void> _submitAuth() async {
     setState(() => _submitted = true);
-    FocusScope.of(context).unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
 
     if (_formKey.currentState!.validate()) {
       final controller = ref.read(authControllerProvider.notifier);
@@ -198,7 +198,6 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
                 style: const TextStyle(
                   color: AppColor.greyColor,
                   height: 1.5,
-                  fontSize: 12,
                 ),
                 children: [
                   _linkTextSpan('Terms of Use',
