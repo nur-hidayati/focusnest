@@ -5,6 +5,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'app_user.freezed.dart';
 part 'app_user.g.dart';
 
+// Model class for user
+// Uses the `freezed` package for immutable data classes and the `json_serializable` package for JSON serialization.
 @freezed
 class AppUser with _$AppUser {
   factory AppUser({

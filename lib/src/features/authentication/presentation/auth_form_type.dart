@@ -2,15 +2,8 @@ import 'package:focusnest/src/constants/strings.dart';
 
 enum AuthFormType { signIn, register }
 
+// Extension on [AuthFormType] to provide additional functionality and properties
 extension AuthFormTypeX on AuthFormType {
-  String get passwordLabelText {
-    if (this == AuthFormType.register) {
-      return 'Password (8+ characters)';
-    } else {
-      return 'Password';
-    }
-  }
-
   String get headerText {
     if (this == AuthFormType.register) {
       return 'Welcome to ${Strings.appName}';

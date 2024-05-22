@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reset_password_screen_controller.g.dart';
 
+// Controller for handling the password reset screen logic using Riverpod
 @riverpod
 class ResetPasswordScreenController extends _$ResetPasswordScreenController {
   @override

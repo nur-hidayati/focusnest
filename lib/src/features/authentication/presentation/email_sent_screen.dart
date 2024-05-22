@@ -4,6 +4,7 @@ import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 
+// Screen displayed when the user successfully requests a password reset email to be sent
 class EmailSentScreen extends StatelessWidget {
   final String userEmail;
 
