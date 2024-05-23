@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - development
-      # TODO: COMMENT THIS LATER
-      - "dev/*"
 
 jobs:
   build-and-test:
