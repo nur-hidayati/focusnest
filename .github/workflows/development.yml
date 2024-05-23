@@ -5,7 +5,7 @@ on:
     branches:
       - development
       # TODO: COMMENT THIS LATER
-      - "feature/*"
+      - "dev/*"
 
 jobs:
   build-and-test:
