@@ -12,7 +12,6 @@ import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
 import 'package:go_router/go_router.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 // Main settings screen that displays various settings options to the user.
 // This screen includes account settings, privacy policy, terms of service,
@@ -26,28 +25,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  PackageInfo _packageInfo = PackageInfo(
-    appName: '',
-    packageName: '',
-    version: '',
-    buildNumber: '',
-    buildSignature: '',
-    installerStore: '',
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    _initPackageInfo();
-  }
-
-  Future<void> _initPackageInfo() async {
-    final info = await PackageInfo.fromPlatform();
-    setState(() {
-      _packageInfo = info;
-    });
-  }
-
   void _handleNavigateToUserSettings({String? userId, String? userEmail}) {
     if (userId != null && userEmail != null) {
       context.pushNamed(
@@ -135,9 +112,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     icon: Icons.mail_outline,
                     hasTrailingIcon: false,
                   ),
-                  SettingTile(
+                  const SettingTile(
                     title: 'App Version',
-                    subtitle: 'Current app version: ${_packageInfo.version}',
+                    // TODO: USE PACKAGE_INFO_PLUS TO DISPLAY VERSION IN NEXT RELEASE
+                    subtitle: 'Current app version: 1.0.0',
                     icon: Icons.info_outline,
                     hasTrailingIcon: false,
                   ),
