@@ -52,10 +52,6 @@ jobs:
           mkdir -p ./ios/config/development
           echo "${{ secrets.DEV_GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > ./ios/config/development/GoogleService-Info.plist
 
-      - name: Verify GoogleService-Info.plist
-        run: |
-          ls -la ./ios/config/development/
-
       - name: Decode google-services.json
         run: |
           mkdir -p ./android/app/src/development
