@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/header_actions_button.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
+import 'package:focusnest/src/constants/spacers.dart';
 import 'package:go_router/go_router.dart';
 
 // Custom bottom sheet widget with a customizable header and content that handle on-screen keyboard adjustments
@@ -25,6 +26,7 @@ class BottomSheetContents extends StatelessWidget {
       ),
       child: SafeArea(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             HeaderActionButtons(
               padding: AppPadding.horizontalPadding,
@@ -32,8 +34,9 @@ class BottomSheetContents extends StatelessWidget {
               onDone: onDoneActivityLabelUpdate,
               onCancel: () => context.pop(),
             ),
+            Spacers.smallVertical,
             Padding(
-              padding: AppPadding.horizontalPadding,
+              padding: AppPadding.noTopPadding,
               child: child,
             ),
           ],
