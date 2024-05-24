@@ -83,7 +83,7 @@ class ActivityTimerForm extends StatelessWidget {
             },
           ),
           if (onDeleteAction != null) ...[
-            Spacers.smallVertical,
+            Spacers.mediumVertical,
             LinkTextButton(
               title: 'Delete',
               color: AppColor.warningColor,
