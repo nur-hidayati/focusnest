@@ -53,7 +53,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       defaultActionText: 'Go To Settings',
       title: 'Change Font Size',
       content:
-          'To adjust display and text size for FocusNest, go to Accessibility in your device settings, select "Per-App Settings," and add FocusNest. You can then customize the display and text size.',
+          'To adjust display and text size for FocusNest, go to Accessibility in your device settings, select "Per-App Settings", and add FocusNest. You can then customize the display and text size.',
     );
     if (confirmToSettings == true) {
       const url = 'app-settings:';
