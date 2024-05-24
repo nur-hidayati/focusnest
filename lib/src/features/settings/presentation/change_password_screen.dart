@@ -129,7 +129,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen>
             children: [
               const CustomText(
                   title: 'Your password must at least be 6 characters.'),
-              Spacers.smallVertical,
+              Spacers.mediumVertical,
               _passwordTextFormField(
                 label: 'Current Password',
                 controller: _currentPasswordController,
