@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/custom_button.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
+import 'package:focusnest/src/common_widgets/loading_indicator.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
@@ -16,6 +17,7 @@ import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/app_logger.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 // Full Screen that is displayed when user start the timer
@@ -40,87 +42,165 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   AppLifecycleState? _lastLifecycleState;
   bool isPaused = false;
   Timer? _timer;
-  late Duration _remainingDuration;
-  late DateTime _startDateTime;
+  Duration _remainingDuration = Duration.zero;
+  bool _isInitialized = false;
+  SharedPreferences? _prefs;
+
   // ignore: prefer_const_constructors
   final _uuid = Uuid();
+  late DateTime _startDateTime;
 
   @override
   void initState() {
     super.initState();
-    _remainingDuration = widget.duration;
-    _startDateTime = DateTime.now();
-    _startTimer();
+    _initializeTimer();
 
-    // Set the app to full-screen mode
+    // Set screen to full screen
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
-    // Add an observer to monitor app lifecycle changes
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _initializeTimer() async {
+    _prefs = await SharedPreferences.getInstance();
+    _remainingDuration = widget.duration;
+    _startTimer();
+    _startDateTime = DateTime.now();
+    _loadTimerState();
+    setState(() {
+      _isInitialized = true;
+    });
   }
 
   @override
   void dispose() {
+    // Cancel the periodic timer if it is running
     _timer?.cancel();
-
-    // Restore the system UI to its normal state
+    // Restore the system UI to normal mode (exit full-screen mode)
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
     WidgetsBinding.instance.removeObserver(this);
+    // Clear saved timer state if the timer is null or not active
+    if (_timer == null || !_timer!.isActive) {
+      _clearTimerPreferences();
+    }
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _lastLifecycleState = state;
+    // Called when the app is paused (e.g., user switches to another app).
+    if (state == AppLifecycleState.paused) {
+      if (!isPaused) _saveTimerState();
+      // Called when the app is resumed from a paused state.
+    } else if (state == AppLifecycleState.resumed) {
+      _loadTimerState();
+      // Called when the app is about to be terminated (e.g., the user kills the app).
+    } else if (state == AppLifecycleState.detached) {
+      _clearTimerPreferences();
+    }
+  }
+
+  // Saves the current state of the timer (remaining duration and timestamp)
+  void _saveTimerState() async {
+    if (_prefs != null && _remainingDuration.inSeconds > 0) {
+      // Save the remaining duration (in seconds)
+      await _prefs!.setInt('timer_seconds', _remainingDuration.inSeconds);
+      // Save the current timestamp
+      await _prefs!.setInt('saved_time', DateTime.now().millisecondsSinceEpoch);
+    }
+  }
+
+  // This method restores the timer state when the app is resumed or reinitialized.
+  // Example Scenario:
+  // 1. Timer is set for 10 minutes (600 seconds).
+  // 2. Timer is paused with 5 minutes (300 seconds) remaining.
+  // 3. Timer was paused at 2024-05-24 10:00:00 (savedMillis = 1716852000000).
+  // 4. App is resumed 2 minutes later at 2024-05-24 10:02:00.
+  //
+  // Steps in the method:
+  // 1. Retrieve saved timer data from SharedPreferences:
+  //    - savedSeconds = 300 (5 minutes remaining)
+  //    - savedMillis = 1716852000000 (timestamp when paused)
+  // 2. Calculate elapsed time:
+  //    - Current time: 2024-05-24 10:02:00
+  //    - Elapsed time: 2 minutes (120 seconds)
+  // 3. Update remaining duration:
+  //    - newSeconds = savedSeconds - elapsed.inSeconds
+  //    - newSeconds = 300 - 120 = 180 seconds (3 minutes remaining)
+  // 4. Update _remainingDuration with the new remaining time (3 minutes).
+  // 5. If the new remaining time is zero or less, trigger _timerDone().
+  void _loadTimerState() {
+    int? savedSeconds = _prefs?.getInt('timer_seconds');
+    int? savedMillis = _prefs?.getInt('saved_time');
+
+    if (savedSeconds != null && savedMillis != null) {
+      DateTime savedTime = DateTime.fromMillisecondsSinceEpoch(savedMillis);
+      Duration elapsed = DateTime.now().difference(savedTime);
+      int newSeconds = savedSeconds - elapsed.inSeconds;
+      _remainingDuration = Duration(seconds: newSeconds > 0 ? newSeconds : 0);
+      if (newSeconds <= 0) {
+        _timerDone();
+      }
+    }
   }
 
   void _startTimer() {
+    // Check if the timer is already running
+    // To prevents starting multiple timers
     if (_timer != null) return;
+    // Initialize a periodic timer that ticks every second
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      // Check if there is remaining time left
       if (_remainingDuration.inSeconds > 0) {
         setState(() {
           _remainingDuration = _remainingDuration - const Duration(seconds: 1);
         });
       } else {
-        // Timer done
-        _timer?.cancel();
-        final endDateTime = DateTime.now();
-        context.pushNamed(
-          RoutesName.timerDone,
-          queryParameters: {
-            'duration': widget.duration.inSeconds.toString(),
-          },
-        );
-        _addActivityToDatabase(endDateTime);
-
-        // Show a notification if the app is in the background or closed
-        if (_lastLifecycleState == AppLifecycleState.paused ||
-            _lastLifecycleState == AppLifecycleState.detached) {
-          NotificationController.createTimerDoneNotification(context);
-        }
+        // If no time is left, handle the timer completion
+        _timerDone();
       }
     });
   }
 
-  void _pauseTimer() {
+  void _timerDone() {
     _timer?.cancel();
+    _clearTimerPreferences();
+    if (_lastLifecycleState == AppLifecycleState.paused ||
+        _lastLifecycleState == AppLifecycleState.detached) {
+      NotificationController.createTimerDoneNotification(context);
+    }
+    context.pushNamed(
+      RoutesName.timerDone,
+      queryParameters: {'duration': widget.duration.inSeconds.toString()},
+    );
+    _addActivityToDatabase(DateTime.now());
+  }
+
+  // Pauses the running timer by canceling it and setting the timer reference to null.
+  void _pauseTimer() {
+    // Cancel the periodic timer if it is running
+    _timer?.cancel();
+    // Set the timer reference to null
     _timer = null;
   }
 
+  // Resumes the timer if it is not currently running by starting a new timer.
   void _resumeTimer() {
     if (_timer == null) {
       _startTimer();
     }
   }
 
+  // Stops the timer and optionally saves the activity if it ran for at least 60 seconds
   void _stopTimer() async {
     final endDateTime = DateTime.now();
+
+    // Calculate the duration the timer has run in seconds
     final durationInSeconds =
         widget.duration.inSeconds - _remainingDuration.inSeconds;
 
+    // Check if the timer has run for at least 60 seconds
     if (durationInSeconds >= 60) {
-      // Show a dialog to confirm adding an incomplete activity (only if the duration is longer than 60 seconds)
       bool? confirmAddActivity = await showAlertDialog(
         context: context,
         title: 'Incomplete Activity',
@@ -132,12 +212,17 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
         await _addActivityToDatabase(endDateTime);
       }
     }
+
+    // Clear the saved timer state from SharedPreferences
+    _clearTimerPreferences();
     if (mounted) context.pop();
   }
 
   Future<void> _addActivityToDatabase(DateTime endDateTime) async {
     try {
+      // The initial timer duration that user set
       final targetedDurationInSeconds = widget.duration.inSeconds;
+      // Calculate the actual duration in seconds
       final durationInSeconds =
           targetedDurationInSeconds - _remainingDuration.inSeconds;
       final dao = ActivityTimerDatabase().activityTimersDao;
@@ -153,8 +238,10 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
         createdDate: drift.Value(DateTime.now()),
       );
 
+      // Insert the new activity into the database
       await dao.insertActivityTimer(newActivity);
 
+      // Create a recent activity object to update the notifier
       final recentActivity = ActivityTimer(
         id: _uuid.v4(),
         userId: widget.userId,
@@ -166,6 +253,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
         createdDate: DateTime.now(),
       );
 
+      // Update the recent activities notifier with the new activity
       final recentActivitiesNotifier =
           ref.read(recentActivitiesProvider(widget.userId).notifier);
       recentActivitiesNotifier.addActivity(recentActivity);
@@ -181,6 +269,14 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
     }
   }
 
+  // Clears the saved timer state from SharedPreferences.
+  Future<void> _clearTimerPreferences() async {
+    if (_prefs != null) {
+      await _prefs!.remove('timer_seconds');
+      await _prefs!.remove('saved_time');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).size.height * 0.2;
@@ -188,27 +284,29 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColor.secondaryColor,
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(20, topPadding, 20, 0),
-          child: Column(
-            children: [
-              CustomText(
-                title: widget.label,
-                textType: TextType.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-              Spacers.extraLargeVertical,
-              CustomText(
-                title: formatDurationToHms(_remainingDuration),
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2.0,
-              ),
-              Spacers.extraLargeVertical,
-              _timerButtonSection(),
-            ],
-          ),
-        ),
+        body: _isInitialized
+            ? Padding(
+                padding: EdgeInsets.fromLTRB(20, topPadding, 20, 0),
+                child: Column(
+                  children: [
+                    CustomText(
+                      title: widget.label,
+                      textType: TextType.titleLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    Spacers.extraLargeVertical,
+                    CustomText(
+                      title: formatDurationToHms(_remainingDuration),
+                      fontSize: 50,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0,
+                    ),
+                    Spacers.extraLargeVertical,
+                    _timerButtonSection(),
+                  ],
+                ),
+              )
+            : const LoadingIndicator(),
       ),
     );
   }
