@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/link_text_button.dart';
@@ -42,6 +44,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         title: 'Error',
         content: 'User not login',
       );
+    }
+  }
+
+  void openAppSettings() async {
+    bool? confirmToSettings = await showAlertDialog(
+      context: context,
+      defaultActionText: 'Go To Settings',
+      title: 'Change Font Size',
+      content:
+          'To adjust display and text size for FocusNest, go to Accessibility in your device settings, select "Per-App Settings," and add FocusNest. You can then customize the display and text size.',
+    );
+    if (confirmToSettings == true) {
+      const url = 'app-settings:';
+      launchURL(url);
     }
   }
 
@@ -92,6 +108,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       userEmail: userEmail,
                     ),
                   ),
+                  if (Platform.isIOS)
+                    SettingTile(
+                      title: 'Font Size',
+                      subtitle: 'Set your preferred font size',
+                      icon: Icons.format_size_outlined,
+                      action: openAppSettings,
+                    ),
                   SettingTile(
                     title: 'Privacy Policy',
                     subtitle: 'Learn how we handle and protect your data',
