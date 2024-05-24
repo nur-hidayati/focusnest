@@ -59,6 +59,7 @@ class TimerSection extends ConsumerWidget {
             Flexible(
               child: GestureDetector(
                 onTap: () => showModalBottomSheet(
+                  isScrollControlled: true,
                   context: context,
                   useRootNavigator: true,
                   builder: (BuildContext context) {
