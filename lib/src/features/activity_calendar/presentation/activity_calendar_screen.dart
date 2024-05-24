@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
+import 'package:focusnest/src/common_widgets/loading_indicator.dart';
 import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
@@ -126,7 +127,7 @@ class _ActivityCalendarScreenState
             stream: dao.watchActivitiesForDate(userId, _selectedDate),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: LoadingIndicator());
               }
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const Center(child: Text('No activities found.'));

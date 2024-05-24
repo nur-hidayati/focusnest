@@ -8,7 +8,7 @@ ThemeData appTheme() {
     useMaterial3: true,
     appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle.dark,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       shape: Border(
         bottom: BorderSide(
           color: Colors.grey.shade200,
