@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:focusnest/src/common_widgets/loading_indicator.dart';
 
 // Overlay a loading indicator and message on its child during loading states.
 class LoadingManager extends StatelessWidget {
@@ -30,10 +30,7 @@ class LoadingManager extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CupertinoActivityIndicator(
-                  color: Colors.white,
-                  radius: 15,
-                ),
+                const LoadingIndicator(),
                 if (loadingMessage != null) ...[
                   const SizedBox(height: 20),
                   Text(
