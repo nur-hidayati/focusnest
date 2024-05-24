@@ -80,7 +80,7 @@ Future<void> durationPickerModal({
       onDone();
     },
     onCancel: onCancel,
-    title: 'Select Duration,',
+    title: 'Select Duration',
   );
 }
 
@@ -95,28 +95,36 @@ Future<void> cupertinoPickerModal({
   bool isTime = false,
   required String title,
 }) {
+  final double deviceHeight = MediaQuery.of(context).size.height;
+  final double modalHeight = deviceHeight * 0.3;
   return showCupertinoModalPopup<void>(
     barrierDismissible: isDismissed,
     context: context,
-    builder: (BuildContext context) => Container(
-      height: 216,
-      padding: const EdgeInsets.only(top: 6.0),
-      margin: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+    builder: (BuildContext context) => ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(25.0),
+        topRight: Radius.circular(25.0),
       ),
-      color: CupertinoColors.systemBackground.resolveFrom(context),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            HeaderActionButtons(
-              padding: AppPadding.horizontalPadding,
-              title: title,
-              onDone: onDone,
-              onCancel: onCancel,
-            ),
-            Expanded(child: child),
-          ],
+      child: Container(
+        height: modalHeight,
+        padding: const EdgeInsets.only(top: 6.0),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              HeaderActionButtons(
+                padding: AppPadding.horizontalPadding,
+                title: title,
+                onDone: onDone,
+                onCancel: onCancel,
+              ),
+              Expanded(child: child),
+            ],
+          ),
         ),
       ),
     ),
