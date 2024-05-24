@@ -281,11 +281,11 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).size.height * 0.2;
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: AppColor.secondaryColor,
-        body: _isInitialized
-            ? Padding(
+    return Scaffold(
+      backgroundColor: AppColor.secondaryColor,
+      body: _isInitialized
+          ? SafeArea(
+              child: Padding(
                 padding: EdgeInsets.fromLTRB(20, topPadding, 20, 0),
                 child: Column(
                   children: [
@@ -305,9 +305,9 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
                     _timerButtonSection(),
                   ],
                 ),
-              )
-            : const LoadingIndicator(),
-      ),
+              ),
+            )
+          : const LoadingIndicator(),
     );
   }
 

@@ -71,40 +71,42 @@ class _VerifyDeleteAccountState extends ConsumerState<VerifyDeleteAccount> {
     return LoadingManager(
       isLoading: state.isLoading,
       child: Scaffold(
-        body: Padding(
-          padding: AppPadding.screenPadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HeaderActionButtons(
-                padding: const EdgeInsets.only(top: 10),
-                title: 'Delete Account',
-                hideDoneButton: true,
-                onCancel: () => context.pop(),
-              ),
-              const CustomText(
-                title:
-                    'To ensure your account security, please enter your current password to proceed with account deletion.',
-              ),
-              Spacers.smallVertical,
-              CustomTextFormField(
-                hintText: 'Enter your current password',
-                controller: _currentPasswordController,
-                textInputAction: TextInputAction.done,
-                obscureText: true,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                prefixIcon: const Icon(Icons.lock_outline),
-              ),
-              Spacers.mediumVertical,
-              Center(
-                child: CustomButton(
+        body: SafeArea(
+          child: Padding(
+            padding: AppPadding.horizontalPadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HeaderActionButtons(
+                  horizontalPadding: 0,
                   title: 'Delete Account',
-                  isFullWidth: true,
-                  buttonColor: AppColor.warningColor,
-                  onPressed: _handleVerifyDeleteAccount,
+                  hideDoneButton: true,
+                  onCancel: () => context.pop(),
                 ),
-              ),
-            ],
+                const CustomText(
+                  title:
+                      'To ensure your account security, please enter your current password to proceed with account deletion.',
+                ),
+                Spacers.mediumVertical,
+                CustomTextFormField(
+                  hintText: 'Enter your current password',
+                  controller: _currentPasswordController,
+                  textInputAction: TextInputAction.done,
+                  obscureText: true,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  prefixIcon: const Icon(Icons.lock_outline),
+                ),
+                Spacers.mediumVertical,
+                Center(
+                  child: CustomButton(
+                    title: 'Delete Account',
+                    isFullWidth: true,
+                    buttonColor: AppColor.warningColor,
+                    onPressed: _handleVerifyDeleteAccount,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

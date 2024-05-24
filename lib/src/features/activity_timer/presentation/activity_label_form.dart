@@ -69,15 +69,12 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
     return BottomSheetContents(
       headerTitle: 'Edit',
       onDoneActivityLabelUpdate: () => _handleOnDoneActivityLabelUpdate(),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 40),
-        child: CustomTextFormField(
-          label: 'Activity Label',
-          controller: activityLabelController,
-          hintText: 'Activity Label',
-          isActivityLabel: true,
-          textCapitalization: TextCapitalization.sentences,
-        ),
+      child: CustomTextFormField(
+        label: 'Activity Label',
+        controller: activityLabelController,
+        hintText: 'Activity Label',
+        isActivityLabel: true,
+        textCapitalization: TextCapitalization.sentences,
       ),
     );
   }

@@ -25,6 +25,7 @@ class BottomSheetContents extends StatelessWidget {
       ),
       child: SafeArea(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             HeaderActionButtons(
               padding: AppPadding.horizontalPadding,
@@ -33,7 +34,7 @@ class BottomSheetContents extends StatelessWidget {
               onCancel: () => context.pop(),
             ),
             Padding(
-              padding: AppPadding.horizontalPadding,
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
               child: child,
             ),
           ],
