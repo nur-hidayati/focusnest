@@ -10,6 +10,7 @@ class HeaderActionButtons extends StatelessWidget {
   final VoidCallback? onDone;
   final EdgeInsetsGeometry? padding;
   final bool hideDoneButton;
+  final double horizontalPadding;
 
   const HeaderActionButtons({
     required this.title,
@@ -17,14 +18,14 @@ class HeaderActionButtons extends StatelessWidget {
     this.onDone,
     this.padding,
     this.hideDoneButton = false,
+    this.horizontalPadding = 20,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          padding, // Apply the specified padding, defaults to null if not provided.
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
