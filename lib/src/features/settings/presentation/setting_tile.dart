@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 
 // Settings tile widget that displays a title, subtitle, and icon - required,
@@ -25,7 +26,10 @@ class SettingTile extends StatelessWidget {
       children: [
         ListTile(
           leading: Icon(icon),
-          title: Text(title),
+          title: CustomText(
+            title: title,
+            fontWeight: FontWeight.w500,
+          ),
           subtitle: Text(subtitle),
           trailing: hasTrailingIcon
               ? const Icon(
