@@ -68,7 +68,8 @@ class NotificationController {
       ReceivedAction receivedAction) async {}
 
   // Create Timer Completion Notification
-  static Future<void> createTimerDoneNotification(BuildContext context) async {
+  static Future<void> createTimerDoneNotification(
+      BuildContext context, DateTime expectedEndTime) async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
 
     if (!isAllowed) {
@@ -76,12 +77,18 @@ class NotificationController {
     }
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
-      id: DateTime.now().millisecondsSinceEpoch.remainder(1000),
-      title: 'FocusNest',
-      body:
-          'You\'ve successfully completed the task. Great job! ${Emojis.hand_clapping_hands}',
-      channelKey: 'timer_channel',
-    ));
+          id: DateTime.now().millisecondsSinceEpoch.remainder(1000),
+          channelKey: 'timer_channel',
+          category: NotificationCategory.Alarm,
+          title: 'FocusNest',
+          body:
+              'You\'ve successfully completed the task. Great job! ${Emojis.hand_clapping_hands}',
+        ),
+        schedule: NotificationCalendar.fromDate(date: expectedEndTime));
+  }
+
+  static void cancelScheduledNotification() async {
+    await AwesomeNotifications().cancelAll();
   }
 }
 
