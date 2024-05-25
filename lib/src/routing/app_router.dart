@@ -136,11 +136,14 @@ GoRouter goRouter(GoRouterRef ref) {
                           0;
                       final duration = Duration(seconds: durationInSeconds);
                       final label = state.uri.queryParameters['label']!;
+                      final timerSessionId =
+                          state.uri.queryParameters['timerSessionId']!;
                       return _buildCustomTransitionPage(
                         TimerStartScreen(
                           userId: userId,
                           duration: duration,
                           label: label,
+                          timerSessionId: timerSessionId,
                         ),
                       );
                     },
