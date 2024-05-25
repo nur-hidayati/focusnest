@@ -25,11 +25,13 @@ class TimerStartScreen extends ConsumerStatefulWidget {
   final String userId;
   final Duration duration;
   final String label;
+  final String timerSessionId;
 
   const TimerStartScreen({
     required this.userId,
     required this.duration,
     required this.label,
+    required this.timerSessionId,
     super.key,
   });
 
@@ -52,15 +54,25 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   @override
   void initState() {
     super.initState();
-    _initializeTimer();
+    _initializeSession().then((_) => _initializeTimer());
 
     // Set screen to full screen
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     WidgetsBinding.instance.addObserver(this);
   }
 
-  Future<void> _initializeTimer() async {
+  Future<void> _initializeSession() async {
     _prefs = await SharedPreferences.getInstance();
+    if (_prefs != null) {
+      String lastTimerId = _prefs?.getString('last_timer_id') ?? '';
+      await _prefs!.setString('last_timer_id', widget.timerSessionId);
+      if (widget.timerSessionId != lastTimerId) {
+        _clearTimerPreferences();
+      }
+    }
+  }
+
+  Future<void> _initializeTimer() async {
     _remainingDuration = widget.duration;
     _startTimer();
     _startDateTime = DateTime.now();
