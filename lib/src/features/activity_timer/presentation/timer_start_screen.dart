@@ -9,6 +9,7 @@ import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/loading_indicator.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
+import 'package:focusnest/src/constants/shared_prefs_keys.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
@@ -45,7 +46,6 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   Timer? _timer;
   Duration _remainingDuration = Duration.zero;
   bool _isInitialized = false;
-  bool _isInForeground = true;
 
   SharedPreferences? _prefs;
 
@@ -66,8 +66,9 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   Future<void> _initializeSession() async {
     _prefs = await SharedPreferences.getInstance();
     if (_prefs != null) {
-      String lastTimerId = _prefs?.getString('last_timer_id') ?? '';
-      await _prefs!.setString('last_timer_id', widget.timerSessionId);
+      String lastTimerId = _prefs?.getString(SharedPrefsKeys.lastTimerId) ?? '';
+      await _prefs!
+          .setString(SharedPrefsKeys.lastTimerId, widget.timerSessionId);
       if (widget.timerSessionId != lastTimerId) {
         _clearTimerPreferences();
       }
@@ -102,7 +103,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Called when the app is paused (e.g., user switches to another app).
     if (state == AppLifecycleState.paused) {
-      _isInForeground = false;
+      _prefs!.setBool(SharedPrefsKeys.isForeground, false);
       if (_remainingDuration.inSeconds > 0) {
         _saveTimerState();
         // Only scheduled notifications if timer is not paused
@@ -115,7 +116,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
       }
       // Called when the app is resumed from a paused state.
     } else if (state == AppLifecycleState.resumed) {
-      _isInForeground = true;
+      _prefs!.setBool(SharedPrefsKeys.isForeground, true);
       _loadTimerState();
       NotificationController.cancelScheduledNotification();
       // Called when the app is about to be terminated (e.g., the user kills the app).
@@ -129,9 +130,11 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   void _saveTimerState() async {
     if (_prefs != null && _remainingDuration.inSeconds > 0) {
       // Save the remaining duration (in seconds)
-      await _prefs!.setInt('timer_seconds', _remainingDuration.inSeconds);
+      await _prefs!
+          .setInt(SharedPrefsKeys.timerSeconds, _remainingDuration.inSeconds);
       // Save the current timestamp
-      await _prefs!.setInt('saved_time', DateTime.now().millisecondsSinceEpoch);
+      await _prefs!.setInt(
+          SharedPrefsKeys.savedTime, DateTime.now().millisecondsSinceEpoch);
     }
   }
 
@@ -158,8 +161,8 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   //    - Update _remainingDuration with the new remaining time (3 minutes).
   //    - If the new remaining time is zero or less, trigger _timerDone().
   void _loadTimerState() {
-    int? savedSeconds = _prefs?.getInt('timer_seconds');
-    int? savedMillis = _prefs?.getInt('saved_time');
+    int? savedSeconds = _prefs?.getInt(SharedPrefsKeys.timerSeconds);
+    int? savedMillis = _prefs?.getInt(SharedPrefsKeys.savedTime);
 
     if (savedSeconds != null && savedMillis != null) {
       DateTime savedTime = DateTime.fromMillisecondsSinceEpoch(savedMillis);
@@ -202,7 +205,8 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
       RoutesName.timerDone,
       queryParameters: {
         'duration': widget.duration.inSeconds.toString(),
-        'playSound': _isInForeground.toString(),
+        'playSound':
+            (_prefs?.getBool(SharedPrefsKeys.isForeground) ?? true).toString(),
       },
     );
     _addActivityToDatabase(DateTime.now());
@@ -305,8 +309,9 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   // Clears the saved timer state from SharedPreferences.
   Future<void> _clearTimerPreferences() async {
     if (_prefs != null) {
-      await _prefs!.remove('timer_seconds');
-      await _prefs!.remove('saved_time');
+      await _prefs!.remove(SharedPrefsKeys.timerSeconds);
+      await _prefs!.remove(SharedPrefsKeys.savedTime);
+      await _prefs!.remove(SharedPrefsKeys.isForeground);
     }
   }
 

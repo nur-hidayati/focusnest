@@ -78,7 +78,7 @@ class TimerSection extends ConsumerWidget {
             const Icon(Icons.navigate_next),
           ],
         ),
-        Spacers.smallVertical,
+        Spacers.mediumVertical,
         GestureDetector(
           onTap: () => durationPickerModal(
             context: context,
@@ -95,7 +95,7 @@ class TimerSection extends ConsumerWidget {
             color: AppColor.greyColor,
           ),
         ),
-        Spacers.smallVertical,
+        Spacers.mediumVertical,
         CustomButton(
           title: 'Start Focus',
           onPressed: () => navigateToTimerStart(
