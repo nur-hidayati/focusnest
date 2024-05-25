@@ -45,6 +45,8 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   Timer? _timer;
   Duration _remainingDuration = Duration.zero;
   bool _isInitialized = false;
+  bool _isInForeground = true;
+
   SharedPreferences? _prefs;
 
   // ignore: prefer_const_constructors
@@ -100,6 +102,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Called when the app is paused (e.g., user switches to another app).
     if (state == AppLifecycleState.paused) {
+      _isInForeground = false;
       if (_remainingDuration.inSeconds > 0) {
         _saveTimerState();
         // Only scheduled notifications if timer is not paused
@@ -112,6 +115,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
       }
       // Called when the app is resumed from a paused state.
     } else if (state == AppLifecycleState.resumed) {
+      _isInForeground = true;
       _loadTimerState();
       NotificationController.cancelScheduledNotification();
       // Called when the app is about to be terminated (e.g., the user kills the app).
@@ -196,7 +200,10 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
     _clearTimerPreferences();
     context.pushNamed(
       RoutesName.timerDone,
-      queryParameters: {'duration': widget.duration.inSeconds.toString()},
+      queryParameters: {
+        'duration': widget.duration.inSeconds.toString(),
+        'playSound': _isInForeground.toString(),
+      },
     );
     _addActivityToDatabase(DateTime.now());
   }
