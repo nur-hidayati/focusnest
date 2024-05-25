@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 // Manages the initialization, event handling and creation of notifications
 // Using AwesomeNotifications plugin
@@ -75,16 +76,22 @@ class NotificationController {
     if (!isAllowed) {
       return;
     }
+
+    // ignore: prefer_const_constructors
+    final uuid = Uuid();
+    int notificationId = uuid.v4().hashCode;
+
     await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: DateTime.now().millisecondsSinceEpoch.remainder(1000),
-          channelKey: 'timer_channel',
-          category: NotificationCategory.Alarm,
-          title: 'FocusNest',
-          body:
-              'You\'ve successfully completed the task. Great job! ${Emojis.hand_clapping_hands}',
-        ),
-        schedule: NotificationCalendar.fromDate(date: expectedEndTime));
+      content: NotificationContent(
+        id: notificationId,
+        channelKey: 'timer_channel',
+        category: NotificationCategory.Alarm,
+        title: 'FocusNest',
+        body:
+            'You\'ve successfully completed the task. Great job! ${Emojis.hand_clapping_hands}',
+      ),
+      schedule: NotificationCalendar.fromDate(date: expectedEndTime),
+    );
   }
 
   static void cancelScheduledNotification() async {
