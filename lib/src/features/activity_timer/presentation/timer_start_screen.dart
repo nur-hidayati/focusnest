@@ -172,6 +172,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
         int newSeconds = savedSeconds - elapsed.inSeconds;
         _remainingDuration = Duration(seconds: newSeconds > 0 ? newSeconds : 0);
         if (newSeconds <= 0) {
+          _prefs!.setBool(SharedPrefsKeys.isForeground, false);
           _timerDone();
         }
       } else {
@@ -200,15 +201,15 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
 
   void _timerDone() {
     _timer?.cancel();
-    _clearTimerPreferences();
     context.pushNamed(
       RoutesName.timerDone,
       queryParameters: {
         'duration': widget.duration.inSeconds.toString(),
         'playSound':
-            (_prefs?.getBool(SharedPrefsKeys.isForeground) ?? true).toString(),
+            (_prefs?.getBool(SharedPrefsKeys.isForeground) ?? true).toString()
       },
     );
+    _clearTimerPreferences();
     _addActivityToDatabase(DateTime.now());
   }
 
