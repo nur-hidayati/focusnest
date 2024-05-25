@@ -158,9 +158,12 @@ GoRouter goRouter(GoRouterRef ref) {
                                       '0') ??
                               0;
                           final duration = Duration(seconds: durationInSeconds);
+                          final playSound =
+                              state.uri.queryParameters['playSound'] == 'true';
                           return NoTransitionPage(
                             child: TimerDoneScreen(
                               duration: duration,
+                              playSound: playSound,
                             ),
                           );
                         },
