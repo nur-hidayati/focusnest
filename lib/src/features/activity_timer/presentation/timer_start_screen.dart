@@ -39,7 +39,6 @@ class TimerStartScreen extends ConsumerStatefulWidget {
 
 class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
     with WidgetsBindingObserver {
-  AppLifecycleState? _lastLifecycleState;
   bool isPaused = false;
   Timer? _timer;
   Duration _remainingDuration = Duration.zero;
@@ -87,15 +86,25 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    _lastLifecycleState = state;
     // Called when the app is paused (e.g., user switches to another app).
     if (state == AppLifecycleState.paused) {
-      if (!isPaused) _saveTimerState();
+      if (_remainingDuration.inSeconds > 0) {
+        _saveTimerState();
+        // Only scheduled notifications if timer is not paused
+        if (!isPaused) {
+          NotificationController.createTimerDoneNotification(
+            context,
+            DateTime.now().add(_remainingDuration),
+          );
+        }
+      }
       // Called when the app is resumed from a paused state.
     } else if (state == AppLifecycleState.resumed) {
       _loadTimerState();
+      NotificationController.cancelScheduledNotification();
       // Called when the app is about to be terminated (e.g., the user kills the app).
     } else if (state == AppLifecycleState.detached) {
+      NotificationController.cancelScheduledNotification();
       _clearTimerPreferences();
     }
   }
@@ -121,25 +130,33 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   // 1. Retrieve saved timer data from SharedPreferences:
   //    - savedSeconds = 300 (5 minutes remaining)
   //    - savedMillis = 1716852000000 (timestamp when paused)
-  // 2. Calculate elapsed time:
-  //    - Current time: 2024-05-24 10:02:00
-  //    - Elapsed time: 2 minutes (120 seconds)
-  // 3. Update remaining duration:
-  //    - newSeconds = savedSeconds - elapsed.inSeconds
-  //    - newSeconds = 300 - 120 = 180 seconds (3 minutes remaining)
-  // 4. Update _remainingDuration with the new remaining time (3 minutes).
-  // 5. If the new remaining time is zero or less, trigger _timerDone().
+  // 2. If the timer was paused (isPaused is true):
+  //    - Set _remainingDuration to savedSeconds (300 seconds i.e. 5 minutes)
+  // 3. If the timer was running (isPaused is false):
+  //    - Calculate elapsed time:
+  //      - Current time: 2024-05-24 10:02:00
+  //      - Elapsed time: 2 minutes (120 seconds)
+  //    - Update remaining duration:
+  //      - newSeconds = savedSeconds - elapsed.inSeconds
+  //      - newSeconds = 300 - 120 = 180 seconds (3 minutes remaining)
+  //    - Update _remainingDuration with the new remaining time (3 minutes).
+  //    - If the new remaining time is zero or less, trigger _timerDone().
   void _loadTimerState() {
     int? savedSeconds = _prefs?.getInt('timer_seconds');
     int? savedMillis = _prefs?.getInt('saved_time');
 
     if (savedSeconds != null && savedMillis != null) {
       DateTime savedTime = DateTime.fromMillisecondsSinceEpoch(savedMillis);
-      Duration elapsed = DateTime.now().difference(savedTime);
-      int newSeconds = savedSeconds - elapsed.inSeconds;
-      _remainingDuration = Duration(seconds: newSeconds > 0 ? newSeconds : 0);
-      if (newSeconds <= 0) {
-        _timerDone();
+
+      if (!isPaused) {
+        Duration elapsed = DateTime.now().difference(savedTime);
+        int newSeconds = savedSeconds - elapsed.inSeconds;
+        _remainingDuration = Duration(seconds: newSeconds > 0 ? newSeconds : 0);
+        if (newSeconds <= 0) {
+          _timerDone();
+        }
+      } else {
+        _remainingDuration = Duration(seconds: savedSeconds);
       }
     }
   }
@@ -165,10 +182,6 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
   void _timerDone() {
     _timer?.cancel();
     _clearTimerPreferences();
-    if (_lastLifecycleState == AppLifecycleState.paused ||
-        _lastLifecycleState == AppLifecycleState.detached) {
-      NotificationController.createTimerDoneNotification(context);
-    }
     context.pushNamed(
       RoutesName.timerDone,
       queryParameters: {'duration': widget.duration.inSeconds.toString()},
@@ -193,6 +206,7 @@ class _TimerStartScreenState extends ConsumerState<TimerStartScreen>
 
   // Stops the timer and optionally saves the activity if it ran for at least 60 seconds
   void _stopTimer() async {
+    NotificationController.cancelScheduledNotification();
     final endDateTime = DateTime.now();
 
     // Calculate the duration the timer has run in seconds
