@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/loading_indicator.dart';
+import 'package:focusnest/src/common_widgets/loading_manager.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/constants/strings.dart';
@@ -13,6 +14,7 @@ import 'package:focusnest/src/features/activity_calendar/presentation/custom_cal
 import 'package:focusnest/src/features/activity_calendar/presentation/update_activity_timer.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
+import 'package:focusnest/src/features/authentication/presentation/auth_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -80,16 +82,21 @@ class _ActivityCalendarScreenState
   @override
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
+    final authState = ref.watch(authScreenControllerProvider);
     final userId = authRepository.currentUser?.uid ?? Strings.tempUser;
     final dao = ref.watch(activityCalendarDaoProvider);
 
-    return Scaffold(
+    return LoadingManager(
+      isLoading: authState.isLoading,
+      child: Scaffold(
         appBar: AppBar(
           title: const Text('Calendar'),
           centerTitle: true,
           actions: _buildCalendarAppBarActions(userId),
         ),
-        body: _buildCalendarContent(userId, dao));
+        body: _buildCalendarContent(userId, dao),
+      ),
+    );
   }
 
   List<Widget> _buildCalendarAppBarActions(String userId) {
