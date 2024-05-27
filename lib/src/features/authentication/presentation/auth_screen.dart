@@ -70,11 +70,15 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
 
     if (_formKey.currentState!.validate()) {
       final controller = ref.read(authControllerProvider.notifier);
-      await controller.submitAuth(
+
+      final success = await controller.submitAuth(
         email: email,
         password: password,
         formType: _formType,
       );
+      if (success && mounted) {
+        context.pop();
+      }
     }
   }
 
@@ -97,44 +101,28 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
     final state = ref.watch(authControllerProvider);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: AppPadding.screenPadding,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Column(
-                children: [
-                  Spacers.smallVertical,
-                  _headerSection(),
-                  Spacers.mediumVertical,
-                  _formSection(state.isLoading),
-                  Spacers.mediumVertical,
-                  _bottomSection(),
-                ],
-              ),
-            ],
-          ),
+      appBar: AppBar(
+        shape: const LinearBorder(),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => context.pop(),
         ),
       ),
-    );
-  }
-
-  Widget _headerSection() {
-    Size screenSize = MediaQuery.of(context).size;
-    double imageSize = screenSize.width * 0.25;
-    return Column(
-      children: [
-        Image.asset(
-          'assets/icons/focusnest-icon.png',
-          width: imageSize,
-          height: imageSize,
+      body: SingleChildScrollView(
+        padding: AppPadding.noTopPadding,
+        child: Column(
+          children: [
+            CustomText(
+              title: _formType.headerText,
+              textType: TextType.title,
+            ),
+            Spacers.mediumVertical,
+            _formSection(state.isLoading),
+            Spacers.mediumVertical,
+            _bottomSection(),
+          ],
         ),
-        Spacers.smallVertical,
-        CustomText(
-          title: _formType.headerText,
-          textType: TextType.titleLarge,
-        ),
-      ],
+      ),
     );
   }
 
