@@ -17,13 +17,10 @@ class AuthController extends _$AuthController {
     required String password,
     required AuthFormType formType,
   }) async {
+    state = const AsyncLoading();
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(
-      () => _authenticate(
-        email,
-        password,
-        formType,
-      ),
+      () => _authenticate(email, password, formType),
     );
     return state.hasError == false;
   }
