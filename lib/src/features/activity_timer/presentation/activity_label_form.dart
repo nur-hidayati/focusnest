@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/bottom_sheet_contents.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
+import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
-import 'package:go_router/go_router.dart';
 
 // Bottom Sheet that display Activity Label Input with Cancel and Done header
 class ActivityLabelForm extends ConsumerStatefulWidget {
@@ -25,15 +25,11 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
     super.initState();
 
     final authRepository = ref.read(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid;
+    final userId = authRepository.currentUser?.uid ?? Strings.tempUser;
 
-    if (userId != null) {
-      activityLabelController = TextEditingController(
-        text: ref.read(activityLabelProvider(userId)),
-      );
-    } else {
-      activityLabelController = TextEditingController();
-    }
+    activityLabelController = TextEditingController(
+      text: ref.read(activityLabelProvider(userId)),
+    );
   }
 
   @override
@@ -45,20 +41,11 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
   void _handleOnDoneActivityLabelUpdate() {
     if (activityLabelController.text.isNotEmpty) {
       final authRepository = ref.read(authRepositoryProvider);
-      final userId = authRepository.currentUser?.uid;
+      final userId = authRepository.currentUser?.uid ?? Strings.tempUser;
 
-      if (userId != null) {
-        ref
-            .read(activityLabelProvider(userId).notifier)
-            .updateActivityLabel(activityLabelController.text.trim());
-        context.pop();
-      } else {
-        showOKAlert(
-          context: context,
-          title: 'Error',
-          content: 'User not logged in',
-        );
-      }
+      ref
+          .read(activityLabelProvider(userId).notifier)
+          .updateActivityLabel(activityLabelController.text.trim());
     } else {
       showInvalidLabelAlert(context);
     }
