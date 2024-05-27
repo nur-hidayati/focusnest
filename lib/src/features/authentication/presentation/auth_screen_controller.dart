@@ -4,11 +4,11 @@ import 'package:focusnest/src/features/authentication/data/auth_repository.dart'
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'auth_controller.g.dart';
+part 'auth_screen_controller.g.dart';
 
 // Controller class for managing authentication logic using Riverpod
 @riverpod
-class AuthController extends _$AuthController {
+class AuthScreenController extends _$AuthScreenController {
   @override
   FutureOr<void> build() {}
 
