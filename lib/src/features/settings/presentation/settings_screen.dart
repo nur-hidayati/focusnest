@@ -8,6 +8,7 @@ import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
+import 'package:focusnest/src/features/authentication/presentation/auth_controller.dart';
 import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
@@ -27,24 +28,20 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  void _handleNavigateToUserSettings({String? userId, String? userEmail}) {
-    if (userId != null && userEmail != null) {
-      context.pushNamed(
-        RoutesName.accountSettings,
-        pathParameters: {
-          'userId': userId,
-        },
-        queryParameters: {
-          'userEmail': userEmail,
-        },
-      );
-    } else {
-      showOKAlert(
-        context: context,
-        title: 'Error',
-        content: 'User not login',
-      );
-    }
+  void _handleNavigateToUserSettings(String userId, String userEmail) {
+    context.pushNamed(
+      RoutesName.accountSettings,
+      pathParameters: {
+        'userId': userId,
+      },
+      queryParameters: {
+        'userEmail': userEmail,
+      },
+    );
+  }
+
+  void _handleNavigateToAuth() {
+    context.pushNamed(RoutesName.auth);
   }
 
   void openAppSettings() async {
@@ -77,7 +74,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid;
+    final userId = authRepository.currentUser?.uid ?? Strings.tempUser;
     final userEmail = authRepository.currentUser?.email;
 
     ref.listen<AsyncValue>(
@@ -85,10 +82,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       (_, state) => state.showAlertDialogOnError(context),
     );
 
-    final state = ref.watch(settingsScreenControllerProvider);
+    final settingsState = ref.watch(settingsScreenControllerProvider);
+    final authState = ref.watch(authControllerProvider);
 
     return LoadingManager(
-      isLoading: state.isLoading,
+      isLoading: settingsState.isLoading || authState.isLoading,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
@@ -97,17 +95,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: Column(
             children: [
               ListView(
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
-                  SettingTile(
-                    title: 'Account Settings',
-                    subtitle: 'Manage your account settings',
-                    icon: Icons.account_circle_outlined,
-                    action: () => _handleNavigateToUserSettings(
-                      userId: userId,
-                      userEmail: userEmail,
+                  if (userId != Strings.tempUser) ...[
+                    SettingTile(
+                      title: 'Account Settings',
+                      subtitle: 'Manage your account settings',
+                      icon: Icons.account_circle_outlined,
+                      action: () =>
+                          _handleNavigateToUserSettings(userId, userEmail!),
                     ),
-                  ),
+                  ] else ...[
+                    SettingTile(
+                      title: 'Sign Up Or Login',
+                      subtitle: 'Create or access your account',
+                      icon: Icons.login_outlined,
+                      action: () => _handleNavigateToAuth(),
+                    ),
+                  ],
                   if (Platform.isIOS)
                     SettingTile(
                       title: 'Font Size',
@@ -144,11 +150,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ],
               ),
-              Spacers.mediumVertical,
-              LinkTextButton(
-                title: 'Sign Out',
-                onPressed: _handleSignOut,
-              ),
+              if (userId != Strings.tempUser) ...[
+                Spacers.mediumVertical,
+                LinkTextButton(
+                  title: 'Sign Out',
+                  onPressed: _handleSignOut,
+                )
+              ],
+              Spacers.largeVertical,
             ],
           ),
         ),
