@@ -46,26 +46,9 @@ GoRouter goRouter(GoRouterRef ref) {
   const settingsPath = '/settings';
   final authRepository = ref.watch(authRepositoryProvider);
   return GoRouter(
-    initialLocation: authPath,
+    initialLocation: activityTimerPath,
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
-    redirect: (context, state) {
-      final user = authRepository.currentUser;
-      final isLoggedIn = user != null;
-      final path = state.uri.path;
-      if (isLoggedIn) {
-        if (path.startsWith(authPath)) {
-          return activityTimerPath;
-        }
-      } else {
-        if (path.startsWith(activityTimerPath) ||
-            path.startsWith(activityCalendarPath) ||
-            path.startsWith(settingsPath)) {
-          return authPath;
-        }
-      }
-      return null;
-    },
     refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
     routes: [
       GoRoute(
