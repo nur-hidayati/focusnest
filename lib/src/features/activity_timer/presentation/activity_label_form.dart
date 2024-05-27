@@ -6,6 +6,7 @@ import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
+import 'package:go_router/go_router.dart';
 
 // Bottom Sheet that display Activity Label Input with Cancel and Done header
 class ActivityLabelForm extends ConsumerStatefulWidget {
@@ -46,6 +47,7 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
       ref
           .read(activityLabelProvider(userId).notifier)
           .updateActivityLabel(activityLabelController.text.trim());
+      context.pop();
     } else {
       showInvalidLabelAlert(context);
     }

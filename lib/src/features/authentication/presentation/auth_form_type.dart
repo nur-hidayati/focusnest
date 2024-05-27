@@ -6,9 +6,9 @@ enum AuthFormType { signIn, register }
 extension AuthFormTypeX on AuthFormType {
   String get headerText {
     if (this == AuthFormType.register) {
-      return 'Welcome to ${Strings.appName}';
+      return 'Create Account';
     } else {
-      return 'Log In';
+      return 'Sign In to Continue';
     }
   }
 
