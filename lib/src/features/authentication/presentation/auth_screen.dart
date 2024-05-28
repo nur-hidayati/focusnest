@@ -100,7 +100,6 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
                 : 'Account successfully created!',
           );
         }
-        ;
       }
     }
   }
