@@ -27,24 +27,20 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  void _handleNavigateToUserSettings({String? userId, String? userEmail}) {
-    if (userId != null && userEmail != null) {
-      context.pushNamed(
-        RoutesName.accountSettings,
-        pathParameters: {
-          'userId': userId,
-        },
-        queryParameters: {
-          'userEmail': userEmail,
-        },
-      );
-    } else {
-      showOKAlert(
-        context: context,
-        title: 'Error',
-        content: 'User not login',
-      );
-    }
+  void _handleNavigateToUserSettings(String userId, String userEmail) {
+    context.pushNamed(
+      RoutesName.accountSettings,
+      pathParameters: {
+        'userId': userId,
+      },
+      queryParameters: {
+        'userEmail': userEmail,
+      },
+    );
+  }
+
+  void _handleNavigateToAuth() {
+    context.pushNamed(RoutesName.auth);
   }
 
   void openAppSettings() async {
@@ -77,7 +73,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid;
+    final userId = authRepository.currentUser?.uid ?? Strings.guest;
     final userEmail = authRepository.currentUser?.email;
 
     ref.listen<AsyncValue>(
@@ -99,15 +95,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ListView(
                 shrinkWrap: true,
                 children: [
-                  SettingTile(
-                    title: 'Account Settings',
-                    subtitle: 'Manage your account settings',
-                    icon: Icons.account_circle_outlined,
-                    action: () => _handleNavigateToUserSettings(
-                      userId: userId,
-                      userEmail: userEmail,
+                  if (userId != Strings.guest && userEmail != null)
+                    SettingTile(
+                      title: 'Account Settings',
+                      subtitle: 'Manage your account settings',
+                      icon: Icons.account_circle_outlined,
+                      action: () =>
+                          _handleNavigateToUserSettings(userId, userEmail),
+                    )
+                  else ...[
+                    SettingTile(
+                      title: 'Sign Up Or Login',
+                      subtitle: 'Create or access your account',
+                      icon: Icons.login_outlined,
+                      action: () => _handleNavigateToAuth(),
                     ),
-                  ),
+                  ],
                   if (Platform.isIOS)
                     SettingTile(
                       title: 'Font Size',
@@ -144,11 +147,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ],
               ),
-              Spacers.mediumVertical,
-              LinkTextButton(
-                title: 'Sign Out',
-                onPressed: _handleSignOut,
-              ),
+              if (userId != Strings.guest) ...[
+                Spacers.mediumVertical,
+                LinkTextButton(
+                  title: 'Sign Out',
+                  onPressed: _handleSignOut,
+                )
+              ],
+              Spacers.largeVertical,
             ],
           ),
         ),
