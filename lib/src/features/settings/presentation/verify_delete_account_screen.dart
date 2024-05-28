@@ -12,6 +12,7 @@ import 'package:focusnest/src/features/authentication/data/auth_repository.dart'
 import 'package:focusnest/src/features/settings/presentation/verify_delete_account_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:go_router/go_router.dart';
 
 // Screen that displayed when user attempting to delete their account permanently
@@ -57,6 +58,10 @@ class _VerifyDeleteAccountState extends ConsumerState<VerifyDeleteAccount> {
       ref
           .read(verifyDeleteAccountScreenControllerProvider.notifier)
           .submitDeleteUser();
+      if (mounted) {
+        context.go('/settings');
+        showCustomSnackBar(context, 'Account successfully deleted!');
+      }
     }
   }
 
