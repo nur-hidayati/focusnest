@@ -164,10 +164,22 @@ Future<void> migrateSharedPrefsToCurrentUser(String newUserId) async {
         .toList();
 
     // Merge guest and new user activities
-    final allActivities =
-        {...newUserRecentActivities, ...guestRecentActivities}.toList();
-    final mergedActivitiesJson =
-        allActivities.map((activity) => jsonEncode(activity.toJson())).toList();
+    final allActivities = [
+      ...guestRecentActivities,
+      ...newUserRecentActivities
+    ];
+    final uniqueActivities = <String, ActivityTimer>{};
+    for (var activity in allActivities) {
+      final key =
+          '${activity.activityLabel}-${activity.targetedDurationInSeconds}';
+      if (!uniqueActivities.containsKey(key)) {
+        uniqueActivities[key] = activity;
+      }
+    }
+    final mergedActivities = uniqueActivities.values.toList();
+    final mergedActivitiesJson = mergedActivities
+        .map((activity) => jsonEncode(activity.toJson()))
+        .toList();
 
     await prefs.setStringList(newUserRecentActivitiesKey, mergedActivitiesJson);
     await prefs.remove(guestRecentActivitiesKey);
