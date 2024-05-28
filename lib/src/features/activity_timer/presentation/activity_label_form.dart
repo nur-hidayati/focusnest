@@ -38,7 +38,7 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
     super.dispose();
   }
 
-  void _handleOnDoneActivityLabelUpdate(userId) {
+  void _handleOnDoneActivityLabelUpdate(String userId) {
     if (activityLabelController.text.isNotEmpty) {
       ref
           .read(activityLabelProvider(userId).notifier)
@@ -52,7 +52,7 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
   @override
   Widget build(BuildContext context) {
     final authRepository = ref.read(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid;
+    final userId = authRepository.currentUser?.uid ?? Strings.guest;
     return BottomSheetContents(
       headerTitle: 'Edit',
       onDoneActivityLabelUpdate: () => _handleOnDoneActivityLabelUpdate(userId),
