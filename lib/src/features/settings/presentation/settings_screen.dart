@@ -13,6 +13,7 @@ import 'package:focusnest/src/features/settings/presentation/settings_screen_con
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
+import 'package:focusnest/src/utils/shared_prefs_helper.dart';
 import 'package:go_router/go_router.dart';
 
 // Main settings screen that displays various settings options to the user.
@@ -57,7 +58,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  void _handleSignOut() async {
+  void _handleSignOut(String userId) async {
     final logoutConfirmed = await showAlertDialog(
       context: context,
       title: 'Confirm Sign Out',
@@ -67,6 +68,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     if (logoutConfirmed == true) {
       ref.read(settingsScreenControllerProvider.notifier).signOut();
+      reloadAllNotifiers(ref, Strings.guest);
     }
   }
 
@@ -151,7 +153,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 Spacers.mediumVertical,
                 LinkTextButton(
                   title: 'Sign Out',
-                  onPressed: _handleSignOut,
+                  onPressed: () => _handleSignOut(userId),
                 )
               ],
               Spacers.largeVertical,

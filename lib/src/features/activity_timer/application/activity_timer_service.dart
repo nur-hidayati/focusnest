@@ -26,7 +26,7 @@ class ActivityLabelNotifier extends StateNotifier<String> {
   }
 
   // Loads the activity label from SharedPreferences
-  void _loadActivityLabel() async {
+  Future<void> _loadActivityLabel() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key = getActivityLabelKey(userId);
     state = prefs.getString(key) ?? initialActivityLabelValue;
@@ -39,6 +39,10 @@ class ActivityLabelNotifier extends StateNotifier<String> {
     String key = getActivityLabelKey(userId);
     await prefs.setString(key, newLabel);
   }
+
+  Future<void> reload() async {
+    await _loadActivityLabel();
+  }
 }
 
 // Notifier to manage the state of the timer duration
@@ -50,7 +54,7 @@ class TimerDurationNotifier extends StateNotifier<Duration> {
   }
 
   // Loads the timer duration from SharedPreferences
-  void _loadTimerDuration() async {
+  Future<void> _loadTimerDuration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key = getTimerDurationKey(userId);
     final durationInSeconds = prefs.getInt(key);
@@ -67,6 +71,11 @@ class TimerDurationNotifier extends StateNotifier<Duration> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key = getTimerDurationKey(userId);
     await prefs.setInt(key, newDuration.inSeconds);
+  }
+
+  // Method to reload state from SharedPreferences
+  Future<void> reload() async {
+    await _loadTimerDuration();
   }
 }
 
@@ -121,6 +130,10 @@ class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
         state.map((activity) => jsonEncode(activity.toJson())).toList();
     await prefs.setStringList(
         'recentActivities_$_userId', recentActivitiesJson);
+  }
+
+  Future<void> reload() async {
+    await _loadRecentActivities();
   }
 }
 

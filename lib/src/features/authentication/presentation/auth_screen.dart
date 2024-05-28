@@ -18,6 +18,7 @@ import 'package:focusnest/src/features/authentication/presentation/auth_validato
 import 'package:focusnest/src/features/authentication/presentation/string_validators.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
+import 'package:focusnest/src/utils/shared_prefs_helper.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -86,6 +87,8 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
           final dao = ref.read(activityTimersDaoProvider);
           await dao.updateGuestUserIdToNewUserId(userId);
           await migrateSharedPrefsToCurrentUser(userId);
+
+          reloadAllNotifiers(ref, userId);
         }
         if (mounted) context.pop();
       }
