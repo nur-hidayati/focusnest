@@ -18,9 +18,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
 
-// Setup the routing using GoRouter with nested navigation support.
 // Defines routes for authentication, activity calendar, activity timer, and settings.
-// GoRouter instance manages navigation state and redirects based on user authentication status
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _activityTimerNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: RoutesName.activityTimer);
@@ -42,7 +40,7 @@ GoRouter goRouter(GoRouterRef ref) {
   return GoRouter(
     initialLocation: activityTimerPath,
     navigatorKey: _rootNavigatorKey,
-    debugLogDiagnostics: true,
+    // debugLogDiagnostics: true,
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -58,6 +56,7 @@ GoRouter goRouter(GoRouterRef ref) {
   );
 }
 
+// Activity Calendar Route
 StatefulShellBranch _activityCalendarRoute() {
   return StatefulShellBranch(
     navigatorKey: _activityCalendarNavigatorKey,
@@ -73,6 +72,7 @@ StatefulShellBranch _activityCalendarRoute() {
   );
 }
 
+// Activity Timer Route
 StatefulShellBranch _activityTimerRoute() {
   return StatefulShellBranch(
     navigatorKey: _activityTimerNavigatorKey,
@@ -97,7 +97,7 @@ StatefulShellBranch _activityTimerRoute() {
               final label = state.uri.queryParameters['label']!;
               final timerSessionId =
                   state.uri.queryParameters['timerSessionId']!;
-              return _buildCustomTransitionPage(
+              return _buildSlideTransitionPage(
                 TimerStartScreen(
                   userId: userId,
                   duration: duration,
@@ -134,6 +134,7 @@ StatefulShellBranch _activityTimerRoute() {
   );
 }
 
+// Settings Route
 StatefulShellBranch _settingsRoute() {
   return StatefulShellBranch(
     navigatorKey: _settingsNavigatorKey,
@@ -145,6 +146,7 @@ StatefulShellBranch _settingsRoute() {
           child: SettingsScreen(),
         ),
         routes: [
+          // Authentication part
           GoRoute(
             path: 'auth',
             name: RoutesName.auth,
@@ -156,7 +158,7 @@ StatefulShellBranch _settingsRoute() {
                 path: 'reset-password',
                 name: RoutesName.resetPassword,
                 parentNavigatorKey: _rootNavigatorKey,
-                pageBuilder: (context, state) => _buildCustomTransitionPage(
+                pageBuilder: (context, state) => _buildSlideTransitionPage(
                   const ResetPasswordScreen(),
                 ),
                 routes: [
@@ -166,7 +168,7 @@ StatefulShellBranch _settingsRoute() {
                     parentNavigatorKey: _rootNavigatorKey,
                     pageBuilder: (context, state) {
                       final userEmail = state.pathParameters['userEmail']!;
-                      return _buildCustomTransitionPage(
+                      return _buildSlideTransitionPage(
                         EmailSentScreen(
                           userEmail: userEmail,
                         ),
@@ -177,6 +179,7 @@ StatefulShellBranch _settingsRoute() {
               ),
             ],
           ),
+          // Account management
           GoRoute(
             path: ':userId-account',
             name: RoutesName.accountSettings,
@@ -184,7 +187,7 @@ StatefulShellBranch _settingsRoute() {
             pageBuilder: (context, state) {
               final userId = state.pathParameters['userId']!;
               final userEmail = state.uri.queryParameters['userEmail']!;
-              return _buildCustomTransitionPage(
+              return _buildSlideTransitionPage(
                 AccountSettingsScreen(
                   userId: userId,
                   userEmail: userEmail,
@@ -232,7 +235,7 @@ StatefulShellBranch _settingsRoute() {
 }
 
 // Custom page transition from right to left
-CustomTransitionPage<void> _buildCustomTransitionPage(Widget child) {
+CustomTransitionPage<void> _buildSlideTransitionPage(Widget child) {
   return CustomTransitionPage<void>(
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
