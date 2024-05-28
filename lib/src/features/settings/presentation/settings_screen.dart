@@ -12,6 +12,7 @@ import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
 import 'package:focusnest/src/utils/shared_prefs_helper.dart';
 import 'package:go_router/go_router.dart';
@@ -69,6 +70,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (logoutConfirmed == true) {
       ref.read(settingsScreenControllerProvider.notifier).signOut();
       reloadAllNotifiers(ref, Strings.guest);
+      if (mounted) {
+        showCustomSnackBar(context, 'You have been logged out!');
+      }
     }
   }
 

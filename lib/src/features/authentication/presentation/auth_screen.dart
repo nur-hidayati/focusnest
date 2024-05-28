@@ -17,6 +17,7 @@ import 'package:focusnest/src/features/authentication/presentation/auth_screen_c
 import 'package:focusnest/src/features/authentication/presentation/auth_validators.dart';
 import 'package:focusnest/src/features/authentication/presentation/string_validators.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
 import 'package:focusnest/src/utils/shared_prefs_helper.dart';
 import 'package:go_router/go_router.dart';
@@ -90,7 +91,16 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
 
           reloadAllNotifiers(ref, userId);
         }
-        if (mounted) context.pop();
+        if (mounted) {
+          context.pop();
+          showCustomSnackBar(
+            context,
+            _formType == AuthFormType.signIn
+                ? 'Sign-in successful!'
+                : 'Account created successfully!',
+          );
+        }
+        ;
       }
     }
   }
