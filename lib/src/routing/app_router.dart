@@ -155,6 +155,7 @@ StatefulShellBranch _settingsRoute() {
               GoRoute(
                 path: 'reset-password',
                 name: RoutesName.resetPassword,
+                parentNavigatorKey: _rootNavigatorKey,
                 pageBuilder: (context, state) => _buildCustomTransitionPage(
                   const ResetPasswordScreen(),
                 ),
@@ -162,6 +163,7 @@ StatefulShellBranch _settingsRoute() {
                   GoRoute(
                     path: ':userEmail-sent',
                     name: RoutesName.emailSent,
+                    parentNavigatorKey: _rootNavigatorKey,
                     pageBuilder: (context, state) {
                       final userEmail = state.pathParameters['userEmail']!;
                       return _buildCustomTransitionPage(
