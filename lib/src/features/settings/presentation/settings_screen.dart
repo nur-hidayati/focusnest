@@ -72,9 +72,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = ref.watch(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid ?? Strings.guest;
-    final userEmail = authRepository.currentUser?.email;
+    final authState = ref.watch(authStateChangesProvider);
+    final userId = authState.asData?.value?.uid ?? Strings.guest;
+    final userEmail = authState.asData?.value?.email;
 
     ref.listen<AsyncValue>(
       settingsScreenControllerProvider,
