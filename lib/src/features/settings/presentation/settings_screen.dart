@@ -18,9 +18,6 @@ import 'package:focusnest/src/utils/shared_prefs_helper.dart';
 import 'package:go_router/go_router.dart';
 
 // Main settings screen that displays various settings options to the user.
-// This screen includes account settings, privacy policy, terms of service,
-// contact information, and app version details. It also provides a sign-out
-// option for the user.
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -59,7 +56,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  void _handleSignOut(String userId) async {
+  void _handleSignOut() async {
     final logoutConfirmed = await showAlertDialog(
       context: context,
       title: 'Confirm Sign Out',
@@ -157,7 +154,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 Spacers.mediumVertical,
                 LinkTextButton(
                   title: 'Sign Out',
-                  onPressed: () => _handleSignOut(userId),
+                  onPressed: _handleSignOut,
                 )
               ],
               Spacers.largeVertical,
