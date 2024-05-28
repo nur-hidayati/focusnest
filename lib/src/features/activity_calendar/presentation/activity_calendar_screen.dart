@@ -183,7 +183,7 @@ class _ActivityCalendarScreenState
               contentPadding: EdgeInsets.zero,
               dense: true,
               title: CustomText(
-                title: '${activity.activityLabel} - ${activity.userId}',
+                title: activity.activityLabel,
                 fontWeight: FontWeight.bold,
                 overflow: TextOverflow.ellipsis,
               ),
