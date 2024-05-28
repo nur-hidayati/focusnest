@@ -70,11 +70,14 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
 
     if (_formKey.currentState!.validate()) {
       final controller = ref.read(authScreenControllerProvider.notifier);
-      await controller.submitAuth(
+      final success = await controller.submitAuth(
         email: email,
         password: password,
         formType: _formType,
       );
+      if (success && mounted) {
+        context.pop();
+      }
     }
   }
 
@@ -97,44 +100,30 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
     final state = ref.watch(authScreenControllerProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        shape: const LinearBorder(),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => context.pop(),
+        ),
+      ),
       body: SingleChildScrollView(
-        padding: AppPadding.screenPadding,
+        padding: AppPadding.noTopPadding,
         child: SafeArea(
           child: Column(
             children: [
-              Column(
-                children: [
-                  Spacers.smallVertical,
-                  _headerSection(),
-                  Spacers.mediumVertical,
-                  _formSection(state.isLoading),
-                  Spacers.mediumVertical,
-                  _bottomSection(),
-                ],
+              CustomText(
+                title: _formType.headerText,
+                textType: TextType.title,
               ),
+              Spacers.mediumVertical,
+              _formSection(state.isLoading),
+              Spacers.mediumVertical,
+              _bottomSection(),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _headerSection() {
-    Size screenSize = MediaQuery.of(context).size;
-    double imageSize = screenSize.width * 0.25;
-    return Column(
-      children: [
-        Image.asset(
-          'assets/icons/focusnest-icon.png',
-          width: imageSize,
-          height: imageSize,
-        ),
-        Spacers.smallVertical,
-        CustomText(
-          title: _formType.headerText,
-          textType: TextType.titleLarge,
-        ),
-      ],
     );
   }
 
