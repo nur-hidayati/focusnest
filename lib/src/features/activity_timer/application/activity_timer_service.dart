@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String activityLabelKeySuffix = 'activityLabel';
 const String timerDurationKeySuffix = 'timerDurationInSeconds';
 const String deletedItemIdsSuffix = 'deletedItemIds';
+const String recentActivitiesSuffix = 'recentActivities';
 const String initialActivityLabelValue = 'Work';
 const Duration initialTimerDurationValue = Duration(minutes: 15);
 
@@ -16,6 +17,8 @@ const Duration initialTimerDurationValue = Duration(minutes: 15);
 String getActivityLabelKey(String userId) => '$userId-$activityLabelKeySuffix';
 String getTimerDurationKey(String userId) => '$userId-$timerDurationKeySuffix';
 String getDeletedItemIdsKey(String userId) => '$userId-$deletedItemIdsSuffix';
+String getRecentActivitiesKey(String userId) =>
+    '${recentActivitiesSuffix}_$userId';
 
 // Notifier to manage the state of the activity label
 class ActivityLabelNotifier extends StateNotifier<String> {
@@ -40,6 +43,7 @@ class ActivityLabelNotifier extends StateNotifier<String> {
     await prefs.setString(key, newLabel);
   }
 
+  // Reload state from SharedPreferences
   Future<void> reload() async {
     await _loadActivityLabel();
   }
@@ -73,7 +77,7 @@ class TimerDurationNotifier extends StateNotifier<Duration> {
     await prefs.setInt(key, newDuration.inSeconds);
   }
 
-  // Method to reload state from SharedPreferences
+  // Reload state from SharedPreferences
   Future<void> reload() async {
     await _loadTimerDuration();
   }
@@ -92,7 +96,7 @@ class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
   Future<void> _loadRecentActivities() async {
     final prefs = await SharedPreferences.getInstance();
     final recentActivitiesJson =
-        prefs.getStringList('recentActivities_$_userId') ?? [];
+        prefs.getStringList(getRecentActivitiesKey(_userId)) ?? [];
 
     if (recentActivitiesJson.isNotEmpty) {
       final recentActivities = recentActivitiesJson
@@ -129,9 +133,10 @@ class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
     final recentActivitiesJson =
         state.map((activity) => jsonEncode(activity.toJson())).toList();
     await prefs.setStringList(
-        'recentActivities_$_userId', recentActivitiesJson);
+        getRecentActivitiesKey(_userId), recentActivitiesJson);
   }
 
+  // Reload state from SharedPreferences
   Future<void> reload() async {
     await _loadRecentActivities();
   }
@@ -161,8 +166,8 @@ Future<void> migrateSharedPrefsToCurrentUser(String newUserId) async {
   }
 
   // Migrate recent activities
-  const guestRecentActivitiesKey = 'recentActivities_$guestUserId';
-  final newUserRecentActivitiesKey = 'recentActivities_$newUserId';
+  final guestRecentActivitiesKey = getRecentActivitiesKey(guestUserId);
+  final newUserRecentActivitiesKey = getRecentActivitiesKey(newUserId);
   final guestRecentActivitiesJson =
       prefs.getStringList(guestRecentActivitiesKey);
   final newUserRecentActivitiesJson =
@@ -182,6 +187,8 @@ Future<void> migrateSharedPrefsToCurrentUser(String newUserId) async {
       ...newUserRecentActivities
     ];
     final uniqueActivities = <String, ActivityTimer>{};
+
+    // Ensure no duplicate activity and duration
     for (var activity in allActivities) {
       final key =
           '${activity.activityLabel}-${activity.targetedDurationInSeconds}';
@@ -189,6 +196,7 @@ Future<void> migrateSharedPrefsToCurrentUser(String newUserId) async {
         uniqueActivities[key] = activity;
       }
     }
+
     final mergedActivities = uniqueActivities.values.toList();
     final mergedActivitiesJson = mergedActivities
         .map((activity) => jsonEncode(activity.toJson()))
