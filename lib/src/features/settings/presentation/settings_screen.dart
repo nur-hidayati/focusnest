@@ -8,7 +8,7 @@ import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
-import 'package:focusnest/src/features/authentication/presentation/auth_controller.dart';
+import 'package:focusnest/src/features/authentication/presentation/auth_screen_controller.dart';
 import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
@@ -83,7 +83,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
 
     final settingsState = ref.watch(settingsScreenControllerProvider);
-    final authState = ref.watch(authControllerProvider);
+    final authState = ref.watch(authScreenControllerProvider);
 
     return LoadingManager(
       isLoading: settingsState.isLoading || authState.isLoading,
