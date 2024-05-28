@@ -79,8 +79,8 @@ class _ActivityCalendarScreenState
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = ref.watch(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid ?? Strings.guest;
+    final authState = ref.watch(authStateChangesProvider);
+    final userId = authState.asData?.value?.uid ?? Strings.guest;
     final dao = ref.watch(activityCalendarDaoProvider);
 
     return Scaffold(
@@ -183,7 +183,7 @@ class _ActivityCalendarScreenState
               contentPadding: EdgeInsets.zero,
               dense: true,
               title: CustomText(
-                title: activity.activityLabel,
+                title: '${activity.activityLabel} - ${activity.userId}',
                 fontWeight: FontWeight.bold,
                 overflow: TextOverflow.ellipsis,
               ),
