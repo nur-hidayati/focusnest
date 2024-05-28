@@ -9,6 +9,8 @@ import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
+import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_screen_controller.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_validators.dart';
@@ -69,14 +71,21 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (_formKey.currentState!.validate()) {
-      final controller = ref.read(authScreenControllerProvider.notifier);
-      final success = await controller.submitAuth(
+      final authController = ref.read(authScreenControllerProvider.notifier);
+
+      final success = await authController.submitAuth(
         email: email,
         password: password,
         formType: _formType,
       );
-      if (success && mounted) {
-        context.pop();
+      if (success) {
+        final authRepository = ref.watch(authRepositoryProvider);
+        final userId = authRepository.currentUser?.uid;
+        if (userId != null) {
+          final dao = ref.read(activityTimersDaoProvider);
+          await dao.updateGuestUserIdToNewUserId(userId);
+        }
+        if (mounted) context.pop();
       }
     }
   }
