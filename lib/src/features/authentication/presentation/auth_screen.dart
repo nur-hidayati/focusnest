@@ -9,6 +9,7 @@ import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/features/activity_timer/application/activity_timer_service.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
@@ -84,6 +85,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
         if (userId != null) {
           final dao = ref.read(activityTimersDaoProvider);
           await dao.updateGuestUserIdToNewUserId(userId);
+          await migrateSharedPrefsToCurrentUser(userId);
         }
         if (mounted) context.pop();
       }

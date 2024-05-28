@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_database.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timers_dao.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -120,5 +121,55 @@ class RecentActivitiesNotifier extends StateNotifier<List<ActivityTimer>> {
         state.map((activity) => jsonEncode(activity.toJson())).toList();
     await prefs.setStringList(
         'recentActivities_$_userId', recentActivitiesJson);
+  }
+}
+
+// Migrate SharedPreferences from guest user to current user
+Future<void> migrateSharedPrefsToCurrentUser(String newUserId) async {
+  final prefs = await SharedPreferences.getInstance();
+  const guestUserId = Strings.guest;
+
+  // Migrate activity label
+  final guestActivityLabelKey = getActivityLabelKey(guestUserId);
+  final newUserActivityLabelKey = getActivityLabelKey(newUserId);
+  final activityLabel = prefs.getString(guestActivityLabelKey);
+  if (activityLabel != null) {
+    await prefs.setString(newUserActivityLabelKey, activityLabel);
+    await prefs.remove(guestActivityLabelKey);
+  }
+
+  // Migrate timer duration
+  final guestTimerDurationKey = getTimerDurationKey(guestUserId);
+  final newUserTimerDurationKey = getTimerDurationKey(newUserId);
+  final timerDurationInSeconds = prefs.getInt(guestTimerDurationKey);
+  if (timerDurationInSeconds != null) {
+    await prefs.setInt(newUserTimerDurationKey, timerDurationInSeconds);
+    await prefs.remove(guestTimerDurationKey);
+  }
+
+  // Migrate recent activities
+  const guestRecentActivitiesKey = 'recentActivities_$guestUserId';
+  final newUserRecentActivitiesKey = 'recentActivities_$newUserId';
+  final guestRecentActivitiesJson =
+      prefs.getStringList(guestRecentActivitiesKey);
+  final newUserRecentActivitiesJson =
+      prefs.getStringList(newUserRecentActivitiesKey) ?? [];
+
+  if (guestRecentActivitiesJson != null) {
+    final guestRecentActivities = guestRecentActivitiesJson
+        .map((json) => ActivityTimer.fromJson(jsonDecode(json)))
+        .toList();
+    final newUserRecentActivities = newUserRecentActivitiesJson
+        .map((json) => ActivityTimer.fromJson(jsonDecode(json)))
+        .toList();
+
+    // Merge guest and new user activities
+    final allActivities =
+        {...newUserRecentActivities, ...guestRecentActivities}.toList();
+    final mergedActivitiesJson =
+        allActivities.map((activity) => jsonEncode(activity.toJson())).toList();
+
+    await prefs.setStringList(newUserRecentActivitiesKey, mergedActivitiesJson);
+    await prefs.remove(guestRecentActivitiesKey);
   }
 }
