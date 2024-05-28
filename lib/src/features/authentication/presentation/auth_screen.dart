@@ -97,7 +97,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
             context,
             _formType == AuthFormType.signIn
                 ? 'Sign-in successful!'
-                : 'Account created successfully!',
+                : 'Account successfully created!',
           );
         }
         ;
