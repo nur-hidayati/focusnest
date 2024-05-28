@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
 import 'package:focusnest/src/common_widgets/loading_indicator.dart';
-import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_dao.dart';
 import 'package:focusnest/src/features/activity_calendar/data/activity_calendar_providers.dart';
 import 'package:focusnest/src/features/activity_calendar/presentation/add_activity_timer.dart';
@@ -47,18 +47,16 @@ class _ActivityCalendarScreenState
     });
   }
 
-  void _showAddActivityTimerModal(String? userId) {
+  void _showAddActivityTimerModal(String userId) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
       builder: (BuildContext context) {
-        return userId != null
-            ? AddActivityTimer(
-                userId: userId,
-                startDateTime: DateTime.now(),
-                duration: const Duration(minutes: 15),
-              )
-            : const UserNotFound();
+        return AddActivityTimer(
+          userId: userId,
+          startDateTime: DateTime.now(),
+          duration: const Duration(minutes: 15),
+        );
       },
     );
   }
@@ -82,7 +80,7 @@ class _ActivityCalendarScreenState
   @override
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid;
+    final userId = authRepository.currentUser?.uid ?? Strings.guest;
     final dao = ref.watch(activityCalendarDaoProvider);
 
     return Scaffold(
@@ -91,13 +89,11 @@ class _ActivityCalendarScreenState
         centerTitle: true,
         actions: _buildCalendarAppBarActions(userId),
       ),
-      body: userId != null
-          ? _buildCalendarContent(userId, dao)
-          : const UserNotFound(),
+      body: _buildCalendarContent(userId, dao),
     );
   }
 
-  List<Widget> _buildCalendarAppBarActions(String? userId) {
+  List<Widget> _buildCalendarAppBarActions(String userId) {
     return [
       IconButton(
         icon: Icon(
