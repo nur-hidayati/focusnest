@@ -8,7 +8,7 @@ extension AuthFormTypeX on AuthFormType {
     if (this == AuthFormType.register) {
       return 'Create Account';
     } else {
-      return 'Sign In to Continue';
+      return 'Sign In';
     }
   }
 
