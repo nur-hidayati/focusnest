@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/spacers.dart';
+import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/recents_timer_activity_section.dart';
 import 'package:focusnest/src/features/activity_timer/presentation/timer_section.dart';
+import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/services/notification_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Main Activity Timer Screen
-class ActivityTimerScreen extends StatefulWidget {
+class ActivityTimerScreen extends ConsumerStatefulWidget {
   const ActivityTimerScreen({super.key});
 
   @override
-  State<ActivityTimerScreen> createState() => _ActivityTimerScreenState();
+  ConsumerState<ActivityTimerScreen> createState() =>
+      _ActivityTimerScreenState();
 }
 
-class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
+class _ActivityTimerScreenState extends ConsumerState<ActivityTimerScreen> {
   @override
   void initState() {
     super.initState();
@@ -36,7 +40,9 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    final authState = ref.watch(authStateChangesProvider);
+    final userId = authState.asData?.value?.uid ?? Strings.guest;
+    return SafeArea(
       child: Scaffold(
         body: Padding(
           padding: AppPadding.noBottomPadding,
@@ -44,9 +50,9 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
             child: Column(
               children: [
                 Spacers.largeVertical,
-                TimerSection(),
+                TimerSection(userId: userId),
                 Spacers.largeVertical,
-                RecentsTimerActivitySection(),
+                RecentsTimerActivitySection(userId: userId),
               ],
             ),
           ),
