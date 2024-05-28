@@ -9,8 +9,8 @@ import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
-import 'package:focusnest/src/features/authentication/presentation/auth_controller.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
+import 'package:focusnest/src/features/authentication/presentation/auth_screen_controller.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_validators.dart';
 import 'package:focusnest/src/features/authentication/presentation/string_validators.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
@@ -69,7 +69,7 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (_formKey.currentState!.validate()) {
-      final controller = ref.read(authControllerProvider.notifier);
+      final controller = ref.read(authScreenControllerProvider.notifier);
       await controller.submitAuth(
         email: email,
         password: password,
@@ -91,10 +91,10 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
   @override
   Widget build(BuildContext context) {
     ref.listen<AsyncValue>(
-      authControllerProvider,
+      authScreenControllerProvider,
       (_, state) => state.showAlertDialogOnError(context),
     );
-    final state = ref.watch(authControllerProvider);
+    final state = ref.watch(authScreenControllerProvider);
 
     return Scaffold(
       body: SingleChildScrollView(
