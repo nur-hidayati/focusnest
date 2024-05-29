@@ -51,6 +51,7 @@ FocusNest is a Flutter-based productivity app designed to help users manage and 
 To set up this project on your local machine, follow these steps:
 
 1. Make sure you have Flutter installed on your system. If you don't have Flutter installed, follow the [official Flutter installation guide](https://docs.flutter.dev/get-started/install).
+
 2. Clone this repository:
 
 ```
