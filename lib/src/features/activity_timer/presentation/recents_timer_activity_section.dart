@@ -2,27 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusnest/src/common_widgets/custom_text.dart';
-import 'package:focusnest/src/common_widgets/user_not_found.dart';
 import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/spacers.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
-import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/date_time_helper.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
 
 // The Activity Timer section that display Recents Timer
 class RecentsTimerActivitySection extends ConsumerWidget {
-  const RecentsTimerActivitySection({super.key});
+  final String userId;
+
+  const RecentsTimerActivitySection({
+    required this.userId,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authRepository = ref.watch(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid;
-
-    if (userId == null) {
-      return const UserNotFound();
-    }
-
     final recentActivities = ref.watch(recentActivitiesProvider(userId));
     final recentActivitiesNotifier =
         ref.read(recentActivitiesProvider(userId).notifier);
@@ -83,8 +79,6 @@ class RecentsTimerActivitySection extends ConsumerWidget {
                     ),
                     trailing: IconButton(
                       onPressed: () {
-                        final authRepo = ref.read(authRepositoryProvider);
-                        final userId = authRepo.currentUser?.uid;
                         navigateToTimerStart(
                           context: context,
                           userId: userId,

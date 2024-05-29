@@ -9,12 +9,17 @@ import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/app_padding.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/constants/spacers.dart';
-import 'package:focusnest/src/features/authentication/presentation/auth_controller.dart';
+import 'package:focusnest/src/features/activity_timer/application/activity_timer_service.dart';
+import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
+import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_form_type.dart';
+import 'package:focusnest/src/features/authentication/presentation/auth_screen_controller.dart';
 import 'package:focusnest/src/features/authentication/presentation/auth_validators.dart';
 import 'package:focusnest/src/features/authentication/presentation/string_validators.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
+import 'package:focusnest/src/utils/shared_prefs_helper.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -69,12 +74,33 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (_formKey.currentState!.validate()) {
-      final controller = ref.read(authControllerProvider.notifier);
-      await controller.submitAuth(
+      final authController = ref.read(authScreenControllerProvider.notifier);
+
+      final success = await authController.submitAuth(
         email: email,
         password: password,
         formType: _formType,
       );
+      if (success) {
+        final authRepository = ref.watch(authRepositoryProvider);
+        final userId = authRepository.currentUser?.uid;
+        if (userId != null) {
+          final dao = ref.read(activityTimersDaoProvider);
+          await dao.updateGuestUserIdToNewUserId(userId);
+          await migrateSharedPrefsToCurrentUser(userId);
+
+          reloadAllNotifiers(ref, userId);
+        }
+        if (mounted) {
+          context.pop();
+          showCustomSnackBar(
+            context,
+            _formType == AuthFormType.signIn
+                ? 'Sign-in successful!'
+                : 'Account successfully created!',
+          );
+        }
+      }
     }
   }
 
@@ -91,50 +117,36 @@ class _AuthFormContentsState extends ConsumerState<AuthFormContents>
   @override
   Widget build(BuildContext context) {
     ref.listen<AsyncValue>(
-      authControllerProvider,
+      authScreenControllerProvider,
       (_, state) => state.showAlertDialogOnError(context),
     );
-    final state = ref.watch(authControllerProvider);
+    final state = ref.watch(authScreenControllerProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        shape: const LinearBorder(),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => context.pop(),
+        ),
+      ),
       body: SingleChildScrollView(
-        padding: AppPadding.screenPadding,
+        padding: AppPadding.noTopPadding,
         child: SafeArea(
           child: Column(
             children: [
-              Column(
-                children: [
-                  Spacers.smallVertical,
-                  _headerSection(),
-                  Spacers.mediumVertical,
-                  _formSection(state.isLoading),
-                  Spacers.mediumVertical,
-                  _bottomSection(),
-                ],
+              CustomText(
+                title: _formType.headerText,
+                textType: TextType.title,
               ),
+              Spacers.mediumVertical,
+              _formSection(state.isLoading),
+              Spacers.mediumVertical,
+              _bottomSection(),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _headerSection() {
-    Size screenSize = MediaQuery.of(context).size;
-    double imageSize = screenSize.width * 0.25;
-    return Column(
-      children: [
-        Image.asset(
-          'assets/icons/focusnest-icon.png',
-          width: imageSize,
-          height: imageSize,
-        ),
-        Spacers.smallVertical,
-        CustomText(
-          title: _formType.headerText,
-          textType: TextType.titleLarge,
-        ),
-      ],
     );
   }
 

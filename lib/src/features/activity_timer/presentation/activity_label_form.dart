@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focusnest/src/common_widgets/bottom_sheet_contents.dart';
 import 'package:focusnest/src/common_widgets/custom_text_form_field.dart';
+import 'package:focusnest/src/constants/strings.dart';
 import 'package:focusnest/src/features/activity_timer/data/activity_timer_providers.dart';
 import 'package:focusnest/src/features/authentication/data/auth_repository.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
@@ -23,17 +24,12 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
   @override
   void initState() {
     super.initState();
-
     final authRepository = ref.read(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid;
+    final userId = authRepository.currentUser?.uid ?? Strings.guest;
 
-    if (userId != null) {
-      activityLabelController = TextEditingController(
-        text: ref.read(activityLabelProvider(userId)),
-      );
-    } else {
-      activityLabelController = TextEditingController();
-    }
+    activityLabelController = TextEditingController(
+      text: ref.read(activityLabelProvider(userId)),
+    );
   }
 
   @override
@@ -42,23 +38,12 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
     super.dispose();
   }
 
-  void _handleOnDoneActivityLabelUpdate() {
+  void _handleOnDoneActivityLabelUpdate(String userId) {
     if (activityLabelController.text.isNotEmpty) {
-      final authRepository = ref.read(authRepositoryProvider);
-      final userId = authRepository.currentUser?.uid;
-
-      if (userId != null) {
-        ref
-            .read(activityLabelProvider(userId).notifier)
-            .updateActivityLabel(activityLabelController.text.trim());
-        context.pop();
-      } else {
-        showOKAlert(
-          context: context,
-          title: 'Error',
-          content: 'User not logged in',
-        );
-      }
+      ref
+          .read(activityLabelProvider(userId).notifier)
+          .updateActivityLabel(activityLabelController.text.trim());
+      context.pop();
     } else {
       showInvalidLabelAlert(context);
     }
@@ -66,9 +51,11 @@ class _ActivityLabelFormState extends ConsumerState<ActivityLabelForm> {
 
   @override
   Widget build(BuildContext context) {
+    final authRepository = ref.read(authRepositoryProvider);
+    final userId = authRepository.currentUser?.uid ?? Strings.guest;
     return BottomSheetContents(
       headerTitle: 'Edit',
-      onDoneActivityLabelUpdate: () => _handleOnDoneActivityLabelUpdate(),
+      onDoneActivityLabelUpdate: () => _handleOnDoneActivityLabelUpdate(userId),
       child: CustomTextFormField(
         label: 'Activity Label',
         controller: activityLabelController,

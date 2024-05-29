@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:focusnest/src/constants/strings.dart';
 
 import 'activity_timer_database.dart';
 
@@ -47,5 +48,12 @@ class ActivityTimersDao extends DatabaseAccessor<ActivityTimerDatabase>
       }
     }
     return uniqueTimers.values.toList();
+  }
+
+  Future<void> updateGuestUserIdToNewUserId(String newUserId) async {
+    const String guestUserId = Strings.guest;
+    await (update(activityTimers)
+          ..where((tbl) => tbl.userId.equals(guestUserId)))
+        .write(ActivityTimersCompanion(userId: Value(newUserId)));
   }
 }

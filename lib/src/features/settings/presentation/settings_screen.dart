@@ -12,13 +12,12 @@ import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
 import 'package:focusnest/src/features/settings/presentation/settings_screen_controller.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
 import 'package:focusnest/src/utils/async_value_ui.dart';
+import 'package:focusnest/src/utils/modal_helper.dart';
 import 'package:focusnest/src/utils/navigation_helper.dart';
+import 'package:focusnest/src/utils/shared_prefs_helper.dart';
 import 'package:go_router/go_router.dart';
 
 // Main settings screen that displays various settings options to the user.
-// This screen includes account settings, privacy policy, terms of service,
-// contact information, and app version details. It also provides a sign-out
-// option for the user.
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -27,24 +26,20 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  void _handleNavigateToUserSettings({String? userId, String? userEmail}) {
-    if (userId != null && userEmail != null) {
-      context.pushNamed(
-        RoutesName.accountSettings,
-        pathParameters: {
-          'userId': userId,
-        },
-        queryParameters: {
-          'userEmail': userEmail,
-        },
-      );
-    } else {
-      showOKAlert(
-        context: context,
-        title: 'Error',
-        content: 'User not login',
-      );
-    }
+  void _handleNavigateToUserSettings(String userId, String userEmail) {
+    context.pushNamed(
+      RoutesName.accountSettings,
+      pathParameters: {
+        'userId': userId,
+      },
+      queryParameters: {
+        'userEmail': userEmail,
+      },
+    );
+  }
+
+  void _handleNavigateToAuth() {
+    context.pushNamed(RoutesName.auth);
   }
 
   void openAppSettings() async {
@@ -71,14 +66,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     if (logoutConfirmed == true) {
       ref.read(settingsScreenControllerProvider.notifier).signOut();
+      reloadAllNotifiers(ref, Strings.guest);
+      if (mounted) {
+        showCustomSnackBar(context, 'You have been logged out!');
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = ref.watch(authRepositoryProvider);
-    final userId = authRepository.currentUser?.uid;
-    final userEmail = authRepository.currentUser?.email;
+    final authState = ref.watch(authStateChangesProvider);
+    final userId = authState.asData?.value?.uid ?? Strings.guest;
+    final userEmail = authState.asData?.value?.email;
 
     ref.listen<AsyncValue>(
       settingsScreenControllerProvider,
@@ -99,15 +98,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ListView(
                 shrinkWrap: true,
                 children: [
-                  SettingTile(
-                    title: 'Account Settings',
-                    subtitle: 'Manage your account settings',
-                    icon: Icons.account_circle_outlined,
-                    action: () => _handleNavigateToUserSettings(
-                      userId: userId,
-                      userEmail: userEmail,
+                  if (userId != Strings.guest && userEmail != null)
+                    SettingTile(
+                      title: 'Account Settings',
+                      subtitle: 'Manage your account settings',
+                      icon: Icons.account_circle_outlined,
+                      action: () =>
+                          _handleNavigateToUserSettings(userId, userEmail),
+                    )
+                  else ...[
+                    SettingTile(
+                      title: 'Sign Up Or Login',
+                      subtitle: 'Create or access your account',
+                      icon: Icons.login_outlined,
+                      action: () => _handleNavigateToAuth(),
                     ),
-                  ),
+                  ],
                   if (Platform.isIOS)
                     SettingTile(
                       title: 'Font Size',
@@ -144,11 +150,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ],
               ),
-              Spacers.mediumVertical,
-              LinkTextButton(
-                title: 'Sign Out',
-                onPressed: _handleSignOut,
-              ),
+              if (userId != Strings.guest) ...[
+                Spacers.mediumVertical,
+                LinkTextButton(
+                  title: 'Sign Out',
+                  onPressed: _handleSignOut,
+                )
+              ],
+              Spacers.largeVertical,
             ],
           ),
         ),
