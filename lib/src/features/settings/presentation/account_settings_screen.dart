@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:focusnest/src/constants/app_color.dart';
 import 'package:focusnest/src/constants/routes_name.dart';
 import 'package:focusnest/src/features/settings/presentation/setting_tile.dart';
 import 'package:focusnest/src/utils/alert_dialogs.dart';
@@ -28,7 +27,6 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
       context: context,
       title: 'Delete Account',
       defaultActionText: 'Continue',
-      defaultActionTextColor: AppColor.warningColor,
       content:
           'Deleting your account is permanent. All your data will be wiped out immediately and you wont be able to get it back. Are you sure?',
     );
@@ -56,6 +54,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
         child: Column(
           children: [
             ListView(
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               children: [
                 SettingTile(

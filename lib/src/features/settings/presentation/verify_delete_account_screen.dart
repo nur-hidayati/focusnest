@@ -55,7 +55,7 @@ class _VerifyDeleteAccountState extends ConsumerState<VerifyDeleteAccount> {
         content: 'Invalid Current Password',
       );
     } else {
-      ref
+      await ref
           .read(verifyDeleteAccountScreenControllerProvider.notifier)
           .submitDeleteUser();
       if (mounted) {
